@@ -5,7 +5,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import frc.robot.config.RobotConfig.IntakeSubsystem;
+
+import frc.robot.config.RobotConfig.IntakeConfig;
 
 class CompConfig {
   private static final String CANIVORE_NAME = "581CANivore";
@@ -26,8 +27,8 @@ class CompConfig {
   public static final RobotConfig competitionBot =
       new RobotConfig(
           "competition",
-          "581CANivore",
-          new IntakeSubsystem(
+          CANIVORE_NAME,
+          new IntakeConfig(
             0, 
             3.0, 
             -3.0, 

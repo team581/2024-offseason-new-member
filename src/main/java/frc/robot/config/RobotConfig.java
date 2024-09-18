@@ -2,10 +2,15 @@ package frc.robot.config;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-public record RobotConfig(String robotName, String canivoreName, IntakeSubsystem intake) {
+import edu.wpi.first.math.filter.Debouncer;
 
-  public record IntakeSubsystem(
+public record RobotConfig(String robotName, String canivoreName, IntakeConfig intake) {
+
+  public record IntakeConfig(
       int motorID, double intakeVoltage, double outtakeVoltage, TalonFXConfiguration motorConfig) {}
+
+  public record QueuerConfig(
+      int motorID, int sensorID, Debouncer debouncer, TalonFXConfiguration motorConfig) {}
 
   // TODO: Change this to false during events
   public static final boolean IS_DEVELOPMENT = true;
