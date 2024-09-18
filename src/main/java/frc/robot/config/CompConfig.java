@@ -1,7 +1,11 @@
 package frc.robot.config;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import frc.robot.config.RobotConfig.IntakeSubsystem;
 
 class CompConfig {
   private static final String CANIVORE_NAME = "581CANivore";
@@ -18,7 +22,24 @@ class CompConfig {
           .withTorqueOpenLoopRampPeriod(0.04)
           .withVoltageOpenLoopRampPeriod(0.04);
 
-  public static final RobotConfig competitionBot = new RobotConfig("competition");
+  //TODO: change gear ratios
+  public static final RobotConfig competitionBot =
+      new RobotConfig(
+          "competition",
+          "581CANivore",
+          new IntakeSubsystem(
+            0, 
+            3.0, 
+            -3.0, 
+            new TalonFXConfiguration()
+                  .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
+                  .withCurrentLimits(
+                      new CurrentLimitsConfigs()
+                          .withSupplyCurrentLimit(50)
+                          .withSupplyCurrentLimitEnable(true))
+                  .withClosedLoopRamps(CLOSED_LOOP_RAMP)
+                  .withOpenLoopRamps(OPEN_LOOP_RAMP))
+          );
 
   private CompConfig() {}
 }
