@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import frc.robot.config.RobotConfig.IntakeConfig;
+import frc.robot.config.RobotConfig.QueuerConfig;
 
 class CompConfig {
   private static final String CANIVORE_NAME = "581CANivore";
@@ -39,7 +40,8 @@ class CompConfig {
                           .withSupplyCurrentLimit(50)
                           .withSupplyCurrentLimitEnable(true))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
-                  .withOpenLoopRamps(OPEN_LOOP_RAMP))
+                  .withOpenLoopRamps(OPEN_LOOP_RAMP)),
+            new QueuerConfig(0, 0, null)
           );
 
   private CompConfig() {}
