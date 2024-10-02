@@ -41,7 +41,25 @@ class CompConfig {
                           .withSupplyCurrentLimitEnable(true))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
-            new QueuerConfig(0, 0, null)
+            new QueuerConfig(
+              0,
+              0,
+              new TalonFXConfiguration()
+                  .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
+                  .withCurrentLimits(
+                      new CurrentLimitsConfigs()
+                          .withSupplyCurrentLimit(20)
+                          .withSupplyCurrentLimitEnable(true))
+                  .withMotorOutput(
+                      new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
+                  .withClosedLoopRamps(CLOSED_LOOP_RAMP)
+                  .withOpenLoopRamps(OPEN_LOOP_RAMP)),
+            new ShooterConfig(
+              0,
+              0,
+              new TalonFXConfiguration(),
+              new TalonFXConfiguration(),
+            )
           );
 
   private CompConfig() {}
