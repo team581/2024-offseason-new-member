@@ -59,6 +59,13 @@ class CompConfig {
               0,
               new TalonFXConfiguration(),
               new TalonFXConfiguration()),
+            new ClimberConfig(
+                0,
+                0.0,
+                0.0,
+                0.0,
+                0,
+                new TalonFXConfiguration()),
             new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
               new PhoenixPIDController(20, 0, 2),

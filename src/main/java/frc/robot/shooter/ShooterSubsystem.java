@@ -50,8 +50,8 @@ public class ShooterSubsystem extends LifecycleSubsystem {
             return true;
         }
 
-        if (math.abs(goalState.RPM - getBottomMotorRPM()) <= tolerance
-            && math.abs(goalState.RPM - getTopMotorRPM()) <= tolerance) {
+        if (Math.abs(goalState.RPM - getBottomMotorRPM()) <= tolerance
+            && Math.abs(goalState.RPM - getTopMotorRPM()) <= tolerance) {
             return true;
         }
 
