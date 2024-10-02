@@ -58,8 +58,21 @@ class CompConfig {
               0,
               0,
               new TalonFXConfiguration(),
-              new TalonFXConfiguration(),
-            )
+              new TalonFXConfiguration()),
+            new SwerveConfig(
+              // new PhoenixPIDController(50, 0, 5),
+              new PhoenixPIDController(20, 0, 2),
+              true,
+              true,
+              true,
+              new CurrentLimitsConfigs()
+                  .withSupplyCurrentLimit(40)
+                  .withStatorCurrentLimit(40)
+                  .withSupplyCurrentLimitEnable(true)
+                  .withStatorCurrentLimitEnable(true),
+              new TorqueCurrentConfigs()
+                  .withPeakForwardTorqueCurrent(80)
+                  .withPeakReverseTorqueCurrent(-80))
           );
 
   private CompConfig() {}

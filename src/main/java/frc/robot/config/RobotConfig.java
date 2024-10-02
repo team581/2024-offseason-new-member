@@ -13,6 +13,14 @@ public record RobotConfig(String robotName, String canivoreName, IntakeConfig in
   public record ShooterConfig(
       int bottomMotorID, int topMotorID, double tolerance, TalonFXConfiguration bottomMotorConfig, TalonFXConfiguration topMotorConfig) {}
 
+  public record SwerveConfig(
+      PhoenixPIDController snapController,
+      boolean invertRotation,
+      boolean invertX,
+      boolean invertY,
+      CurrentLimitsConfigs driveMotorCurrentLimits,
+      TorqueCurrentConfigs driveMotorTorqueCurrentLimits) {}
+
   // TODO: Change this to false during events
   public static final boolean IS_DEVELOPMENT = true;
   public static final String SERIAL_NUMBER = System.getenv("serialnum");
