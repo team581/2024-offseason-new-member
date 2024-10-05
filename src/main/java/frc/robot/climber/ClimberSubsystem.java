@@ -6,9 +6,10 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.config.RobotConfig;
 import frc.robot.config.RobotConfig.ClimberConfig;
+import frc.robot.util.scheduling.LifecycleSubsystem;
 import frc.robot.util.scheduling.SubsystemPriority;
 
-public class ClimberSubsystem {
+public class ClimberSubsystem extends LifecycleSubsystem {
   ClimberConfig CONFIG = RobotConfig.get().climber();
   private final TalonFX motor;
   private double goalDistance = 0.0;
