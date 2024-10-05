@@ -19,7 +19,7 @@ import java.util.Optional;
 public class VisionSubsystem extends LifecycleSubsystem {
   private static final double FLOOR_SPOT_MAX_DISTANCE_FOR_SUBWOOFER = 14.0;
   private static final boolean SHOOT_TO_SIDE_ENABLED = true;
-  public static final boolean LIMELIGHT_UPSIDE_DOWN = true; //TODO: might not be true
+  public static final boolean LIMELIGHT_UPSIDE_DOWN = true; // TODO: might not be true
 
   public static final Pose2d ORIGINAL_RED_SPEAKER =
       new Pose2d(
