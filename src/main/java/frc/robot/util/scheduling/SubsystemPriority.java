@@ -12,6 +12,7 @@ public enum SubsystemPriority {
   // Localization runs before arm and shooter so that they have fresh speaker distance values
   LOCALIZATION(20),
   FMS(20),
+  SNAPS(20),
 
   // 10-19 is for actuator subsystems
   CLIMBER(10),
