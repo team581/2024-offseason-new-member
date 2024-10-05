@@ -6,21 +6,21 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.config.RobotConfig;
 import frc.robot.config.RobotConfig.ClimberConfig;
-import frc.robot.util.scheduling.LifecycleSubsystem;
+import frc.robot.util.HomingState;
 import frc.robot.util.scheduling.SubsystemPriority;
+import frc.robot.util.state_machines.StateMachine;
 
-public class ClimberSubsystem extends LifecycleSubsystem {
+public class ClimberSubsystem extends StateMachine<HomingState> {
   ClimberConfig CONFIG = RobotConfig.get().climber();
   private final TalonFX motor;
   private double goalDistance = 0.0;
   private PositionVoltage positionRequest = new PositionVoltage(goalDistance);
   private LinearFilter currentFilter = LinearFilter.movingAverage(CONFIG.currentTaps());
   private boolean raised = false;
-  private boolean homing = false;
   private double tolerance = 1.5; // cm
 
   public ClimberSubsystem(TalonFX motor) {
-    super(SubsystemPriority.CLIMBER);
+    super(SubsystemPriority.CLIMBER, HomingState.NOT_HOMED);
 
     motor.getConfigurator().apply(RobotConfig.get().climber().motorConfig());
 
@@ -28,27 +28,45 @@ public class ClimberSubsystem extends LifecycleSubsystem {
   }
 
   @Override
-  public void robotPeriodic() {
+  protected void afterTransition(HomingState newState) {
+
     double rawCurrent = motor.getStatorCurrent().getValueAsDouble();
     double filteredCurrent = currentFilter.calculate(rawCurrent);
 
-    if (homing == true) {
-      motor.setVoltage(CONFIG.homingVoltage());
-      if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
-        motor.setPosition(0.0);
-        homing = false;
+    switch (newState) {
+      case NOT_HOMED -> {}
+
+      case MID_MATCH_HOMING -> {
+        motor.setVoltage(CONFIG.homingVoltage());
+        if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
+          motor.setPosition(0.0);
+          setState(HomingState.HOMED);
+        }
       }
-    } else if (homing == false) {
-      if (raised) {
-        motor.setControl(positionRequest.withPosition(CONFIG.maxHeight()));
-      } else {
-        motor.setControl(positionRequest.withPosition(0.0));
+
+      case PRE_MATCH_HOMING -> {
+        motor.setVoltage(CONFIG.homingVoltage());
+        if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
+          motor.setPosition(0.0);
+          setState(HomingState.HOMED);
+        }
+      }
+
+      case HOMED -> {
+        if (raised) {
+          motor.setControl(positionRequest.withPosition(CONFIG.maxHeight()));
+        } else {
+          motor.setControl(positionRequest.withPosition(0.0));
+        }
       }
     }
-
-    DogLog.log("Climber/Height", getHeight());
     DogLog.log("Climber/FilteredCurrent", filteredCurrent);
-    DogLog.log("Climber/Homing", homing);
+  }
+
+  @Override
+  public void robotPeriodic() {
+    super.robotPeriodic();
+    DogLog.log("Climber/Height", getHeight());
     DogLog.log("Climber/Raised", getRaised());
     DogLog.log("Climber/AtGoal", atGoal());
   }
@@ -67,16 +85,13 @@ public class ClimberSubsystem extends LifecycleSubsystem {
     return motor.getPosition().getValueAsDouble() * 2 * Math.PI * axleRadius;
   }
 
-  public void unhomed() {
-    homing = false;
+  public void setState(HomingState state) {
+    setStateFromRequest(state);
   }
 
-  public void startHoming() {
-    homing = true;
-  }
-
-  public void setRaised(boolean raise) {
-    raised = raise;
+  @Override
+  protected HomingState getNextState(HomingState state) {
+    return state;
   }
 
   public boolean getRaised() {

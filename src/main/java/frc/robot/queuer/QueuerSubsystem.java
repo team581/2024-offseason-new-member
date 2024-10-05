@@ -4,17 +4,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.config.RobotConfig;
-import frc.robot.util.scheduling.LifecycleSubsystem;
 import frc.robot.util.scheduling.SubsystemPriority;
+import frc.robot.util.state_machines.StateMachine;
 
-public class QueuerSubsystem extends LifecycleSubsystem {
-
+public class QueuerSubsystem extends StateMachine<QueuerState> {
   private final TalonFX motor;
   private final DigitalInput sensor;
-  private QueuerState goalState = QueuerState.IDLE;
 
   public QueuerSubsystem(TalonFX motor, DigitalInput sensor) {
-    super(SubsystemPriority.QUEUER);
+    super(SubsystemPriority.QUEUER, QueuerState.IDLE);
 
     motor.getConfigurator().apply(RobotConfig.get().queuer().motorConfig());
 
@@ -23,23 +21,24 @@ public class QueuerSubsystem extends LifecycleSubsystem {
   }
 
   @Override
-  public void robotPeriodic() {
-    DogLog.log("Queuer/State", goalState);
-    DogLog.log("Queuer/HasNote", hasNote());
-
-    switch (goalState) {
-      case IDLE:
-        motor.disable();
-        break;
-      case TO_INTAKE:
+  protected void afterTransition(QueuerState newstate) {
+    switch (newstate) {
+      case IDLE -> {
+        motor.setVoltage(0);
+      }
+      case TO_INTAKE -> {
         motor.setVoltage(-1);
-        break;
-      case TO_SHOOTER:
+      }
+      case TO_SHOOTER -> {
         motor.setVoltage(12);
-        break;
-      default:
-        break;
+      }
     }
+  }
+
+  @Override
+  public void robotPeriodic() {
+    super.robotPeriodic();
+    DogLog.log("Queuer/HasNote", hasNote());
   }
 
   public boolean hasNote() {
@@ -47,10 +46,11 @@ public class QueuerSubsystem extends LifecycleSubsystem {
   }
 
   public void setState(QueuerState state) {
-    goalState = state;
+    setStateFromRequest(state);
   }
 
-  public QueuerState getState() {
-    return goalState;
+  @Override
+  protected QueuerState getNextState(QueuerState state) {
+    return state;
   }
 }

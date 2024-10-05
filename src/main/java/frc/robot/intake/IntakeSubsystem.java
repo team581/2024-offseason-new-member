@@ -1,48 +1,51 @@
 package frc.robot.intake;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import dev.doglog.DogLog;
 import frc.robot.config.RobotConfig;
-import frc.robot.util.scheduling.LifecycleSubsystem;
+import frc.robot.config.RobotConfig.IntakeConfig;
 import frc.robot.util.scheduling.SubsystemPriority;
+import frc.robot.util.state_machines.StateMachine;
 
-public class IntakeSubsystem extends LifecycleSubsystem {
+public class IntakeSubsystem extends StateMachine<IntakeState> {
   private final TalonFX motor;
-  private IntakeState goalState = IntakeState.IDLE;
+  IntakeConfig CONFIG = RobotConfig.get().intake();
 
   public IntakeSubsystem(TalonFX motor) {
-    super(SubsystemPriority.INTAKE);
+    super(SubsystemPriority.INTAKE, IntakeState.IDLE);
 
-    motor.getConfigurator().apply(RobotConfig.get().intake().motorConfig());
+    motor.getConfigurator().apply(CONFIG.motorConfig());
 
     this.motor = motor;
   }
 
   @Override
-  public void robotPeriodic() {
-    DogLog.log("Intake/State", goalState);
-
-    switch (goalState) {
-      case IDLE:
+  protected void afterTransition(IntakeState newState) {
+    switch (newState) {
+      case IDLE -> {
         motor.disable();
-        break;
-      case INTAKE:
-        motor.setVoltage(RobotConfig.get().intake().intakeVoltage());
-        break;
-      case OUTTAKE:
-        motor.setVoltage(RobotConfig.get().intake().outtakeVoltage());
-        break;
+      }
 
-      default:
-        break;
+      case INTAKE -> {
+        motor.setVoltage(CONFIG.intakeVoltage());
+      }
+
+      case OUTTAKE -> {
+        motor.setVoltage(CONFIG.outtakeVoltage());
+      }
     }
   }
 
-  public void setState(IntakeState state) {
-    goalState = state;
+  @Override
+  public void robotPeriodic() {
+    super.robotPeriodic();
   }
 
-  public IntakeState getState() {
-    return goalState;
+  public void setState(IntakeState state) {
+    setStateFromRequest(state);
+  }
+
+  @Override
+  protected IntakeState getNextState(IntakeState currentState) {
+    return currentState;
   }
 }
