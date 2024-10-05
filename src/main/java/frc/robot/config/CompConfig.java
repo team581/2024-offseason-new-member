@@ -5,11 +5,14 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.config.RobotConfig.ClimberConfig;
+import frc.robot.config.RobotConfig.IMUConfig;
 import frc.robot.config.RobotConfig.IntakeConfig;
 import frc.robot.config.RobotConfig.QueuerConfig;
 import frc.robot.config.RobotConfig.ShooterConfig;
@@ -60,8 +63,51 @@ class CompConfig {
                       new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
-          new ShooterConfig(0, 0, 100, new TalonFXConfiguration(), new TalonFXConfiguration()),
-          new ClimberConfig(0, 0.0, 0.0, 0.0, 0, new TalonFXConfiguration()),
+          new ShooterConfig(
+              0,
+              0,
+              100,
+              new TalonFXConfiguration(),
+              new TalonFXConfiguration()
+                  .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
+                  .withCurrentLimits(
+                      new CurrentLimitsConfigs()
+                          .withSupplyCurrentLimit(80)
+                          .withSupplyCurrentLimitEnable(true))
+                  .withTorqueCurrent(
+                      new TorqueCurrentConfigs()
+                          .withPeakForwardTorqueCurrent(200)
+                          .withPeakReverseTorqueCurrent(0))
+                  .withSlot0(new Slot0Configs().withKP(15).withKV(0).withKS(14.8))
+                  .withMotorOutput(
+                      new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
+                  .withClosedLoopRamps(CLOSED_LOOP_RAMP)
+                  .withOpenLoopRamps(OPEN_LOOP_RAMP)),
+          new ClimberConfig(
+              0,
+              0.0,
+              0.0,
+              0.0,
+              0,
+              new TalonFXConfiguration()
+                  .withSlot0(new Slot0Configs().withKP(7.0))
+                  .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1.0))
+                  .withCurrentLimits(
+                      new CurrentLimitsConfigs()
+                          .withSupplyCurrentLimit(80)
+                          .withSupplyCurrentLimitEnable(true))
+                  .withClosedLoopRamps(CLOSED_LOOP_RAMP)
+                  .withOpenLoopRamps(OPEN_LOOP_RAMP)
+                  .withMotorOutput(
+                      new MotorOutputConfigs()
+                          .withInverted(InvertedValue.Clockwise_Positive)
+                          .withNeutralMode(NeutralModeValue.Brake))),
+          new IMUConfig(
+              0,
+              distanceToAngleTolerance -> {
+                distanceToAngleTolerance.put(1.0, 2.5);
+                distanceToAngleTolerance.put(1.0, 2.5);
+              }),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
               new PhoenixPIDController(20, 0, 2),
