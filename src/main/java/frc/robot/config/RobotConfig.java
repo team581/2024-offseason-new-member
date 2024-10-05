@@ -4,6 +4,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import java.util.function.Consumer;
 
 public record RobotConfig(
     String robotName,
@@ -12,6 +14,7 @@ public record RobotConfig(
     QueuerConfig queuer,
     ShooterConfig shooter,
     ClimberConfig climber,
+    IMUConfig imu,
     SwerveConfig swerve) {
 
   public record IntakeConfig(
@@ -33,6 +36,9 @@ public record RobotConfig(
       double homingCurrentThreshold,
       int currentTaps,
       TalonFXConfiguration motorConfig) {}
+
+  public record IMUConfig(
+      int deviceID, Consumer<InterpolatingDoubleTreeMap> distanceToAngleTolerance) {}
 
   public record SwerveConfig(
       PhoenixPIDController snapController,
