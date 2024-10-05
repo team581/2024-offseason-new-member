@@ -94,6 +94,10 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
     return state;
   }
 
+  public void setRaised(boolean bool) {
+    raised = bool;
+  }
+
   public boolean getRaised() {
     return raised;
   }
