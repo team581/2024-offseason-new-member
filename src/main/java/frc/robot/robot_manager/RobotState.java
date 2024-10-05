@@ -1,0 +1,23 @@
+package frc.robot.robot_manager;
+
+public enum RobotState {
+  IDLE_NO_GP,
+  INTAKING,
+  IDLE_W_GP,
+
+  OUTTAKING,
+
+  WAITING_SUBWOOFER_SHOT,
+  PREPARE_SUBWOOFER_SHOT,
+  SUBWOOFER_SHOT,
+
+  WAITING_FLOOR_SHOT,
+  PREPARE_FLOOR_SHOT,
+  FLOOR_SHOT,
+
+  UNJAM,
+
+  WAITING_CLIMB,
+  CLIMBING,
+  CLIMBED;
+}
