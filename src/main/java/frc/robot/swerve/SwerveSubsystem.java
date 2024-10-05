@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.config.RobotConfig;
+import frc.robot.fms.FmsSubsystem;
 import frc.robot.generated.CompBotTunerConstants;
 import frc.robot.generated.PracticeBotTunerConstants;
 import frc.robot.util.ControllerHelpers;
@@ -184,9 +185,7 @@ public class SwerveSubsystem extends LifecycleSubsystem {
             leftY *= -1.0;
           }
 
-          if ( // TODO: make fms so this works
-          // FmsSubsystem.isRedAlliance()
-          true) {
+          if (FmsSubsystem.isRedAlliance()) {
             leftX *= -1.0;
             leftY *= -1.0;
           }
