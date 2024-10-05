@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import frc.robot.vision.interpolation.InterpolatedVisionDataset;
 import java.util.function.Consumer;
 
 public record RobotConfig(
@@ -15,7 +16,9 @@ public record RobotConfig(
     ShooterConfig shooter,
     ClimberConfig climber,
     IMUConfig imu,
-    SwerveConfig swerve) {
+    SwerveConfig swerve,
+    VisionConfig vision,
+    PerfToggles perfToggles) {
 
   public record IntakeConfig(
       int motorID, double intakeVoltage, double outtakeVoltage, TalonFXConfiguration motorConfig) {}
@@ -36,6 +39,16 @@ public record RobotConfig(
       double homingCurrentThreshold,
       int currentTaps,
       TalonFXConfiguration motorConfig) {}
+
+  public record VisionConfig(
+      int translationHistoryArraySize,
+      double xyStdDev,
+      double thetaStdDev,
+      Consumer<InterpolatingDoubleTreeMap> tyToNoteDistance,
+      InterpolatedVisionDataset interpolatedVisionSet) {}
+
+  public record PerfToggles(
+      boolean interpolatedVision, boolean noteMapInTeleop, boolean noteMapBoundingBox) {}
 
   public record IMUConfig(
       int deviceID, Consumer<InterpolatingDoubleTreeMap> distanceToAngleTolerance) {}
