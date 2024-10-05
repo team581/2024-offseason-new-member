@@ -21,6 +21,7 @@ public enum SubsystemPriority {
   INTAKE(10),
 
   // 0-9 is for manager subsystems
+  RUMBLE_CONTROLLER(0),
 
   // Robot manager runs last so that all sensor data is fresh before processing state transitions
   ROBOT_MANAGER(0),
