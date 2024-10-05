@@ -3,11 +3,17 @@ package frc.robot.config;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
+import com.ctre.phoenix6.signals.InvertedValue;
+import frc.robot.config.RobotConfig.ClimberConfig;
 import frc.robot.config.RobotConfig.IntakeConfig;
 import frc.robot.config.RobotConfig.QueuerConfig;
+import frc.robot.config.RobotConfig.ShooterConfig;
+import frc.robot.config.RobotConfig.SwerveConfig;
 
 class CompConfig {
   private static final String CANIVORE_NAME = "581CANivore";
@@ -24,16 +30,16 @@ class CompConfig {
           .withTorqueOpenLoopRampPeriod(0.04)
           .withVoltageOpenLoopRampPeriod(0.04);
 
-  //TODO: change gear ratios
+  // TODO: change gear ratios
   public static final RobotConfig competitionBot =
       new RobotConfig(
           "competition",
           CANIVORE_NAME,
           new IntakeConfig(
-            0, 
-            3.0, 
-            -3.0, 
-            new TalonFXConfiguration()
+              0,
+              3.0,
+              -3.0,
+              new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
@@ -41,7 +47,7 @@ class CompConfig {
                           .withSupplyCurrentLimitEnable(true))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
-            new QueuerConfig(
+          new QueuerConfig(
               0,
               0,
               new TalonFXConfiguration()
@@ -54,19 +60,9 @@ class CompConfig {
                       new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
-            new ShooterConfig(
-              0,
-              0,
-              new TalonFXConfiguration(),
-              new TalonFXConfiguration()),
-            new ClimberConfig(
-                0,
-                0.0,
-                0.0,
-                0.0,
-                0,
-                new TalonFXConfiguration()),
-            new SwerveConfig(
+          new ShooterConfig(0, 0, 100, new TalonFXConfiguration(), new TalonFXConfiguration()),
+          new ClimberConfig(0, 0.0, 0.0, 0.0, 0, new TalonFXConfiguration()),
+          new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
               new PhoenixPIDController(20, 0, 2),
               true,
@@ -79,8 +75,7 @@ class CompConfig {
                   .withStatorCurrentLimitEnable(true),
               new TorqueCurrentConfigs()
                   .withPeakForwardTorqueCurrent(80)
-                  .withPeakReverseTorqueCurrent(-80))
-          );
+                  .withPeakReverseTorqueCurrent(-80)));
 
   private CompConfig() {}
 }

@@ -14,7 +14,7 @@ public enum SubsystemPriority {
   FMS(20),
 
   // 10-19 is for actuator subsystems
-  CLIMBER(10)
+  CLIMBER(10),
   SHOOTER(10),
   QUEUER(10),
   INTAKE(10),
