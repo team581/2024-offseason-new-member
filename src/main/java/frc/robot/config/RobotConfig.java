@@ -21,7 +21,7 @@ public record RobotConfig(
     PerfToggles perfToggles) {
 
   public record IntakeConfig(
-      int motorID, double intakeVoltage, double outtakeVoltage, TalonFXConfiguration motorConfig) {}
+      int motorID, TalonFXConfiguration motorConfig) {}
 
   public record QueuerConfig(int motorID, int sensorID, TalonFXConfiguration motorConfig) {}
 
