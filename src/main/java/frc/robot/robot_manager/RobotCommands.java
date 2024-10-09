@@ -78,4 +78,21 @@ public class RobotCommands {
                     RobotState.IDLE_W_GP)))
         .withName("ClimbSequenceCommand");
   }
+
+  public Command reverseClimbSequenceCommand() {
+    return Commands.runOnce(robot::reverseClimbSequenceRequest, requirements)
+        .andThen(
+            robot.waitForStates(
+                Set.of(
+                    RobotState.CLIMBED,
+                    RobotState.WAITING_CLIMB,
+                    RobotState.IDLE_NO_GP,
+                    RobotState.IDLE_W_GP)))
+        .withName("ClimbSequenceCommand");
+  }
+
+  public Command homeClimberCommand() {
+    return Commands.runOnce(robot::homeClimberRequest, requirements)
+        .withName("HomeClimberCommand");
+  }
 }

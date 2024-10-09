@@ -7,6 +7,7 @@ import frc.robot.queuer.QueuerState;
 import frc.robot.queuer.QueuerSubsystem;
 import frc.robot.shooter.ShooterState;
 import frc.robot.shooter.ShooterSubsystem;
+import frc.robot.util.HomingState;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 
@@ -216,5 +217,19 @@ public class RobotManager extends StateMachine<RobotState> {
       case CLIMBING -> {}
       case CLIMBED -> idleRequest();
     }
+  }
+
+  public void reverseClimbSequenceRequest() {
+    switch (getState()) {
+      default -> setStateFromRequest(RobotState.CLIMBED);
+
+      case WAITING_CLIMB -> idleRequest();
+      case CLIMBING -> {}
+      case CLIMBED -> setStateFromRequest(RobotState.WAITING_CLIMB);
+    }
+  }
+
+  public void homeClimberRequest() {
+    climber.setState(HomingState.MID_MATCH_HOMING);
   }
 }
