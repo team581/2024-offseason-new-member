@@ -92,7 +92,6 @@ public class RobotCommands {
   }
 
   public Command homeClimberCommand() {
-    return Commands.runOnce(robot::homeClimberRequest, requirements)
-        .withName("HomeClimberCommand");
+    return Commands.runOnce(robot::homeClimberRequest, requirements).withName("HomeClimberCommand");
   }
 }
