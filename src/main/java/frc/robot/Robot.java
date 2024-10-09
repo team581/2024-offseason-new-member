@@ -7,12 +7,45 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.climber.ClimberSubsystem;
 import frc.robot.config.RobotConfig;
+import frc.robot.controller.RumbleControllerSubsystem;
+import frc.robot.fms.FmsSubsystem;
 import frc.robot.generated.BuildConstants;
+import frc.robot.imu.ImuSubsystem;
+import frc.robot.intake.IntakeSubsystem;
+import frc.robot.localization.LocalizationSubsystem;
+import frc.robot.queuer.QueuerSubsystem;
+import frc.robot.robot_manager.RobotCommands;
+import frc.robot.robot_manager.RobotManager;
+import frc.robot.shooter.ShooterSubsystem;
+import frc.robot.snaps.SnapManager;
+import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.util.Stopwatch;
 import frc.robot.util.scheduling.LifecycleSubsystemManager;
+import frc.robot.vision.VisionSubsystem;
 
 public class Robot extends TimedRobot {
+  private final Hardware hd = new Hardware();
+
+  private final RumbleControllerSubsystem driverRumble =
+      new RumbleControllerSubsystem(hd.driverController, false);
+  private final RumbleControllerSubsystem operatorRumble =
+      new RumbleControllerSubsystem(hd.operatorController, true);
+
+  private final ClimberSubsystem climber = new ClimberSubsystem(hd.climberMotor);
+  private final ShooterSubsystem shooter = new ShooterSubsystem(hd.bottomShooter, hd.topShooter);
+  private final IntakeSubsystem intake = new IntakeSubsystem(hd.intakeMotor);
+  private final QueuerSubsystem queuer = new QueuerSubsystem(hd.queuerMotor, hd.sensor);
+  private final RobotManager robotManager = new RobotManager(intake, queuer, shooter, climber);
+  private final RobotCommands actions = new RobotCommands(robotManager);
+  private final SwerveSubsystem swerve = new SwerveSubsystem(hd.driverController);
+  private final ImuSubsystem imu = new ImuSubsystem(swerve);
+  private final FmsSubsystem fms = new FmsSubsystem();
+  private final VisionSubsystem vision = new VisionSubsystem(imu);
+  private final LocalizationSubsystem localization = new LocalizationSubsystem(swerve, imu, vision);
+  private final SnapManager snaps = new SnapManager(swerve, hd.driverController);
+
   private Command autonomousCommand;
 
   private final Hardware hardware = new Hardware();
@@ -111,5 +144,28 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {}
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    swerve.setDefaultCommand(swerve.driveTeleopCommand());
+
+    hd.driverController.back().onTrue(localization.getZeroCommand());
+
+    hd.driverController.y().onTrue(snaps.getCommand(() -> SnapManager.getSourceAngle()));
+    hd.driverController.x().onTrue(snaps.getCommand(() -> SnapManager.getStageLeftAngle()));
+    hd.driverController.b().onTrue(snaps.getCommand(() -> SnapManager.getStageRightAngle()));
+    hd.driverController.a().onTrue(snaps.getCommand(() -> SnapManager.getAmpAngle()));
+    hd.driverController.povUp().onTrue(snaps.getCommand(() -> SnapManager.getStageBackChain()));
+
+    hd.driverController
+        .leftTrigger()
+        .onTrue(actions.intakeCommand())
+        .onFalse(actions.idleCommand());
+    hd.driverController
+        .rightTrigger()
+        .onTrue(actions.confirmShotCommand())
+        .onFalse(actions.idleCommand());
+    hd.driverController
+        .rightBumper()
+        .onTrue(actions.outtakeCommand())
+        .onFalse(actions.idleCommand());
+  }
 }
