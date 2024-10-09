@@ -11,10 +11,10 @@ import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 
 public class RobotManager extends StateMachine<RobotState> {
-  private final IntakeSubsystem intake;
-  private final ShooterSubsystem shooter;
-  private final QueuerSubsystem queuer;
-  private final ClimberSubsystem climber;
+  public final IntakeSubsystem intake;
+  public final ShooterSubsystem shooter;
+  public final QueuerSubsystem queuer;
+  public final ClimberSubsystem climber;
 
   // INIT
   public RobotManager(
@@ -28,6 +28,7 @@ public class RobotManager extends StateMachine<RobotState> {
     this.queuer = queuer;
     this.climber = climber;
   }
+
   // --------------------
 
   @Override
@@ -42,12 +43,11 @@ public class RobotManager extends StateMachine<RobotState> {
               IDLE_NO_GP,
               IDLE_W_GP,
               WAITING_CLIMB,
-              CLIMBING,
               CLIMBED,
               UNJAM ->
           currentState;
       case SUBWOOFER_SHOT, FLOOR_SHOT -> queuer.hasNote() ? currentState : RobotState.IDLE_NO_GP;
-
+      case CLIMBING -> climber.atGoal() ? RobotState.CLIMBED : currentState;
       case PREPARE_SUBWOOFER_SHOT ->
           shooter.atGoal(ShooterState.SUBWOOFER_SHOT) ? RobotState.SUBWOOFER_SHOT : currentState;
 
@@ -57,98 +57,164 @@ public class RobotManager extends StateMachine<RobotState> {
       case OUTTAKING -> queuer.hasNote() ? currentState : RobotState.IDLE_NO_GP;
     };
   }
+
   // ---------------------
 
   // State actions
   @Override
   protected void afterTransition(RobotState newState) {
     switch (newState) {
-        case IDLE_NO_GP -> {
-            shooter.setState(ShooterState.STOPPED);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
-        
-        case IDLE_W_GP -> {
-            shooter.setState(ShooterState.IDLE);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
-        case INTAKING -> {
-            shooter.setState(ShooterState.STOPPED);
-            intake.setState(IntakeState.INTAKE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
-        case OUTTAKING -> {
-            shooter.setState(ShooterState.IDLE);
-            intake.setState(IntakeState.OUTTAKE);
-            queuer.setState(QueuerState.TO_INTAKE);
-            climber.setRaised(false);
-        }
-        case WAITING_SUBWOOFER_SHOT -> {
-            shooter.setState(ShooterState.SUBWOOFER_SHOT);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
-        case WAITING_FLOOR_SHOT -> {
-            shooter.setState(ShooterState.FLOOR_SHOT);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
-        case PREPARE_SUBWOOFER_SHOT -> {
-            shooter.setState(ShooterState.SUBWOOFER_SHOT);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
-        case PREPARE_FLOOR_SHOT -> {
-            shooter.setState(ShooterState.FLOOR_SHOT);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
-        case FLOOR_SHOT -> {
-            shooter.setState(ShooterState.FLOOR_SHOT);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.TO_SHOOTER);
-            climber.setRaised(false);
-        }
-        case SUBWOOFER_SHOT -> {
-            shooter.setState(ShooterState.SUBWOOFER_SHOT);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.TO_SHOOTER);
-            climber.setRaised(false);
-        }
-        case UNJAM -> {
-            shooter.setState(ShooterState.IDLE);
-            intake.setState(IntakeState.OUTTAKE);
-            queuer.setState(QueuerState.TO_SHOOTER);
-            climber.setRaised(false);
-        }
-        case WAITING_CLIMB -> {
-            shooter.setState(ShooterState.STOPPED);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(true);
-        }
-        case CLIMBING -> {
-            shooter.setState(ShooterState.STOPPED);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
-        case CLIMBED -> {
-            shooter.setState(ShooterState.STOPPED);
-            intake.setState(IntakeState.IDLE);
-            queuer.setState(QueuerState.IDLE);
-            climber.setRaised(false);
-        }
+      case IDLE_NO_GP -> {
+        shooter.setState(ShooterState.STOPPED);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
 
+      case IDLE_W_GP -> {
+        shooter.setState(ShooterState.IDLE);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
+      case INTAKING -> {
+        shooter.setState(ShooterState.STOPPED);
+        intake.setState(IntakeState.INTAKE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
+      case OUTTAKING -> {
+        shooter.setState(ShooterState.IDLE);
+        intake.setState(IntakeState.OUTTAKE);
+        queuer.setState(QueuerState.TO_INTAKE);
+        climber.setRaised(false);
+      }
+      case WAITING_SUBWOOFER_SHOT -> {
+        shooter.setState(ShooterState.SUBWOOFER_SHOT);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
+      case WAITING_FLOOR_SHOT -> {
+        shooter.setState(ShooterState.FLOOR_SHOT);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
+      case PREPARE_SUBWOOFER_SHOT -> {
+        shooter.setState(ShooterState.SUBWOOFER_SHOT);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
+      case PREPARE_FLOOR_SHOT -> {
+        shooter.setState(ShooterState.FLOOR_SHOT);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
+      case FLOOR_SHOT -> {
+        shooter.setState(ShooterState.FLOOR_SHOT);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.TO_SHOOTER);
+        climber.setRaised(false);
+      }
+      case SUBWOOFER_SHOT -> {
+        shooter.setState(ShooterState.SUBWOOFER_SHOT);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.TO_SHOOTER);
+        climber.setRaised(false);
+      }
+      case UNJAM -> {
+        shooter.setState(ShooterState.IDLE);
+        intake.setState(IntakeState.OUTTAKE);
+        queuer.setState(QueuerState.TO_SHOOTER);
+        climber.setRaised(false);
+      }
+      case WAITING_CLIMB -> {
+        shooter.setState(ShooterState.STOPPED);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(true);
+      }
+      case CLIMBING -> {
+        shooter.setState(ShooterState.STOPPED);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
+      case CLIMBED -> {
+        shooter.setState(ShooterState.STOPPED);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+      }
+    }
+  }
+
+  @Override
+  public void robotPeriodic() {
+    super.robotPeriodic();
+  }
+
+  public void speakerShotRequest() {
+    setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
+  }
+
+  public void waitSpeakerShotRequest() {
+    setStateFromRequest(RobotState.WAITING_SUBWOOFER_SHOT);
+  }
+
+  public void floorShotRequest() {
+    setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
+  }
+
+  public void waitFloorShotRequest() {
+    setStateFromRequest(RobotState.WAITING_FLOOR_SHOT);
+  }
+
+  public void confirmShotRequest() {
+    switch (getState()) {
+      case CLIMBED, CLIMBING, WAITING_CLIMB -> {}
+
+      case WAITING_SUBWOOFER_SHOT -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
+      case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
+
+      default -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
+    }
+  }
+
+  public void unjamRequest() {
+    setStateFromRequest(RobotState.UNJAM);
+  }
+
+  public void intakeRequest() {
+    setStateFromRequest(RobotState.INTAKING);
+  }
+
+  public void outtakerequest() {
+    setStateFromRequest(RobotState.OUTTAKING);
+  }
+
+  public void idleNoGPRequest() {
+    setStateFromRequest(RobotState.IDLE_NO_GP);
+  }
+
+  public void idleRequest() {
+    if (queuer.hasNote()) {
+      setStateFromRequest(RobotState.IDLE_W_GP);
+    } else {
+      setStateFromRequest(RobotState.IDLE_NO_GP);
+    }
+  }
+
+  public void doClimbSequenceRequest() {
+    switch (getState()) {
+      default -> setStateFromRequest(RobotState.WAITING_CLIMB);
+
+      case WAITING_CLIMB -> setStateFromRequest(RobotState.CLIMBING);
+      case CLIMBING -> {}
+      case CLIMBED -> idleRequest();
     }
   }
 }
