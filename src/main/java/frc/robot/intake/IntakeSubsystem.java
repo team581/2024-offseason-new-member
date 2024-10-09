@@ -26,11 +26,15 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
       }
 
       case INTAKE -> {
-        motor.setVoltage(CONFIG.intakeVoltage());
+        motor.setVoltage(3);
+      }
+
+      case INTAKE_SLOW -> {
+        motor.setVoltage(1);
       }
 
       case OUTTAKE -> {
-        motor.setVoltage(CONFIG.outtakeVoltage());
+        motor.setVoltage(-3);
       }
     }
   }
