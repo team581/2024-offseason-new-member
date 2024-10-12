@@ -37,14 +37,15 @@ public class Robot extends TimedRobot {
   private final ShooterSubsystem shooter = new ShooterSubsystem(hd.bottomShooter, hd.topShooter);
   private final IntakeSubsystem intake = new IntakeSubsystem(hd.intakeMotor);
   private final QueuerSubsystem queuer = new QueuerSubsystem(hd.queuerMotor, hd.sensor);
-  private final RobotManager robotManager = new RobotManager(intake, queuer, shooter, climber);
-  private final RobotCommands actions = new RobotCommands(robotManager);
   private final SwerveSubsystem swerve = new SwerveSubsystem(hd.driverController);
   private final ImuSubsystem imu = new ImuSubsystem(swerve);
   private final FmsSubsystem fms = new FmsSubsystem();
   private final VisionSubsystem vision = new VisionSubsystem(imu);
   private final LocalizationSubsystem localization = new LocalizationSubsystem(swerve, imu, vision);
   private final SnapManager snaps = new SnapManager(swerve, hd.driverController);
+  private final RobotManager robotManager =
+      new RobotManager(intake, queuer, shooter, climber, localization, vision, swerve, snaps, imu);
+  private final RobotCommands actions = new RobotCommands(robotManager);
 
   private Command autonomousCommand;
 
@@ -122,8 +123,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    autonomousCommand = autos.getAutoCommand();
+
     if (autonomousCommand != null) {
-      autonomousCommand.cancel();
+      autonomousCommand.schedule();
     }
   }
 
@@ -179,18 +182,9 @@ public class Robot extends TimedRobot {
         .rightTrigger()
         .onTrue(actions.waitSpeakerCommand())
         .onFalse(actions.idleCommand());
-    hd.operatorController
-        .rightBumper()
-        .onTrue(actions.climbSequenceCommand());
-    hd.operatorController
-        .leftBumper()
-        .onTrue(actions.reverseClimbSequenceCommand());
-    hd.operatorController
-        .povLeft()
-        .onTrue(actions.unjamCommand())
-        .onFalse(actions.idleCommand());
-    hd.operatorController
-        .back()
-        .onTrue(actions.homeClimberCommand());
+    hd.operatorController.rightBumper().onTrue(actions.climbSequenceCommand());
+    hd.operatorController.leftBumper().onTrue(actions.reverseClimbSequenceCommand());
+    hd.operatorController.povLeft().onTrue(actions.unjamCommand()).onFalse(actions.idleCommand());
+    hd.operatorController.back().onTrue(actions.homeClimberCommand());
   }
 }
