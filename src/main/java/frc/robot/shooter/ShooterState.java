@@ -4,7 +4,8 @@ public enum ShooterState {
   STOPPED(0.0),
   IDLE(100.0),
   SUBWOOFER_SHOT(3000.0),
-  FLOOR_SHOT(4800.0);
+  FLOOR_SHOT(4800.0),
+  SHOOTER_OUTTAKE(500.0);
 
   public final double RPM;
 

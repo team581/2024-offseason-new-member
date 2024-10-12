@@ -31,7 +31,7 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
         topMotor.disable();
         bottomMotor.disable();
       }
-      case IDLE, SUBWOOFER_SHOT, FLOOR_SHOT -> {
+      default -> {
         topMotor.setControl(velocityRequest.withVelocity(getState().RPM));
         bottomMotor.setControl(velocityRequest.withVelocity(getState().RPM));
       }
