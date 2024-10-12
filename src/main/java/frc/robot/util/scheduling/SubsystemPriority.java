@@ -2,7 +2,7 @@ package frc.robot.util.scheduling;
 
 public enum SubsystemPriority {
   // 20-29 is for sensor subsystems
-
+  NOTE_TRACKING(41),
   // IMU runs before vision so that it has fresh data to pass to MegaTag2
   IMU(23),
   // Vision runs before localization so that it has fresh vision data for pose estimator

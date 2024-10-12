@@ -4,6 +4,8 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -18,6 +20,8 @@ import frc.robot.util.ControllerHelpers;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class SwerveSubsystem extends StateMachine<SwerveState> {
   /** Max speed allowed to make a speaker shot and feeding. */
@@ -34,6 +38,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   private static final double leftYDeadband = 0.05;
   private final CommandXboxController controller;
   private boolean snapToAngle = false;
+  boolean closedLoop = false;
 
   public static final Translation2d FRONT_LEFT_LOCATION =
       new Translation2d(
@@ -81,6 +86,8 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   private ChassisSpeeds fieldRelativeSpeeds;
   private boolean slowEnoughToFeed;
   private double goalSnapAngle = 0;
+  private final PIDController xPid = new PIDController(3.2, 0, 0);
+  private final PIDController yPid = new PIDController(3.2, 0, 0);
 
   /** The latest requested teleop speeds. */
   private ChassisSpeeds teleopSpeeds = new ChassisSpeeds();
@@ -111,6 +118,10 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     goalSnapAngle = angle;
   }
 
+  public double snapAngle() {
+    return goalSnapAngle;
+  }
+
   public SwerveSubsystem(CommandXboxController controller) {
     super(SubsystemPriority.SWERVE, SwerveState.TELEOP);
     modulePositions = calculateModulePositions();
@@ -137,11 +148,14 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   public void driveTeleop() {
     double leftY =
         -1.0
-            * ControllerHelpers.getExponent(ControllerHelpers.getDeadbanded(controller.getLeftY(), leftYDeadband), 1.5);
+            * ControllerHelpers.getExponent(
+                ControllerHelpers.getDeadbanded(controller.getLeftY(), leftYDeadband), 1.5);
     double leftX =
-        ControllerHelpers.getExponent(ControllerHelpers.getDeadbanded(controller.getLeftX(), leftXDeadband), 1.5);
+        ControllerHelpers.getExponent(
+            ControllerHelpers.getDeadbanded(controller.getLeftX(), leftXDeadband), 1.5);
     double rightX =
-        ControllerHelpers.getExponent(ControllerHelpers.getDeadbanded(controller.getRightX(), rightXDeadband), 2);
+        ControllerHelpers.getExponent(
+            ControllerHelpers.getDeadbanded(controller.getRightX(), rightXDeadband), 2);
 
     if (RobotConfig.get().swerve().invertRotation()) {
       rightX *= -1.0;
@@ -190,6 +204,19 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
         backRight.getPosition(true));
   }
 
+  public void setFieldRelativeSpeeds(ChassisSpeeds speeds, boolean closedLoop) {
+    this.fieldRelativeSpeeds = speeds;
+    this.closedLoop = closedLoop;
+    // Send a swerve request each time new chassis speeds are provided
+    sendSwerveRequest();
+  }
+
+  public void setRobotRelativeSpeeds(ChassisSpeeds speeds, boolean closedLoop) {
+    ChassisSpeeds fieldRelative =
+        ChassisSpeeds.fromRobotRelativeSpeeds(speeds, drivetrain.getState().Pose.getRotation());
+    setFieldRelativeSpeeds(fieldRelative, closedLoop);
+  }
+
   private ChassisSpeeds calculateRobotRelativeSpeeds() {
     return KINEMATICS.toChassisSpeeds(drivetrain.getState().ModuleStates);
   }
@@ -199,7 +226,19 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
         robotRelativeSpeeds, Rotation2d.fromDegrees(drivetrainPigeon.getYaw().getValueAsDouble()));
   }
 
-  private static boolean calculateMovingSlowEnoughForSpeakerShot(ChassisSpeeds speeds) {
+  public boolean movingSlowEnoughForSpeakerShot() {
+    return calculateMovingSlowEnoughForSpeakerShot(getRobotRelativeSpeeds());
+  }
+
+  public boolean movingSlowEnoughForFloorShot() {
+    ChassisSpeeds speeds = getRobotRelativeSpeeds();
+    double linearSpeed =
+        Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2));
+
+    return linearSpeed < MAX_FLOOR_SPEED_SHOOTING;
+  }
+
+  public boolean calculateMovingSlowEnoughForSpeakerShot(ChassisSpeeds speeds) {
     double linearSpeed =
         Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2));
 
@@ -254,5 +293,52 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
                   .withTargetDirection(Rotation2d.fromDegrees(goalSnapAngle))
                   .withDriveRequestType(DriveRequestType.Velocity));
     }
+  }
+
+  private boolean atLocation(Pose2d target, Pose2d current) {
+    // Return true once at location
+    double translationTolerance = 0.1;
+    double omegaTolerance = 5;
+    return Math.abs(current.getX() - target.getX()) <= translationTolerance
+        && Math.abs(current.getY() - target.getY()) <= translationTolerance
+        && Math.abs(current.getRotation().getDegrees() - target.getRotation().getDegrees())
+            <= omegaTolerance;
+  }
+
+  public Command driveToPoseCommand(
+      Supplier<Optional<Pose2d>> targetSupplier, Supplier<Pose2d> currentPose, boolean shouldEnd) {
+    return run(() -> {
+          var maybeTarget = targetSupplier.get();
+
+          if (!maybeTarget.isPresent()) {
+            setFieldRelativeSpeeds(new ChassisSpeeds(), closedLoop);
+            return;
+          }
+          var target = maybeTarget.get();
+
+          var pose = currentPose.get();
+          double vx = xPid.calculate(pose.getX(), target.getX());
+          double vy = yPid.calculate(pose.getY(), target.getY());
+
+          var newSpeeds = new ChassisSpeeds(vx, vy, 0);
+          setFieldRelativeSpeeds(newSpeeds, true);
+        })
+        .until(
+            () -> {
+              if (shouldEnd) {
+                var maybeTarget = targetSupplier.get();
+                if (maybeTarget.isPresent()) {
+                  var target = targetSupplier.get();
+
+                  return atLocation(target.get(), currentPose.get());
+                }
+              }
+
+              return false;
+            })
+        .finallyDo(
+            () -> {
+              snapToAngle = false;
+            });
   }
 }
