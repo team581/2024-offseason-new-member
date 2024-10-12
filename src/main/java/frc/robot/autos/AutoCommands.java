@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.autos;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -11,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.fms.FmsSubsystem;
 import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
-import frc.robot.robot_manager.RobotState;
 
 public class AutoCommands {
   private static final boolean USE_DYNAMIC_AUTOS = true;
@@ -74,8 +69,7 @@ public class AutoCommands {
       return true;
     }
 
-    return robotManager.queuer.hasNote()
-        || robotManager.getState().hasNote;
+    return robotManager.queuer.hasNote() || robotManager.getState().hasNote;
   }
 
   // public Command doManyAutoSteps(List<AutoNoteStep> steps) {
