@@ -33,9 +33,15 @@ public class RobotCommands {
   }
 
   public Command outtakeCommand() {
-    return Commands.runOnce(robot::outtakerequest, requirements)
+    return Commands.runOnce(robot::outtakeRequest, requirements)
         .andThen(robot.waitForState(RobotState.IDLE_NO_GP))
         .withName("OuttakeCommand");
+  }
+
+  public Command outtakeShooterCommand() {
+    return Commands.runOnce(robot::outtakeShooterRequest, requirements)
+        .andThen(robot.waitForState(RobotState.IDLE_NO_GP))
+        .withName("OuttakeShooterCommand");
   }
 
   public Command unjamCommand() {
