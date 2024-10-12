@@ -147,6 +147,7 @@ public class Robot extends TimedRobot {
   private void configureBindings() {
     swerve.setDefaultCommand(swerve.driveTeleopCommand());
 
+    // Driver controller
     hd.driverController.back().onTrue(localization.getZeroCommand());
 
     hd.driverController.y().onTrue(snaps.getCommand(() -> SnapManager.getSourceAngle()));
@@ -167,5 +168,29 @@ public class Robot extends TimedRobot {
         .rightBumper()
         .onTrue(actions.outtakeCommand())
         .onFalse(actions.idleCommand());
+
+    // operator controller
+
+    hd.operatorController
+        .leftTrigger()
+        .onTrue(actions.waitFloorCommand())
+        .onFalse(actions.idleCommand());
+    hd.operatorController
+        .rightTrigger()
+        .onTrue(actions.waitSpeakerCommand())
+        .onFalse(actions.idleCommand());
+    hd.operatorController
+        .rightBumper()
+        .onTrue(actions.climbSequenceCommand());
+    hd.operatorController
+        .leftBumper()
+        .onTrue(actions.reverseClimbSequenceCommand());
+    hd.operatorController
+        .povLeft()
+        .onTrue(actions.unjamCommand())
+        .onFalse(actions.idleCommand());
+    hd.operatorController
+        .back()
+        .onTrue(actions.homeClimberCommand());
   }
 }
