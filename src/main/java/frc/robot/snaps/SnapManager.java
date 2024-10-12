@@ -60,7 +60,7 @@ public class SnapManager extends LifecycleSubsystem {
     this.enabled = value;
 
     if (!value) {
-      swerve.disableSnapToAngle();
+      swerve.disableSnaps();
     }
   }
 

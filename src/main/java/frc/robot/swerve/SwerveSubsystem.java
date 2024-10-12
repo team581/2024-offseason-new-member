@@ -1,44 +1,39 @@
 package frc.robot.swerve;
 
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import dev.doglog.DogLog;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.config.RobotConfig;
 import frc.robot.fms.FmsSubsystem;
-import frc.robot.generated.CompBotTunerConstants;
-import frc.robot.generated.PracticeBotTunerConstants;
 import frc.robot.util.ControllerHelpers;
-import frc.robot.util.scheduling.LifecycleSubsystem;
 import frc.robot.util.scheduling.SubsystemPriority;
+import frc.robot.util.state_machines.StateMachine;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
-public class SwerveSubsystem extends LifecycleSubsystem {
+public class SwerveSubsystem extends StateMachine<SwerveState> {
+  /** Max speed allowed to make a speaker shot and feeding. */
   private static final double MAX_SPEED_SHOOTING = Units.feetToMeters(0.5);
-  private static final double MAX_FLOOR_SPEED_SHOOTING = Units.feetToMeters(0.5);
+
+  private static final double MAX_FLOOR_SPEED_SHOOTING = Units.feetToMeters(18);
+
   public static final double MaxSpeed = 4.75;
   private static final double MaxAngularRate = Units.rotationsToRadians(4);
   private static final Rotation2d TELEOP_MAX_ANGULAR_RATE = Rotation2d.fromRotations(2);
-  private boolean isShooting = false;
 
-  private double leftXDeadband = 0.05;
-  private double rightXDeadband = 0.05;
-  private double leftYDeadband = 0.05;
+  private static final double leftXDeadband = 0.05;
+  private static final double rightXDeadband = 0.05;
+  private static final double leftYDeadband = 0.05;
+  private final CommandXboxController controller;
+  private boolean snapToAngle = false;
 
   public static final Translation2d FRONT_LEFT_LOCATION =
       new Translation2d(
@@ -59,17 +54,7 @@ public class SwerveSubsystem extends LifecycleSubsystem {
       };
   public static final SwerveDriveKinematics KINEMATICS =
       new SwerveDriveKinematics(MODULE_LOCATIONS);
-  private final double TimeConstant = 0.2;
-  private final double AccelerationLimit = 3.2;
-  private Translation2d previousVelocity = new Translation2d();
 
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private boolean snapToAngle = false;
-  private double goalSnapAngle = 0;
-  private final CommandXboxController controller;
-
-  // My drivetrain
   private final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain();
 
   public final Pigeon2 drivetrainPigeon = drivetrain.getPigeon2();
@@ -89,45 +74,115 @@ public class SwerveSubsystem extends LifecycleSubsystem {
   private final SwerveModule frontRight = drivetrain.getModule(1);
   private final SwerveModule backLeft = drivetrain.getModule(2);
   private final SwerveModule backRight = drivetrain.getModule(3);
-  private ChassisSpeeds fieldRelativeSpeeds = new ChassisSpeeds();
-  private boolean closedLoop = false;
 
-  private final PIDController xPid = new PIDController(3.2, 0, 0);
-  private final PIDController yPid = new PIDController(3.2, 0, 0);
-  private final PIDController omegaPid = new PIDController(1.0, 0, 0);
+  private boolean slowEnoughToShoot = false;
+  private List<SwerveModulePosition> modulePositions;
+  private ChassisSpeeds robotRelativeSpeeds;
+  private ChassisSpeeds fieldRelativeSpeeds;
+  private boolean slowEnoughToFeed;
+  private double goalSnapAngle = 0;
 
-  public SwerveSubsystem(CommandXboxController driveController) {
-    super(SubsystemPriority.SWERVE);
-    this.controller = driveController;
+  /** The latest requested teleop speeds. */
+  private ChassisSpeeds teleopSpeeds = new ChassisSpeeds();
 
-    if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
-    }
+  private ChassisSpeeds autoSpeeds = new ChassisSpeeds();
 
-    driveToAngle.HeadingController = RobotConfig.get().swerve().snapController();
-    driveToAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-    driveToAngle.HeadingController.setTolerance(0.02);
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return robotRelativeSpeeds;
+  }
 
-    omegaPid.enableContinuousInput(-Math.PI, Math.PI);
+  public ChassisSpeeds getFieldRelativeSpeeds() {
+    return fieldRelativeSpeeds;
+  }
 
-    // The CTR SwerveModule class will overwrite your torque current limits and the stator current
-    // limit with the configured slip current. This logic allows us to exercise more precise control
-    // over what current limits are used for each control mode.
-    var usedSwerveConstants =
-        RobotConfig.IS_PRACTICE_BOT
-            ? PracticeBotTunerConstants.ConstantCreator
-            : CompBotTunerConstants.ConstantCreator;
+  public boolean isSlowEnoughToShoot() {
+    return slowEnoughToShoot;
+  }
 
-    for (int i = 0; i < 4; i++) {
-      var module = drivetrain.getModule(i);
-      var driveMotorConfigurator = module.getDriveMotor().getConfigurator();
-
-      driveMotorConfigurator.apply(RobotConfig.get().swerve().driveMotorCurrentLimits());
-      driveMotorConfigurator.apply(RobotConfig.get().swerve().driveMotorTorqueCurrentLimits());
-    }
+  public boolean isSlowEnoughToFeed() {
+    return slowEnoughToFeed;
   }
 
   public List<SwerveModulePosition> getModulePositions() {
+    return modulePositions;
+  }
+
+  public void setSnapToAngle(double angle) {
+    goalSnapAngle = angle;
+  }
+
+  public SwerveSubsystem(CommandXboxController controller) {
+    super(SubsystemPriority.SWERVE, SwerveState.TELEOP);
+    modulePositions = calculateModulePositions();
+    this.controller = controller;
+  }
+
+  public void setFieldRelativeAutoSpeeds(ChassisSpeeds speeds) {
+    autoSpeeds = speeds;
+    sendSwerveRequest();
+  }
+
+  public void disableSnaps() {
+    snapToAngle = false;
+  }
+
+  public void enableSnaps() {
+    snapToAngle = true;
+  }
+
+  public boolean snapToAngleEnabled() {
+    return snapToAngle;
+  }
+
+  public void driveTeleop() {
+    double leftY =
+        -1.0
+            * ControllerHelpers.getExponent(ControllerHelpers.getDeadbanded(controller.getLeftY(), leftYDeadband), 1.5);
+    double leftX =
+        ControllerHelpers.getExponent(ControllerHelpers.getDeadbanded(controller.getLeftX(), leftXDeadband), 1.5);
+    double rightX =
+        ControllerHelpers.getExponent(ControllerHelpers.getDeadbanded(controller.getRightX(), rightXDeadband), 2);
+
+    if (RobotConfig.get().swerve().invertRotation()) {
+      rightX *= -1.0;
+    }
+
+    if (RobotConfig.get().swerve().invertX()) {
+      leftX *= -1.0;
+    }
+
+    if (RobotConfig.get().swerve().invertY()) {
+      leftY *= -1.0;
+    }
+
+    if (FmsSubsystem.isRedAlliance()) {
+      leftX *= -1.0;
+      leftY *= -1.0;
+    }
+
+    teleopSpeeds =
+        new ChassisSpeeds(
+            -1.0 * leftY * MaxSpeed,
+            leftX * MaxSpeed,
+            rightX * TELEOP_MAX_ANGULAR_RATE.getRadians());
+
+    sendSwerveRequest();
+  }
+
+  public Command driveTeleopCommand() {
+    return run(() -> driveTeleop()).withName("DriveTeleopCommand");
+  }
+
+  @Override
+  protected void collectInputs() {
+    modulePositions = calculateModulePositions();
+    robotRelativeSpeeds = calculateRobotRelativeSpeeds();
+    fieldRelativeSpeeds = calculateFieldRelativeSpeeds();
+    slowEnoughToShoot = calculateMovingSlowEnoughForSpeakerShot(robotRelativeSpeeds);
+    slowEnoughToFeed = calculateMovingSlowEnoughForFloorShot(robotRelativeSpeeds);
+  }
+
+  private List<SwerveModulePosition> calculateModulePositions() {
     return List.of(
         frontLeft.getPosition(true),
         frontRight.getPosition(true),
@@ -135,246 +190,69 @@ public class SwerveSubsystem extends LifecycleSubsystem {
         backRight.getPosition(true));
   }
 
-  public void setSnapToAngle(double angle) {
-    goalSnapAngle = angle;
-    snapToAngle = true;
-  }
-
-  public void disableSnapToAngle() {
-    snapToAngle = false;
-  }
-
-  public void setFieldRelativeSpeeds(ChassisSpeeds speeds, boolean closedLoop) {
-    this.fieldRelativeSpeeds = speeds;
-    this.closedLoop = closedLoop;
-    // Send a swerve request each time new chassis speeds are provided
-    sendSwerveRequest();
-  }
-
-  public void setRobotRelativeSpeeds(ChassisSpeeds speeds, boolean closedLoop) {
-    ChassisSpeeds fieldRelative =
-        ChassisSpeeds.fromRobotRelativeSpeeds(speeds, drivetrain.getState().Pose.getRotation());
-    setFieldRelativeSpeeds(fieldRelative, closedLoop);
-  }
-
-  public Command driveTeleopCommand() {
-    return run(() -> {
-          if (!DriverStation.isTeleop()) {
-            return;
-          }
-          double leftY =
-              -1.0
-                  * ControllerHelpers.getExponent(
-                      ControllerHelpers.getDeadbanded(controller.getLeftY(), leftYDeadband), 1.5);
-          double leftX =
-              ControllerHelpers.getExponent(
-                  ControllerHelpers.getDeadbanded(controller.getLeftX(), leftXDeadband), 1.5);
-          double rightX =
-              ControllerHelpers.getExponent(
-                  ControllerHelpers.getDeadbanded(controller.getRightX(), rightXDeadband), 2);
-
-          if (RobotConfig.get().swerve().invertRotation()) {
-            rightX *= -1.0;
-          }
-
-          if (RobotConfig.get().swerve().invertX()) {
-            leftX *= -1.0;
-          }
-
-          if (RobotConfig.get().swerve().invertY()) {
-            leftY *= -1.0;
-          }
-
-          if (FmsSubsystem.isRedAlliance()) {
-            leftX *= -1.0;
-            leftY *= -1.0;
-          }
-
-          ChassisSpeeds teleopSpeeds =
-              new ChassisSpeeds(
-                  -1.0 * leftY * MaxSpeed,
-                  leftX * MaxSpeed,
-                  rightX * TELEOP_MAX_ANGULAR_RATE.getRadians());
-
-          DogLog.log("Swerve/RawTeleopSpeeds", teleopSpeeds);
-
-          double currentSpeed =
-              Math.sqrt(
-                  Math.pow(teleopSpeeds.vxMetersPerSecond, 2)
-                      + Math.pow(teleopSpeeds.vyMetersPerSecond, 2));
-          DogLog.log("Swerve/CurrentSpeed", currentSpeed);
-          var scaled = teleopSpeeds.div(currentSpeed / MAX_SPEED_SHOOTING);
-          DogLog.log("Swerve/ScaledSpeeds", scaled);
-          if (isShooting) {
-            if (currentSpeed > MAX_SPEED_SHOOTING) {
-              teleopSpeeds =
-                  new ChassisSpeeds(
-                      scaled.vxMetersPerSecond,
-                      scaled.vyMetersPerSecond,
-                      teleopSpeeds.omegaRadiansPerSecond);
-            }
-          }
-
-          DogLog.log("Swerve/UsedTeleopSpeeds", teleopSpeeds);
-
-          setFieldRelativeSpeeds(teleopSpeeds, false);
-        })
-        .withName("DriveTeleopCommand");
-  }
-
-  private ChassisSpeeds accelerationLimitChassisSpeeds(ChassisSpeeds speeds) {
-
-    Translation2d velocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
-    double maxVelocitychange = AccelerationLimit * TimeConstant;
-
-    Translation2d velocityChange = (velocity.minus(previousVelocity));
-    double velocityChangeAngle =
-        Math.atan2(velocityChange.getY(), velocityChange.getX()); // Radians
-    Translation2d limitedVelocityVectorChange = velocityChange;
-    Translation2d limitedVelocityVector = velocity;
-
-    double acceleration = velocity.getNorm() - previousVelocity.getNorm();
-    DogLog.log("Swerve/Acceleration", acceleration);
-
-    if (velocityChange.getNorm() > maxVelocitychange && acceleration > 0) {
-      limitedVelocityVectorChange =
-          new Translation2d(maxVelocitychange, new Rotation2d(velocityChangeAngle));
-      limitedVelocityVector = previousVelocity.plus(limitedVelocityVectorChange);
-    }
-
-    previousVelocity = limitedVelocityVector;
-
-    return new ChassisSpeeds(
-        limitedVelocityVector.getX(), limitedVelocityVector.getY(), speeds.omegaRadiansPerSecond);
-  }
-
-  public void setShootingMode(boolean value) {
-    isShooting = value;
-  }
-
-  public ChassisSpeeds getRobotRelativeSpeeds() {
+  private ChassisSpeeds calculateRobotRelativeSpeeds() {
     return KINEMATICS.toChassisSpeeds(drivetrain.getState().ModuleStates);
   }
 
-  public ChassisSpeeds getFieldRelativeSpeeds() {
+  private ChassisSpeeds calculateFieldRelativeSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(
-        getRobotRelativeSpeeds(),
-        Rotation2d.fromDegrees(drivetrainPigeon.getYaw().getValueAsDouble()));
+        robotRelativeSpeeds, Rotation2d.fromDegrees(drivetrainPigeon.getYaw().getValueAsDouble()));
   }
 
-  @Override
-  public void robotPeriodic() {
-    DogLog.log("Swerve/SnapToAngle", snapToAngle);
-    DogLog.log("Swerve/SnapToAngleGoal", goalSnapAngle);
-    DogLog.log("Swerve/Pose", drivetrain.getState().Pose);
-    DogLog.log("Swerve/ModuleStates", drivetrain.getState().ModuleStates);
-    DogLog.log("Swerve/ModuleTargets", drivetrain.getState().ModuleTargets);
-
-    DogLog.log("Swerve/RobotSpeed", getRobotRelativeSpeeds());
-
-    // Send a swerve request at least once every loop
-    sendSwerveRequest();
-  }
-
-  private void sendSwerveRequest() {
-    DriveRequestType driveType;
-
-    if (closedLoop) {
-      driveType = DriveRequestType.Velocity;
-    } else {
-      driveType = DriveRequestType.OpenLoopVoltage;
-    }
-
-    var limitedSpeeds = accelerationLimitChassisSpeeds(fieldRelativeSpeeds);
-
-    if (snapToAngle) {
-      drivetrain.setControl(
-          driveToAngle
-              .withVelocityX(limitedSpeeds.vxMetersPerSecond)
-              .withVelocityY(limitedSpeeds.vyMetersPerSecond)
-              .withTargetDirection(Rotation2d.fromDegrees(goalSnapAngle))
-              .withDriveRequestType(driveType));
-    } else {
-      drivetrain.setControl(
-          drive
-              .withVelocityX(limitedSpeeds.vxMetersPerSecond)
-              .withVelocityY(limitedSpeeds.vyMetersPerSecond)
-              .withRotationalRate(limitedSpeeds.omegaRadiansPerSecond)
-              .withDriveRequestType(driveType));
-    }
-  }
-
-  public boolean snapsEnabled() {
-    return snapToAngle;
-  }
-
-  public double snapAngle() {
-    return goalSnapAngle;
-  }
-
-  public boolean movingSlowEnoughForSpeakerShot() {
-    return movingSlowEnoughForSpeakerShot(getRobotRelativeSpeeds());
-  }
-
-  public boolean movingSlowEnoughForFloorShot() {
-    ChassisSpeeds speeds = getRobotRelativeSpeeds();
-    double linearSpeed =
-        Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2));
-
-    return linearSpeed < MAX_FLOOR_SPEED_SHOOTING;
-  }
-
-  public boolean movingSlowEnoughForSpeakerShot(ChassisSpeeds speeds) {
+  private static boolean calculateMovingSlowEnoughForSpeakerShot(ChassisSpeeds speeds) {
     double linearSpeed =
         Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2));
 
     return linearSpeed < MAX_SPEED_SHOOTING;
   }
 
-  private boolean atLocation(Pose2d target, Pose2d current) {
-    // Return true once at location
-    double translationTolerance = 0.1;
-    double omegaTolerance = 5;
-    return Math.abs(current.getX() - target.getX()) <= translationTolerance
-        && Math.abs(current.getY() - target.getY()) <= translationTolerance
-        && Math.abs(current.getRotation().getDegrees() - target.getRotation().getDegrees())
-            <= omegaTolerance;
+  private boolean calculateMovingSlowEnoughForFloorShot(ChassisSpeeds speeds) {
+    double linearSpeed =
+        Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2));
+
+    return linearSpeed < MAX_FLOOR_SPEED_SHOOTING;
   }
 
-  public Command driveToPoseCommand(
-      Supplier<Optional<Pose2d>> targetSupplier, Supplier<Pose2d> currentPose, boolean shouldEnd) {
-    return run(() -> {
-          var maybeTarget = targetSupplier.get();
-
-          if (!maybeTarget.isPresent()) {
-            setFieldRelativeSpeeds(new ChassisSpeeds(), closedLoop);
-            return;
-          }
-          var target = maybeTarget.get();
-
-          var pose = currentPose.get();
-          double vx = xPid.calculate(pose.getX(), target.getX());
-          double vy = yPid.calculate(pose.getY(), target.getY());
-
-          var newSpeeds = new ChassisSpeeds(vx, vy, 0);
-          setFieldRelativeSpeeds(newSpeeds, true);
-        })
-        .until(
-            () -> {
-              if (shouldEnd) {
-                var maybeTarget = targetSupplier.get();
-                if (maybeTarget.isPresent()) {
-                  var target = targetSupplier.get();
-
-                  return atLocation(target.get(), currentPose.get());
-                }
-              }
-
-              return false;
-            })
-        .finallyDo(
-            () -> {
-              snapToAngle = false;
-            });
+  private void sendSwerveRequest() {
+    switch (getState()) {
+      case TELEOP ->
+          drivetrain.setControl(
+              drive
+                  .withVelocityX(teleopSpeeds.vxMetersPerSecond)
+                  .withVelocityY(teleopSpeeds.vyMetersPerSecond)
+                  .withRotationalRate(teleopSpeeds.omegaRadiansPerSecond)
+                  .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
+      case TELEOP_SNAPS -> {
+        if (snapToAngle) {
+          drivetrain.setControl(
+              driveToAngle
+                  .withVelocityX(teleopSpeeds.vxMetersPerSecond)
+                  .withVelocityY(teleopSpeeds.vyMetersPerSecond)
+                  .withTargetDirection(Rotation2d.fromDegrees(goalSnapAngle))
+                  .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
+        } else {
+          drivetrain.setControl(
+              drive
+                  .withVelocityX(teleopSpeeds.vxMetersPerSecond)
+                  .withVelocityY(teleopSpeeds.vyMetersPerSecond)
+                  .withRotationalRate(teleopSpeeds.omegaRadiansPerSecond)
+                  .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
+        }
+      }
+      case AUTO ->
+          drivetrain.setControl(
+              drive
+                  .withVelocityX(autoSpeeds.vxMetersPerSecond)
+                  .withVelocityY(autoSpeeds.vyMetersPerSecond)
+                  .withRotationalRate(autoSpeeds.omegaRadiansPerSecond)
+                  .withDriveRequestType(DriveRequestType.Velocity));
+      case AUTO_SNAPS ->
+          drivetrain.setControl(
+              driveToAngle
+                  .withVelocityX(autoSpeeds.vxMetersPerSecond)
+                  .withVelocityY(autoSpeeds.vyMetersPerSecond)
+                  .withTargetDirection(Rotation2d.fromDegrees(goalSnapAngle))
+                  .withDriveRequestType(DriveRequestType.Velocity));
+    }
   }
 }

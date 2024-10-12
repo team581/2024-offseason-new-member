@@ -9,9 +9,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.config.RobotConfig;
-import frc.robot.generated.CompBotTunerConstants;
-import frc.robot.generated.PracticeBotTunerConstants;
+import frc.robot.generated.TunerConstants;
 import java.util.function.Supplier;
 
 /**
@@ -19,26 +17,12 @@ import java.util.function.Supplier;
  * in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
-  public static final SwerveModuleConstants BackRight =
-      RobotConfig.IS_PRACTICE_BOT
-          ? PracticeBotTunerConstants.BackRight
-          : CompBotTunerConstants.BackRight;
-  public static final SwerveModuleConstants BackLeft =
-      RobotConfig.IS_PRACTICE_BOT
-          ? PracticeBotTunerConstants.BackLeft
-          : CompBotTunerConstants.BackLeft;
-  public static final SwerveModuleConstants FrontRight =
-      RobotConfig.IS_PRACTICE_BOT
-          ? PracticeBotTunerConstants.FrontRight
-          : CompBotTunerConstants.FrontRight;
-  public static final SwerveModuleConstants FrontLeft =
-      RobotConfig.IS_PRACTICE_BOT
-          ? PracticeBotTunerConstants.FrontLeft
-          : CompBotTunerConstants.FrontLeft;
+  public static final SwerveModuleConstants BackRight = TunerConstants.BackRight;
+  public static final SwerveModuleConstants BackLeft = TunerConstants.BackLeft;
+  public static final SwerveModuleConstants FrontRight = TunerConstants.FrontRight;
+  public static final SwerveModuleConstants FrontLeft = TunerConstants.FrontLeft;
   public static final SwerveDrivetrainConstants DrivetrainConstants =
-      RobotConfig.IS_PRACTICE_BOT
-          ? PracticeBotTunerConstants.DrivetrainConstants
-          : CompBotTunerConstants.DrivetrainConstants;
+      TunerConstants.DrivetrainConstants;
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
