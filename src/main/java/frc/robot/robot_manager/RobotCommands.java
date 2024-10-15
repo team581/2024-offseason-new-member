@@ -100,4 +100,9 @@ public class RobotCommands {
   public Command homeClimberCommand() {
     return Commands.runOnce(robot::homeClimberRequest, requirements).withName("HomeClimberCommand");
   }
+
+
+  public Command preloadNoteCommand() {
+    return Commands.runOnce(robot::preloadNoteRequest, requirements).withName("preloadNoteCommand");
+  }
 }

@@ -80,16 +80,7 @@ public class Autos extends LifecycleSubsystem {
         swerve);
 
     registerCommand("preloadNote", actions.preloadNoteCommand());
-    registerCommand("speakerShotNoTimeout", actions.speakerShotCommand());
     registerCommand("speakerSnap", autoCommands.speakerSnapCommand());
-    registerCommand("preparePresetRightShot", actions.preparePresetRightShotCommand());
-    registerCommand("presetRightShot", actions.presetRightShotCommand());
-    registerCommand("preparePresetLeftShot", actions.preparePresetLeftShotCommand());
-    registerCommand("presetLeftShot", actions.presetLeftShotCommand());
-    registerCommand("preparePresetMiddleShot", actions.preparePresetMiddleShotCommand());
-    registerCommand("presetMiddleShot", actions.presetMiddleShotCommand());
-    registerCommand("preparePreset3Shot", actions.preparePreset3ShotCommand());
-    registerCommand("preset3Shot", actions.preset3ShotCommand());
     registerCommand("speakerShot", autoCommands.speakerShotWithTimeout());
     registerCommand("forceSpeakerShot", actions.speakerShotCommand());
     registerCommand("subwooferShot", autoCommands.subwooferShotWithTimeout());

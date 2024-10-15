@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.autos.Autos;
 import frc.robot.climber.ClimberSubsystem;
 import frc.robot.config.RobotConfig;
 import frc.robot.controller.RumbleControllerSubsystem;
@@ -46,6 +47,7 @@ public class Robot extends TimedRobot {
   private final RobotManager robotManager =
       new RobotManager(intake, queuer, shooter, climber, localization, vision, swerve, snaps, imu);
   private final RobotCommands actions = new RobotCommands(robotManager);
+  private final Autos autos = new Autos(swerve, localization, actions, robotManager);
 
   private Command autonomousCommand;
 

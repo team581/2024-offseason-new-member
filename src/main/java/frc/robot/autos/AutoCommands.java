@@ -42,20 +42,6 @@ public class AutoCommands {
         .withName("SubwooferShotWithTimeout");
   }
 
-  public Command presetLeftShot() {
-    return actions
-        .presetLeftShotCommand()
-        .andThen(actions.speakerShotCommand().withTimeout(1))
-        .withName("PresetLeftShot");
-  }
-
-  public Command presetMiddleShot() {
-    return actions
-        .presetMiddleShotCommand()
-        .andThen(actions.speakerShotCommand().withTimeout(1))
-        .withName("PresetMiddleShot");
-  }
-
   public Command speakerShotWithTimeout() {
     return actions
         .speakerShotCommand()
