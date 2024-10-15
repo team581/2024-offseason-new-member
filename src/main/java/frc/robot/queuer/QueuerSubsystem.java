@@ -24,13 +24,10 @@ public class QueuerSubsystem extends StateMachine<QueuerState> {
   protected void afterTransition(QueuerState newstate) {
     switch (newstate) {
       case IDLE -> {
-        motor.setVoltage(0);
+        motor.disable();
       }
-      case TO_INTAKE -> {
-        motor.setVoltage(-1);
-      }
-      case TO_SHOOTER -> {
-        motor.setVoltage(12);
+      default -> {
+        motor.setVoltage(getState().volts);
       }
     }
   }

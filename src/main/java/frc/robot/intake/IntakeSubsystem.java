@@ -24,13 +24,8 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
       case IDLE -> {
         motor.disable();
       }
-
-      case INTAKE -> {
-        motor.setVoltage(3);
-      }
-
-      case OUTTAKE -> {
-        motor.setVoltage(-3);
+      default -> {
+        motor.setVoltage(getState().volts);
       }
     }
   }
