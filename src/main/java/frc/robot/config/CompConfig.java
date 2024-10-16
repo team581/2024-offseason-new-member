@@ -104,12 +104,7 @@ class CompConfig {
                       new MotorOutputConfigs()
                           .withInverted(InvertedValue.Clockwise_Positive)
                           .withNeutralMode(NeutralModeValue.Brake))),
-          new IMUConfig(
-              0,
-              distanceToAngleTolerance -> {
-                distanceToAngleTolerance.put(1.0, 2.5);
-                distanceToAngleTolerance.put(1.0, 2.5);
-              }),
+          new IMUConfig(0),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
               new PhoenixPIDController(20, 0, 2),

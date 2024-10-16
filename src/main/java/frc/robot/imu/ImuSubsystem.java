@@ -27,8 +27,6 @@ public class ImuSubsystem extends LifecycleSubsystem {
 
     this.imu = swerve.drivetrainPigeon;
 
-    RobotConfig.get().imu().distanceToAngleTolerance().accept(distanceToAngleTolerance);
-
     Pigeon2Configuration config =
         new Pigeon2Configuration()
             .withMountPose(
