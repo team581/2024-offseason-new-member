@@ -17,6 +17,10 @@ public enum RobotState {
   PREPARE_FLOOR_SHOT(true),
   FLOOR_SHOT(true),
 
+  WAITING_SPEAKER_SHOT(true),
+  PREPARE_SPEAKER_SHOT(true),
+  SPEAKER_SHOT(true),
+
   UNJAM,
 
   WAITING_CLIMB,

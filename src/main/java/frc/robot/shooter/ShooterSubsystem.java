@@ -15,13 +15,12 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
   private ShooterConfig CONFIG = RobotConfig.get().shooter();
   private final double tolerance = CONFIG.tolerance();
   private final VelocityTorqueCurrentFOC velocityRequest =
-  new VelocityTorqueCurrentFOC(0).withSlot(0).withLimitReverseMotion(true);
+      new VelocityTorqueCurrentFOC(0).withSlot(0).withLimitReverseMotion(true);
   private double goalRPMBottom = 0.0;
   private double goalRPMTop = 0.0;
   private final InterpolatingDoubleTreeMap distanceToRPMTop = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap distanceToRPMBottom = new InterpolatingDoubleTreeMap();
   private double speakerDistance = 0.0;
-
 
   public ShooterSubsystem(TalonFX bottomMotor, TalonFX topMotor) {
     super(SubsystemPriority.SHOOTER, ShooterState.IDLE);

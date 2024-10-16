@@ -12,7 +12,10 @@ public class RobotCommands {
 
   private Set<RobotState> idleStates = Set.of(RobotState.IDLE_W_GP, RobotState.IDLE_NO_GP);
   private Set<RobotState> prepareStates =
-      Set.of(RobotState.PREPARE_FLOOR_SHOT, RobotState.PREPARE_SUBWOOFER_SHOT);
+      Set.of(
+          RobotState.PREPARE_FLOOR_SHOT,
+          RobotState.PREPARE_SUBWOOFER_SHOT,
+          RobotState.PREPARE_SPEAKER_SHOT);
 
   public RobotCommands(RobotManager robot) {
     this.robot = robot;
@@ -50,6 +53,11 @@ public class RobotCommands {
         .withName("UnjamCommand");
   }
 
+  public Command waitSubwooferCommand() {
+    return Commands.runOnce(robot::waitSubwooferShotRequest, requirements)
+        .withName("WaitingSubwooferCommand");
+  }
+
   public Command waitSpeakerCommand() {
     return Commands.runOnce(robot::waitSpeakerShotRequest, requirements)
         .withName("WaitingSpeakerCommand");
@@ -67,9 +75,11 @@ public class RobotCommands {
   }
 
   public Command speakerShotCommand() {
-    return Commands.runOnce(robot::speakerShotRequest, requirements)
-        .andThen(robot.waitForStates(prepareStates))
-        .withName("SpeakerShotCommand");
+    return Commands.runOnce(robot::speakerShotRequest, requirements).withName("SpeakerShotCommand");
+  }
+
+  public Command subwooferShotCommand() {
+    return Commands.runOnce(robot::subwooferShotRequest, requirements).withName("SubwooferShotCommand");
   }
 
   public Command climbSequenceCommand() {
@@ -100,7 +110,6 @@ public class RobotCommands {
   public Command homeClimberCommand() {
     return Commands.runOnce(robot::homeClimberRequest, requirements).withName("HomeClimberCommand");
   }
-
 
   public Command preloadNoteCommand() {
     return Commands.runOnce(robot::preloadNoteRequest, requirements).withName("preloadNoteCommand");

@@ -73,7 +73,12 @@ public class RobotManager extends StateMachine<RobotState> {
         swerveSlowEnough = swerve.movingSlowEnoughForFloorShot();
         angularVelocitySlowEnough = Math.abs(imu.getRobotAngularVelocity()) < 360.0;
       }
-      case PREPARE_SUBWOOFER_SHOT, WAITING_SUBWOOFER_SHOT, SUBWOOFER_SHOT -> {
+      case PREPARE_SUBWOOFER_SHOT,
+          WAITING_SUBWOOFER_SHOT,
+          SUBWOOFER_SHOT,
+          PREPARE_SPEAKER_SHOT,
+          WAITING_SPEAKER_SHOT,
+          SPEAKER_SHOT -> {
         robotHeadingAtGoal =
             imu.atAngleForSpeaker(speakerDistanceAngle.targetAngle(), speakerDistance);
         angularVelocitySlowEnough = imu.belowVelocityForVision(speakerDistance);
@@ -92,6 +97,8 @@ public class RobotManager extends StateMachine<RobotState> {
     } else {
       limelightWorking = vision.getState() == VisionState.SEES_TAGS;
     }
+
+    shooter.setSpeakerDistance(speakerDistance);
   }
 
   @Override
@@ -105,6 +112,7 @@ public class RobotManager extends StateMachine<RobotState> {
     return switch (currentState) {
       case WAITING_SUBWOOFER_SHOT,
               WAITING_FLOOR_SHOT,
+              WAITING_SPEAKER_SHOT,
               IDLE_NO_GP,
               IDLE_W_GP,
               WAITING_CLIMB,
@@ -112,7 +120,7 @@ public class RobotManager extends StateMachine<RobotState> {
               UNJAM,
               WAITING_SHOOTER_OUTTAKE ->
           currentState;
-      case SUBWOOFER_SHOT, FLOOR_SHOT, OUTTAKING, SHOOTER_OUTTAKE ->
+      case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, OUTTAKING, SHOOTER_OUTTAKE ->
           queuer.hasNote() ? currentState : RobotState.IDLE_NO_GP;
       case CLIMBING -> climber.atGoal() ? RobotState.CLIMBED : currentState;
 
@@ -123,6 +131,15 @@ public class RobotManager extends StateMachine<RobotState> {
                   && robotHeadingAtGoal
                   && limelightWorking
               ? RobotState.SUBWOOFER_SHOT
+              : currentState;
+
+      case PREPARE_SPEAKER_SHOT ->
+          shooter.atGoal(ShooterState.SPEAKER_SHOT)
+                  && swerveSlowEnough
+                  && angularVelocitySlowEnough
+                  && robotHeadingAtGoal
+                  && limelightWorking
+              ? RobotState.SPEAKER_SHOT
               : currentState;
 
       case PREPARE_FLOOR_SHOT ->
@@ -188,6 +205,15 @@ public class RobotManager extends StateMachine<RobotState> {
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
       }
+      case PREPARE_SPEAKER_SHOT, WAITING_SPEAKER_SHOT -> {
+        shooter.setState(ShooterState.SPEAKER_SHOT);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+        snaps.setAngle(speakerDistanceAngle.targetAngle());
+        snaps.setEnabled(true);
+        snaps.cancelCurrentCommand();
+      }
       case PREPARE_FLOOR_SHOT, WAITING_FLOOR_SHOT -> {
         shooter.setState(ShooterState.FLOOR_SHOT);
         intake.setState(IntakeState.IDLE);
@@ -203,6 +229,15 @@ public class RobotManager extends StateMachine<RobotState> {
         queuer.setState(QueuerState.TO_SHOOTER);
         climber.setRaised(false);
         snaps.setAngle(floorDistanceAngle.targetAngle());
+        snaps.setEnabled(true);
+        snaps.cancelCurrentCommand();
+      }
+      case SPEAKER_SHOT -> {
+        shooter.setState(ShooterState.SPEAKER_SHOT);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.TO_SHOOTER);
+        climber.setRaised(false);
+        snaps.setAngle(speakerDistanceAngle.targetAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
       }
@@ -242,11 +277,11 @@ public class RobotManager extends StateMachine<RobotState> {
     }
   }
 
-  public void speakerShotRequest() {
+  public void subwooferShotRequest() {
     setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
   }
 
-  public void waitSpeakerShotRequest() {
+  public void waitSubwooferShotRequest() {
     setStateFromRequest(RobotState.WAITING_SUBWOOFER_SHOT);
   }
 
@@ -258,14 +293,29 @@ public class RobotManager extends StateMachine<RobotState> {
     setStateFromRequest(RobotState.WAITING_FLOOR_SHOT);
   }
 
+  public void speakerShotRequest() {
+    setStateFromRequest(RobotState.SPEAKER_SHOT);
+  }
+
+  public void waitSpeakerShotRequest() {
+    setStateFromRequest(RobotState.WAITING_SPEAKER_SHOT);
+  }
+
   public void confirmShotRequest() {
     switch (getState()) {
       case CLIMBED, CLIMBING, WAITING_CLIMB -> {}
 
       case WAITING_SUBWOOFER_SHOT -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
       case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
+      case WAITING_SPEAKER_SHOT -> setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
 
-      default -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
+      default -> {
+        if (limelightWorking) {
+          setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
+        } else {
+          setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
+        }
+      }
     }
   }
 
