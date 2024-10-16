@@ -96,20 +96,7 @@ class CompConfig {
               0.0,
               0.0,
               0.0,
-              0,
-              new TalonFXConfiguration()
-                  .withSlot0(new Slot0Configs().withKP(7.0))
-                  .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1.0))
-                  .withCurrentLimits(
-                      new CurrentLimitsConfigs()
-                          .withSupplyCurrentLimit(80)
-                          .withSupplyCurrentLimitEnable(true))
-                  .withClosedLoopRamps(CLOSED_LOOP_RAMP)
-                  .withOpenLoopRamps(OPEN_LOOP_RAMP)
-                  .withMotorOutput(
-                      new MotorOutputConfigs()
-                          .withInverted(InvertedValue.Clockwise_Positive)
-                          .withNeutralMode(NeutralModeValue.Brake))),
+              0),
           new IMUConfig(0),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),

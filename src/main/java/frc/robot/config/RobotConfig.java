@@ -38,8 +38,7 @@ public record RobotConfig(
       double maxHeight,
       double homingVoltage,
       double homingCurrentThreshold,
-      int currentTaps,
-      TalonFXConfiguration motorConfig) {}
+      int currentTaps) {}
 
   public record VisionConfig(
       int translationHistoryArraySize,

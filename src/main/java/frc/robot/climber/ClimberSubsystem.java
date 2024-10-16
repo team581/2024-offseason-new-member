@@ -2,6 +2,11 @@ package frc.robot.climber;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
+
 import dev.doglog.DogLog;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.config.RobotConfig;
@@ -12,17 +17,26 @@ import frc.robot.util.state_machines.StateMachine;
 
 public class ClimberSubsystem extends StateMachine<HomingState> {
   ClimberConfig CONFIG = RobotConfig.get().climber();
-  private final TalonFX motor;
+  private final CANSparkMax motor;
+  private final RelativeEncoder encoder;
+  private final SparkPIDController pid;
+
   private double goalDistance = 0.0;
-  private PositionVoltage positionRequest = new PositionVoltage(goalDistance);
   private LinearFilter currentFilter = LinearFilter.movingAverage(CONFIG.currentTaps());
   private boolean raised = false;
   private double tolerance = 1.5; // cm
+  // TODO: tune axle radius
+  private double axleRadius = 1;
 
-  public ClimberSubsystem(TalonFX motor) {
+  public ClimberSubsystem(CANSparkMax motor) {
     super(SubsystemPriority.CLIMBER, HomingState.NOT_HOMED);
 
-    motor.getConfigurator().apply(RobotConfig.get().climber().motorConfig());
+    this.encoder = motor.getEncoder();
+    this.pid = motor.getPIDController();
+    //TODO: tune pid
+    pid.setP(1.0);
+    pid.setI(1.0);
+    pid.setD(1.0);
 
     this.motor = motor;
   }
@@ -30,7 +44,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
   @Override
   protected void afterTransition(HomingState newState) {
 
-    double rawCurrent = motor.getStatorCurrent().getValueAsDouble();
+    double rawCurrent = motor.getOutputCurrent();
     double filteredCurrent = currentFilter.calculate(rawCurrent);
 
     switch (newState) {
@@ -39,7 +53,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
       case MID_MATCH_HOMING -> {
         motor.setVoltage(CONFIG.homingVoltage());
         if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
-          motor.setPosition(0.0);
+          encoder.setPosition(0.0);
           setState(HomingState.HOMED);
         }
       }
@@ -47,16 +61,16 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
       case PRE_MATCH_HOMING -> {
         motor.setVoltage(CONFIG.homingVoltage());
         if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
-          motor.setPosition(0.0);
+          encoder.setPosition(0.0);
           setState(HomingState.HOMED);
         }
       }
 
       case HOMED -> {
         if (raised) {
-          motor.setControl(positionRequest.withPosition(CONFIG.maxHeight()));
+          pid.setReference(CONFIG.maxHeight()/(2*Math.PI*axleRadius), ControlType.kPosition);
         } else {
-          motor.setControl(positionRequest.withPosition(0.0));
+          pid.setReference(0.0, ControlType.kPosition);
         }
       }
     }
@@ -80,9 +94,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
   }
 
   public double getHeight() {
-    // TODO: tune axle radius
-    var axleRadius = 1;
-    return motor.getPosition().getValueAsDouble() * 2 * Math.PI * axleRadius;
+    return encoder.getPosition() * 2 * Math.PI * axleRadius;
   }
 
   public void setState(HomingState state) {
