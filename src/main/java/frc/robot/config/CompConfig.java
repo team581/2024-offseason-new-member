@@ -11,6 +11,8 @@ import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import frc.robot.config.RobotConfig.ClimberConfig;
 import frc.robot.config.RobotConfig.IMUConfig;
@@ -84,7 +86,13 @@ class CompConfig {
                   .withMotorOutput(
                       new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
-                  .withOpenLoopRamps(OPEN_LOOP_RAMP)),
+                  .withOpenLoopRamps(OPEN_LOOP_RAMP),
+                  topFlywheelDistanceToRPM -> {
+                    topFlywheelDistanceToRPM.put(0.0,0.0);
+                  },
+                  bottomFlywheelDistanceToRPM -> {
+                    bottomFlywheelDistanceToRPM.put(0.0,0.0);
+                  }),
           new ClimberConfig(
               0,
               0.0,

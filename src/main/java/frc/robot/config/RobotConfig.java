@@ -29,7 +29,9 @@ public record RobotConfig(
       int topMotorID,
       double tolerance,
       TalonFXConfiguration bottomMotorConfig,
-      TalonFXConfiguration topMotorConfig) {}
+      TalonFXConfiguration topMotorConfig,
+      Consumer<InterpolatingDoubleTreeMap> topFlywheelMap,
+      Consumer<InterpolatingDoubleTreeMap> bottomFlywheelMap) {}
 
   public record ClimberConfig(
       int motorID,
@@ -49,8 +51,7 @@ public record RobotConfig(
   public record PerfToggles(
       boolean interpolatedVision, boolean noteMapInTeleop, boolean noteMapBoundingBox) {}
 
-  public record IMUConfig(
-      int deviceID, Consumer<InterpolatingDoubleTreeMap> distanceToAngleTolerance) {}
+  public record IMUConfig(int deviceID) {}
 
   public record SwerveConfig(
       PhoenixPIDController snapController,
