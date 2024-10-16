@@ -6,6 +6,7 @@ public enum ShooterState {
   SUBWOOFER_SHOT(3000.0),
   FLOOR_SHOT(4800.0),
   SHOOTER_OUTTAKE(500.0),
+  AMP(500.0, 300.0),
   SPEAKER_SHOT;
 
   public final double bottomRPM;
@@ -16,7 +17,7 @@ public enum ShooterState {
     this.topRPM = RPM;
   }
 
-  ShooterState(double bottomRPM, double topRPM) {
+  ShooterState(double topRPM, double bottomRPM) {
     this.bottomRPM = bottomRPM;
     this.topRPM = topRPM;
   }

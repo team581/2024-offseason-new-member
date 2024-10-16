@@ -113,6 +113,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case WAITING_SUBWOOFER_SHOT,
               WAITING_FLOOR_SHOT,
               WAITING_SPEAKER_SHOT,
+              WAITING_AMP,
               IDLE_NO_GP,
               IDLE_W_GP,
               WAITING_CLIMB,
@@ -120,7 +121,7 @@ public class RobotManager extends StateMachine<RobotState> {
               UNJAM,
               WAITING_SHOOTER_OUTTAKE ->
           currentState;
-      case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, OUTTAKING, SHOOTER_OUTTAKE ->
+      case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, OUTTAKING, SHOOTER_OUTTAKE, AMP_SHOT ->
           queuer.hasNote() ? currentState : RobotState.IDLE_NO_GP;
       case CLIMBING -> climber.atGoal() ? RobotState.CLIMBED : currentState;
 
@@ -250,6 +251,24 @@ public class RobotManager extends StateMachine<RobotState> {
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
       }
+      case WAITING_AMP -> {
+        shooter.setState(ShooterState.AMP);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
+        climber.setRaised(false);
+        snaps.setAngle(SnapManager.getAmpAngle());
+        snaps.setEnabled(true);
+        snaps.cancelCurrentCommand();
+      }
+      case AMP_SHOT -> {
+        shooter.setState(ShooterState.AMP);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.TO_SHOOTER);
+        climber.setRaised(false);
+        snaps.setAngle(SnapManager.getAmpAngle());
+        snaps.setEnabled(true);
+        snaps.cancelCurrentCommand();
+      }
       case UNJAM -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
@@ -275,6 +294,14 @@ public class RobotManager extends StateMachine<RobotState> {
         climber.setRaised(false);
       }
     }
+  }
+
+  public void waitAmpRequest() {
+    setStateFromRequest(RobotState.WAITING_AMP);
+  }
+
+  public void ampRequest() {
+    setStateFromRequest(RobotState.AMP_SHOT);
   }
 
   public void subwooferShotRequest() {
@@ -308,6 +335,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case WAITING_SUBWOOFER_SHOT -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
       case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
       case WAITING_SPEAKER_SHOT -> setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
+      case WAITING_AMP -> ampRequest();
 
       default -> {
         if (limelightWorking) {

@@ -185,6 +185,8 @@ public class Robot extends TimedRobot {
         .onTrue(actions.waitSpeakerCommand())
         .onFalse(actions.idleCommand());
     hd.operatorController.a().onTrue(actions.waitSubwooferCommand()).onFalse(actions.idleCommand());
+    hd.operatorController.x().onTrue(actions.waitAmpCommand()).onFalse(actions.idleCommand());
+
     hd.operatorController.rightBumper().onTrue(actions.climbSequenceCommand());
     hd.operatorController.leftBumper().onTrue(actions.reverseClimbSequenceCommand());
     hd.operatorController.povLeft().onTrue(actions.unjamCommand()).onFalse(actions.idleCommand());

@@ -68,10 +68,18 @@ public class RobotCommands {
         .withName("WaitingFloorCommand");
   }
 
+  public Command waitAmpCommand() {
+    return Commands.runOnce(robot::waitAmpRequest, requirements).withName("WaitingAmpCommand");
+  }
+
   public Command confirmShotCommand() {
     return Commands.runOnce(robot::confirmShotRequest, requirements)
         .andThen(robot.waitForStates(prepareStates))
         .withName("ConfirmShotCommand");
+  }
+
+  public Command ampCommand() {
+    return Commands.runOnce(robot::ampRequest, requirements).withName("AmpCommand");
   }
 
   public Command speakerShotCommand() {
@@ -79,7 +87,8 @@ public class RobotCommands {
   }
 
   public Command subwooferShotCommand() {
-    return Commands.runOnce(robot::subwooferShotRequest, requirements).withName("SubwooferShotCommand");
+    return Commands.runOnce(robot::subwooferShotRequest, requirements)
+        .withName("SubwooferShotCommand");
   }
 
   public Command climbSequenceCommand() {
