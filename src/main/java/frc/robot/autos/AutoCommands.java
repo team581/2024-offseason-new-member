@@ -36,9 +36,9 @@ public class AutoCommands {
 
   public Command subwooferShotWithTimeout() {
     return actions
-        .speakerShotCommand()
+        .subwooferShotCommand()
         .withTimeout(2)
-        .andThen(actions.speakerShotCommand().withTimeout(1))
+        .andThen(actions.subwooferShotCommand().withTimeout(1))
         .withName("SubwooferShotWithTimeout");
   }
 

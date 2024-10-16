@@ -6,6 +6,7 @@ public enum QueuerState {
   TO_INTAKE(-1.0);
 
   public final double volts;
+
   QueuerState(double volts) {
     this.volts = volts;
   }

@@ -6,6 +6,7 @@ public enum IntakeState {
   OUTTAKE(-3.0);
 
   public final double volts;
+
   IntakeState(double volts) {
     this.volts = volts;
   }
