@@ -18,7 +18,6 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
   private final RelativeEncoder encoder;
   private final SparkPIDController pid;
 
-  private double goalDistance = 0.0;
   private LinearFilter currentFilter = LinearFilter.movingAverage(CONFIG.currentTaps());
   private boolean raised = false;
   private double tolerance = 1.5; // cm
