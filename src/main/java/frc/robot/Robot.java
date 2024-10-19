@@ -19,6 +19,7 @@ import frc.robot.localization.LocalizationSubsystem;
 import frc.robot.queuer.QueuerSubsystem;
 import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
+import frc.robot.robot_manager.RobotState;
 import frc.robot.shooter.ShooterSubsystem;
 import frc.robot.snaps.SnapManager;
 import frc.robot.swerve.SwerveSubsystem;
@@ -163,8 +164,19 @@ public class Robot extends TimedRobot {
 
     hd.driverController
         .leftTrigger()
-        .onTrue(actions.intakeCommand())
-        .onFalse(actions.idleCommand());
+        .onTrue(
+            actions
+                .intakeCommand()
+                .alongWith(
+                    robotManager
+                        .waitForState(RobotState.INTAKING)
+                        .andThen(Commands.waitUntil(() -> robotManager.getState().hasNote))
+                        .andThen(driverRumble.getRumbleShortCommand())))
+        .onFalse(
+            actions
+                .idleCommand()
+                .alongWith(Commands.waitUntil(() -> robotManager.getState().hasNote))
+                .andThen(driverRumble.getRumbleShortCommand()));
     hd.driverController
         .rightTrigger()
         .onTrue(actions.confirmShotCommand())
