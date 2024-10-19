@@ -42,8 +42,8 @@ class CompConfig {
           "competition",
           CANIVORE_NAME,
           new IntakeConfig(
-              0,
-              0,
+              3,
+              4,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
@@ -53,8 +53,8 @@ class CompConfig {
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
           new QueuerConfig(
-              0,
-              0,
+              5,
+              6,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
@@ -66,8 +66,8 @@ class CompConfig {
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
           new ShooterConfig(
-              0,
-              0,
+              1,
+              2,
               100,
               new TalonFXConfiguration(),
               new TalonFXConfiguration()
@@ -91,8 +91,8 @@ class CompConfig {
               bottomFlywheelDistanceToRPM -> {
                 bottomFlywheelDistanceToRPM.put(0.0, 0.0);
               }),
-          new ClimberConfig(0, 0.0, 0.0, 0.0, 0),
-          new IMUConfig(0),
+          new ClimberConfig(0, 0.0, 0.0, 0.0, 7),
+          new IMUConfig(15),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
               new PhoenixPIDController(20, 0, 2),
