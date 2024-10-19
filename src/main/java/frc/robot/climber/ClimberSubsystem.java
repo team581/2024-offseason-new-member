@@ -1,12 +1,9 @@
 package frc.robot.climber;
 
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.config.RobotConfig;
@@ -33,7 +30,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
 
     this.encoder = motor.getEncoder();
     this.pid = motor.getPIDController();
-    //TODO: tune pid
+    // TODO: tune pid and make more config for motor
     pid.setP(1.0);
     pid.setI(1.0);
     pid.setD(1.0);
@@ -68,7 +65,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
 
       case HOMED -> {
         if (raised) {
-          pid.setReference(CONFIG.maxHeight()/(2*Math.PI*axleRadius), ControlType.kPosition);
+          pid.setReference(CONFIG.maxHeight() / (2 * Math.PI * axleRadius), ControlType.kPosition);
         } else {
           pid.setReference(0.0, ControlType.kPosition);
         }

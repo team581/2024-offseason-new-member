@@ -10,7 +10,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import frc.robot.config.RobotConfig.ClimberConfig;
 import frc.robot.config.RobotConfig.IMUConfig;
@@ -91,12 +90,7 @@ class CompConfig {
               bottomFlywheelDistanceToRPM -> {
                 bottomFlywheelDistanceToRPM.put(0.0, 0.0);
               }),
-          new ClimberConfig(
-              0,
-              0.0,
-              0.0,
-              0.0,
-              0),
+          new ClimberConfig(0, 0.0, 0.0, 0.0, 0),
           new IMUConfig(0),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
