@@ -20,7 +20,7 @@ public record RobotConfig(
     VisionConfig vision,
     PerfToggles perfToggles) {
 
-  public record IntakeConfig(int motorID, TalonFXConfiguration motorConfig) {}
+  public record IntakeConfig(int motorID, int funnelMotorID, TalonFXConfiguration motorConfig) {}
 
   public record QueuerConfig(int motorID, int sensorID, TalonFXConfiguration motorConfig) {}
 

@@ -43,6 +43,7 @@ class CompConfig {
           CANIVORE_NAME,
           new IntakeConfig(
               0,
+              0,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
