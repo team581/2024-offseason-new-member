@@ -26,17 +26,25 @@ public enum RobotState {
 
   UNJAM,
 
-  WAITING_CLIMB,
+  WAITING_CLIMB(false, true),
   CLIMBING,
   CLIMBED;
 
   public final boolean hasNote;
+  public final boolean climberRaised;
+
+  RobotState(boolean hasNote, boolean climberRaised) {
+    this.hasNote = hasNote;
+    this.climberRaised = climberRaised;
+  }
 
   RobotState(boolean hasNote) {
     this.hasNote = hasNote;
+    this.climberRaised = false;
   }
 
   RobotState() {
     this.hasNote = false;
+    this.climberRaised = false;
   }
 }

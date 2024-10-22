@@ -164,44 +164,44 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
       }
 
       case IDLE_W_GP -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
       }
       case INTAKING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.INTAKE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
       }
       case OUTTAKING -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
         queuer.setState(QueuerState.TO_INTAKE);
-        climber.setRaised(false);
+
       }
       case SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
-        climber.setRaised(false);
+
       }
       case WAITING_SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
       }
       case PREPARE_SUBWOOFER_SHOT, WAITING_SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
         snaps.setAngle(speakerDistanceAngle.targetAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
@@ -210,7 +210,7 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
         snaps.setAngle(speakerDistanceAngle.targetAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
@@ -219,7 +219,7 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.FLOOR_SHOT);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
         snaps.setAngle(floorDistanceAngle.targetAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
@@ -228,7 +228,7 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.FLOOR_SHOT);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
-        climber.setRaised(false);
+
         snaps.setAngle(floorDistanceAngle.targetAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
@@ -237,7 +237,7 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
-        climber.setRaised(false);
+
         snaps.setAngle(speakerDistanceAngle.targetAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
@@ -246,7 +246,7 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
-        climber.setRaised(false);
+
         snaps.setAngle(speakerDistanceAngle.targetAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
@@ -255,7 +255,7 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
         snaps.setAngle(SnapManager.getAmpAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
@@ -264,7 +264,7 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
-        climber.setRaised(false);
+
         snaps.setAngle(SnapManager.getAmpAngle());
         snaps.setEnabled(true);
         snaps.cancelCurrentCommand();
@@ -273,27 +273,27 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
         queuer.setState(QueuerState.TO_SHOOTER);
-        climber.setRaised(false);
+
       }
       case WAITING_CLIMB -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(true);
+
       }
       case CLIMBING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
+
       }
       case CLIMBED -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-        climber.setRaised(false);
       }
     }
+    climber.setRaised(newState.climberRaised);
   }
 
   public void waitAmpRequest() {
