@@ -21,14 +21,14 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
   private LinearFilter currentFilter = LinearFilter.movingAverage(CONFIG.currentTaps());
   private boolean raised = false;
   private double tolerance = 1.5; // cm
-  // TODO: tune axle radius
-  private double axleRadius = 1;
 
   public ClimberSubsystem(CANSparkMax motor) {
     super(SubsystemPriority.CLIMBER, HomingState.NOT_HOMED);
 
     this.encoder = motor.getEncoder();
     this.pid = motor.getPIDController();
+
+    encoder.setPositionConversionFactor(2 * Math.PI);
     // TODO: tune pid and make more config for motor
     pid.setP(1.0);
     pid.setI(1.0);
@@ -49,7 +49,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
       case MID_MATCH_HOMING -> {
         motor.setVoltage(CONFIG.homingVoltage());
         if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
-          encoder.setPosition(0.0);
+          encoder.setPosition(CONFIG.minHeight());
           setState(HomingState.HOMED);
         }
       }
@@ -57,16 +57,16 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
       case PRE_MATCH_HOMING -> {
         motor.setVoltage(CONFIG.homingVoltage());
         if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
-          encoder.setPosition(0.0);
+          encoder.setPosition(CONFIG.minHeight());
           setState(HomingState.HOMED);
         }
       }
 
       case HOMED -> {
         if (raised) {
-          pid.setReference(CONFIG.maxHeight() / (2 * Math.PI * axleRadius), ControlType.kPosition);
+          pid.setReference(CONFIG.maxHeight() / CONFIG.axleRadius(), ControlType.kPosition);
         } else {
-          pid.setReference(0.0, ControlType.kPosition);
+          pid.setReference(CONFIG.minHeight(), ControlType.kPosition);
         }
       }
     }
@@ -76,6 +76,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
+    DogLog.log("Climber/RotationRadians", encoder.getPosition());
     DogLog.log("Climber/Height", getHeight());
     DogLog.log("Climber/Raised", getRaised());
     DogLog.log("Climber/AtGoal", atGoal());
@@ -85,16 +86,16 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
     if (raised == true) {
       return Math.abs(getHeight() - CONFIG.maxHeight()) <= tolerance;
     } else {
-      return Math.abs(getHeight()) <= tolerance;
+      return Math.abs(getHeight() - CONFIG.minHeight()) <= tolerance;
     }
-  }
-
-  public double getHeight() {
-    return encoder.getPosition() * 2 * Math.PI * axleRadius;
   }
 
   public void setState(HomingState state) {
     setStateFromRequest(state);
+  }
+
+  public double getHeight() {
+    return encoder.getPosition() * CONFIG.axleRadius();
   }
 
   @Override

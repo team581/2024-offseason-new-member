@@ -35,7 +35,9 @@ public record RobotConfig(
 
   public record ClimberConfig(
       int motorID,
+      double axleRadius,
       double maxHeight,
+      double minHeight,
       double homingVoltage,
       double homingCurrentThreshold,
       int currentTaps) {}

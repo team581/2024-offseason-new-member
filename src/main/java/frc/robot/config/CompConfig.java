@@ -91,7 +91,7 @@ class CompConfig {
               bottomFlywheelDistanceToRPM -> {
                 bottomFlywheelDistanceToRPM.put(0.0, 0.0);
               }),
-          new ClimberConfig(0, 0.0, 0.0, 0.0, 7),
+          new ClimberConfig(0, 1.0, 10.0, 0.0, 0.0, 0.0, 7),
           new IMUConfig(15),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
