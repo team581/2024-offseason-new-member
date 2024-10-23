@@ -63,6 +63,12 @@ public class RobotCommands {
         .withName("WaitingSpeakerCommand");
   }
 
+  public Command waitSpeakerAutoCommand() {
+    return Commands.runOnce(robot::waitSpeakerAutoShotRequest, requirements)
+        .andThen(robot.waitForStates(idleStates))
+        .withName("WaitingAutoSpeakerCommand");
+  }
+
   public Command waitFloorCommand() {
     return Commands.runOnce(robot::waitFloorShotRequest, requirements)
         .withName("WaitingFloorCommand");

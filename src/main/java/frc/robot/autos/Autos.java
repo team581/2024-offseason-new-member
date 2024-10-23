@@ -87,16 +87,11 @@ public class Autos extends LifecycleSubsystem {
     registerCommand("intakeFloor", actions.intakeCommand());
     registerCommand("outtakeShooter", actions.outtakeShooterCommand());
     registerCommand("homeClimber", actions.homeClimberCommand());
-    registerCommand("stow", actions.idleCommand());
+    registerCommand("idle", actions.idleCommand());
     registerCommand("zeroGyro", autoCommands.doNothingCommand());
-    registerCommand("waitingSpeakerShot", actions.waitSpeakerCommand());
-
-    // registerCommand("noteMap456", autoCommands.noteMap456Command());
-    // registerCommand("noteMap567", autoCommands.notemap567Command());
+    registerCommand("waitingSpeakerShot", actions.waitSpeakerAutoCommand());
     registerCommand("dropNote", actions.outtakeShooterCommand());
-    // registerCommand("notemapD4", autoCommands.notemap4_10Command());
     registerCommand("waitingDropRequest", autoCommands.waitingDropRequestCommand());
-    // registerCommand("resetNoteMap", autoCommands.noteMapResetCommand());
 
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {

@@ -328,6 +328,14 @@ public class RobotManager extends StateMachine<RobotState> {
     setStateFromRequest(RobotState.WAITING_SPEAKER_SHOT);
   }
 
+  public void waitSpeakerAutoShotRequest() {
+    if (getState().hasNote) {
+      setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
+    } else {
+      intakeRequest();
+    }
+  }
+
   public void confirmShotRequest() {
     switch (getState()) {
       case CLIMBED, CLIMBING, WAITING_CLIMB -> {}
