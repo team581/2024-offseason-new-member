@@ -12,7 +12,6 @@ import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.util.Units;
 import frc.robot.config.RobotConfig.ClimberConfig;
-import frc.robot.config.RobotConfig.IMUConfig;
 import frc.robot.config.RobotConfig.IntakeConfig;
 import frc.robot.config.RobotConfig.PerfToggles;
 import frc.robot.config.RobotConfig.QueuerConfig;
@@ -42,7 +41,6 @@ class CompConfig {
           "competition",
           CANIVORE_NAME,
           new IntakeConfig(
-              3,
               4,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
@@ -66,8 +64,8 @@ class CompConfig {
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
           new ShooterConfig(
-              1,
               2,
+              3,
               100,
               new TalonFXConfiguration(),
               new TalonFXConfiguration()
@@ -91,8 +89,7 @@ class CompConfig {
               bottomFlywheelDistanceToRPM -> {
                 bottomFlywheelDistanceToRPM.put(0.0, 0.0);
               }),
-          new ClimberConfig(0, 1.0, 10.0, 0.0, 0.0, 0.0, 7),
-          new IMUConfig(15),
+          new ClimberConfig(1, 1.0, 10.0, 0.0, 2.0, 50.0, 7),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
               new PhoenixPIDController(20, 0, 2),

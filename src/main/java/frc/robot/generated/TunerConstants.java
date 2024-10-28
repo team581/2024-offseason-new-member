@@ -54,7 +54,7 @@ public class TunerConstants {
   private static final boolean kInvertRightSide = true;
 
   private static final String kCANbusName = "581CANivore";
-  private static final int kPigeonId = 15;
+  private static final int kPigeonId = 19;
 
   // These are only used for simulation
   private static final double kSteerInertia = 0.00001;
@@ -112,7 +112,7 @@ public class TunerConstants {
   // Front Left
   private static final int kFrontLeftDriveMotorId = 7;
   private static final int kFrontLeftSteerMotorId = 11;
-  private static final int kFrontLeftEncoderId = 16;
+  private static final int kFrontLeftEncoderId = 15;
   private static final double kFrontLeftEncoderOffset = -0.486083984375;
 
   private static final double kFrontLeftXPosInches = 10.125;
@@ -121,7 +121,7 @@ public class TunerConstants {
   // Front Right
   private static final int kFrontRightDriveMotorId = 8;
   private static final int kFrontRightSteerMotorId = 12;
-  private static final int kFrontRightEncoderId = 17;
+  private static final int kFrontRightEncoderId = 16;
   private static final double kFrontRightEncoderOffset = -0.27734375;
 
   private static final double kFrontRightXPosInches = 10.125;
@@ -130,7 +130,7 @@ public class TunerConstants {
   // Back Left
   private static final int kBackLeftDriveMotorId = 9;
   private static final int kBackLeftSteerMotorId = 13;
-  private static final int kBackLeftEncoderId = 18;
+  private static final int kBackLeftEncoderId = 17;
   private static final double kBackLeftEncoderOffset = 0.302978515625;
 
   private static final double kBackLeftXPosInches = -10.125;
@@ -139,7 +139,7 @@ public class TunerConstants {
   // Back Right
   private static final int kBackRightDriveMotorId = 10;
   private static final int kBackRightSteerMotorId = 14;
-  private static final int kBackRightEncoderId = 19;
+  private static final int kBackRightEncoderId = 18;
   private static final double kBackRightEncoderOffset = -0.19287109375;
 
   private static final double kBackRightXPosInches = -10.125;

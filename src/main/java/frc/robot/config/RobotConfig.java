@@ -15,12 +15,11 @@ public record RobotConfig(
     QueuerConfig queuer,
     ShooterConfig shooter,
     ClimberConfig climber,
-    IMUConfig imu,
     SwerveConfig swerve,
     VisionConfig vision,
     PerfToggles perfToggles) {
 
-  public record IntakeConfig(int motorID, int funnelMotorID, TalonFXConfiguration motorConfig) {}
+  public record IntakeConfig(int motorID, TalonFXConfiguration motorConfig) {}
 
   public record QueuerConfig(int motorID, int sensorID, TalonFXConfiguration motorConfig) {}
 
@@ -51,8 +50,6 @@ public record RobotConfig(
 
   public record PerfToggles(
       boolean interpolatedVision, boolean noteMapInTeleop, boolean noteMapBoundingBox) {}
-
-  public record IMUConfig(int deviceID) {}
 
   public record SwerveConfig(
       PhoenixPIDController snapController,

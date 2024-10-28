@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 
   private final ClimberSubsystem climber = new ClimberSubsystem(hd.climberMotor);
   private final ShooterSubsystem shooter = new ShooterSubsystem(hd.bottomShooter, hd.topShooter);
-  private final IntakeSubsystem intake = new IntakeSubsystem(hd.intakeMotor, hd.intakeFunnelMotor);
+  private final IntakeSubsystem intake = new IntakeSubsystem(hd.intakeMotor);
   private final QueuerSubsystem queuer = new QueuerSubsystem(hd.queuerMotor, hd.sensor);
   private final SwerveSubsystem swerve = new SwerveSubsystem(hd.driverController);
   private final ImuSubsystem imu = new ImuSubsystem(swerve);
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
 
     DogLog.setOptions(
         new DogLogOptions().withCaptureNt(false).withNtPublish(RobotConfig.IS_DEVELOPMENT));
-    DogLog.setPdh(hardware.pdh);
+    DogLog.setPdh(hardware.pdp);
 
     // Record metadata
     DogLog.log("Metadata/ProjectName", BuildConstants.MAVEN_NAME);
