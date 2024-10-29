@@ -1,7 +1,6 @@
 package frc.robot.intake;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
 import dev.doglog.DogLog;
 import frc.robot.config.RobotConfig;
 import frc.robot.config.RobotConfig.IntakeConfig;
