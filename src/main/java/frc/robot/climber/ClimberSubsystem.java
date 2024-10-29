@@ -66,7 +66,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
         if (raised) {
           pid.setReference(CONFIG.maxHeight() / CONFIG.axleRadius(), ControlType.kPosition);
         } else {
-          pid.setReference(CONFIG.minHeight(), ControlType.kPosition);
+          pid.setReference(CONFIG.minHeight() / CONFIG.axleRadius(), ControlType.kPosition);
         }
       }
     }
