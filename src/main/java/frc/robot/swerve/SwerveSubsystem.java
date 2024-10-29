@@ -218,7 +218,15 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   }
 
   private ChassisSpeeds calculateRobotRelativeSpeeds() {
-    return KINEMATICS.toChassisSpeeds(drivetrain.getState().ModuleStates);
+    var moduleStates = drivetrain.getState().ModuleStates;
+
+    // Sometimes we check for module states before they seem to be populated
+    // This avoids a crash because of that
+    if (moduleStates == null) {
+      return new ChassisSpeeds();
+    }
+
+    return KINEMATICS.toChassisSpeeds(moduleStates);
   }
 
   private ChassisSpeeds calculateFieldRelativeSpeeds() {
