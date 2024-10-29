@@ -16,6 +16,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.config.RobotConfig;
@@ -101,6 +102,11 @@ public class Autos extends LifecycleSubsystem {
     PathPlannerLogging.setLogTargetPoseCallback(
         (targetPose) -> {
           DogLog.log("Autos/Trajectory/TargetPose", targetPose);
+
+          if (RobotBase.isSimulation()) {
+            // In simulation, pretend we are always at the target pose
+            localization.resetPose(targetPose);
+          }
         });
 
     if (!RobotConfig.IS_DEVELOPMENT) {
