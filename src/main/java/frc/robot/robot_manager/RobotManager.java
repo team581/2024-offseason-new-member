@@ -164,38 +164,32 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
 
       case IDLE_W_GP -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case INTAKING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.INTAKE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case OUTTAKING -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
         queuer.setState(QueuerState.TO_INTAKE);
-
       }
       case SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
-
       }
       case WAITING_SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case PREPARE_SUBWOOFER_SHOT, WAITING_SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
@@ -273,19 +267,16 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
         queuer.setState(QueuerState.TO_SHOOTER);
-
       }
       case WAITING_CLIMB -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case CLIMBING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case CLIMBED -> {
         shooter.setState(ShooterState.STOPPED);
