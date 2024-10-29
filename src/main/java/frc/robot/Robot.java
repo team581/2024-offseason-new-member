@@ -52,14 +52,12 @@ public class Robot extends TimedRobot {
 
   private Command autonomousCommand;
 
-  private final Hardware hardware = new Hardware();
-
   public Robot() {
     System.out.println("roboRIO serial number: " + RobotConfig.SERIAL_NUMBER);
 
     DogLog.setOptions(
         new DogLogOptions().withCaptureNt(false).withNtPublish(RobotConfig.IS_DEVELOPMENT));
-    DogLog.setPdh(hardware.pdp);
+    DogLog.setPdh(hd.pdp);
 
     // Record metadata
     DogLog.log("Metadata/ProjectName", BuildConstants.MAVEN_NAME);
