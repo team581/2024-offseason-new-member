@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 
 public record RobotConfig(
     String robotName,
-    String canivoreName,
     IntakeConfig intake,
     QueuerConfig queuer,
     ShooterConfig shooter,

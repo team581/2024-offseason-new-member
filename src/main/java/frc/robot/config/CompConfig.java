@@ -21,7 +21,6 @@ import frc.robot.config.RobotConfig.VisionConfig;
 import frc.robot.vision.interpolation.InterpolatedVisionDataset;
 
 class CompConfig {
-  private static final String CANIVORE_NAME = "581CANivore";
   private static final String RIO_CAN_NAME = "rio";
 
   private static final ClosedLoopRampsConfigs CLOSED_LOOP_RAMP =
@@ -39,7 +38,6 @@ class CompConfig {
   public static final RobotConfig competitionBot =
       new RobotConfig(
           "competition",
-          CANIVORE_NAME,
           new IntakeConfig(
               4,
               new TalonFXConfiguration()
@@ -52,7 +50,7 @@ class CompConfig {
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
           new QueuerConfig(
               5,
-              6,
+              0,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
