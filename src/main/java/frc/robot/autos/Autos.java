@@ -86,13 +86,10 @@ public class Autos extends LifecycleSubsystem {
     registerCommand("forceSpeakerShot", actions.speakerShotCommand());
     registerCommand("subwooferShot", autoCommands.subwooferShotWithTimeout());
     registerCommand("intakeFloor", actions.intakeCommand());
-    registerCommand("outtakeShooter", actions.outtakeShooterCommand());
     registerCommand("homeClimber", actions.homeClimberCommand());
     registerCommand("idle", actions.idleCommand());
     registerCommand("zeroGyro", autoCommands.doNothingCommand());
     registerCommand("waitingSpeakerShot", actions.waitSpeakerAutoCommand());
-    registerCommand("dropNote", actions.outtakeShooterCommand());
-    registerCommand("waitingDropRequest", autoCommands.waitingDropRequestCommand());
 
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
