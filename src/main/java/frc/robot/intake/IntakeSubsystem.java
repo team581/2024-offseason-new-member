@@ -36,6 +36,8 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
     super.robotPeriodic();
 
     DogLog.log("IntakeSubsystem/MotorVoltage", motor.getMotorVoltage().getValueAsDouble());
+    DogLog.log("IntakeSubsystem/State", getState());
+    DogLog.log("IntakeSubsystem/State/Volts", getState().volts);
   }
 
   public void setState(IntakeState state) {
