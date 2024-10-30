@@ -1,5 +1,6 @@
 package frc.robot.robot_manager;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.climber.ClimberSubsystem;
 import frc.robot.imu.ImuSubsystem;
@@ -104,6 +105,14 @@ public class RobotManager extends StateMachine<RobotState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
+
+    DogLog.log("RobotManager/State", getState());
+    DogLog.log("RobotManager/State/ClimberRaised", getState().climberRaised);
+    DogLog.log("RobotManager/State/hasNote", getState().hasNote);
+    DogLog.log("RobotManager/LimelightWorking", limelightWorking);
+    DogLog.log("RobotManager/SwerveSlowEnough", swerveSlowEnough);
+    DogLog.log("RobotManager/RobotHeadingAtGoal", robotHeadingAtGoal);
+    DogLog.log("RobotManager/AngularVelocitySlowEnough", angularVelocitySlowEnough);
   }
 
   // Automatic state transitions
@@ -135,11 +144,11 @@ public class RobotManager extends StateMachine<RobotState> {
               : currentState;
 
       case PREPARE_SPEAKER_SHOT ->
-          shooter.atGoal(ShooterState.SPEAKER_SHOT)
+          (shooter.atGoal(ShooterState.SPEAKER_SHOT)
                   && swerveSlowEnough
                   && angularVelocitySlowEnough
                   && robotHeadingAtGoal
-                  && limelightWorking
+                  && limelightWorking)
               ? RobotState.SPEAKER_SHOT
               : currentState;
 

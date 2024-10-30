@@ -45,8 +45,7 @@ public class AutoCommands {
   public Command speakerShotWithTimeout() {
     return actions
         .speakerShotCommand()
-        .withTimeout(2)
-        .andThen(actions.speakerShotCommand().withTimeout(1))
+        .withTimeout(3)
         .withName("SpeakerShotWithTimeout");
   }
 
