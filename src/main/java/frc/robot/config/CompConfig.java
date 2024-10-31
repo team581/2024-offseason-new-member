@@ -76,7 +76,7 @@ class CompConfig {
                       new TorqueCurrentConfigs()
                           .withPeakForwardTorqueCurrent(200)
                           .withPeakReverseTorqueCurrent(0))
-                  .withSlot0(new Slot0Configs().withKP(15).withKV(0).withKS(14.8))
+                  .withSlot0(new Slot0Configs().withKP(0.0).withKV(0).withKS(0.0))
                   .withMotorOutput(
                       new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
@@ -90,7 +90,7 @@ class CompConfig {
           new ClimberConfig(1, 1.0, 0.5, 0.0, -0.5, 10.0, 4),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
-              new PhoenixPIDController(20, 0, 2),
+              new PhoenixPIDController(-4.0, 0, 0), //20 0 2
               true,
               true,
               true,
