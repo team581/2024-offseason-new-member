@@ -125,14 +125,14 @@ public class RobotManager extends StateMachine<RobotState> {
               WAITING_AMP,
               IDLE_NO_GP,
               IDLE_W_GP,
-              WAITING_CLIMB,
-              CLIMBED,
+              CLIMB_LOWERED,
+              CLIMB_RAISED,
               UNJAM,
+              OUTTAKING,
               WAITING_SHOOTER_OUTTAKE ->
           currentState;
-      case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, OUTTAKING, SHOOTER_OUTTAKE, AMP_SHOT ->
+      case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, SHOOTER_OUTTAKE, AMP_SHOT ->
           queuer.hasNote() ? currentState : RobotState.IDLE_NO_GP;
-      case CLIMBING -> climber.atGoal() ? RobotState.CLIMBED : currentState;
 
       case PREPARE_SUBWOOFER_SHOT ->
           shooter.atGoal(ShooterState.SUBWOOFER_SHOT) ? RobotState.SUBWOOFER_SHOT : currentState;
@@ -274,17 +274,7 @@ public class RobotManager extends StateMachine<RobotState> {
         intake.setState(IntakeState.OUTTAKE);
         queuer.setState(QueuerState.TO_SHOOTER);
       }
-      case WAITING_CLIMB -> {
-        shooter.setState(ShooterState.STOPPED);
-        intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
-      }
-      case CLIMBING -> {
-        shooter.setState(ShooterState.STOPPED);
-        intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
-      }
-      case CLIMBED -> {
+      case CLIMB_LOWERED, CLIMB_RAISED -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
@@ -315,7 +305,7 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void confirmShotRequest() {
     switch (getState()) {
-      case CLIMBED, CLIMBING, WAITING_CLIMB -> {}
+      case CLIMB_LOWERED, CLIMB_RAISED -> {}
 
       case WAITING_SUBWOOFER_SHOT -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
       case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
@@ -355,21 +345,17 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void nextClimbRequest() {
     switch (getState()) {
-      default -> setStateFromRequest(RobotState.WAITING_CLIMB);
-
-      case WAITING_CLIMB -> setStateFromRequest(RobotState.CLIMBING);
-      case CLIMBING -> {}
-      case CLIMBED -> idleRequest();
+      default -> setStateFromRequest(RobotState.CLIMB_RAISED);
+      case CLIMB_RAISED -> setStateFromRequest(RobotState.CLIMB_LOWERED);
+      case CLIMB_LOWERED -> {}
     }
   }
 
   public void reverseClimbRequest() {
     switch (getState()) {
-      default -> setStateFromRequest(RobotState.CLIMBED);
-
-      case WAITING_CLIMB -> idleRequest();
-      case CLIMBING -> {}
-      case CLIMBED -> setStateFromRequest(RobotState.WAITING_CLIMB);
+      case CLIMB_LOWERED -> setStateFromRequest(RobotState.CLIMB_RAISED);
+      case CLIMB_RAISED -> idleRequest();
+      default -> {}
     }
   }
 

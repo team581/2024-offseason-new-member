@@ -27,11 +27,10 @@ public enum RobotState {
   PREPARE_AMP(true),
   AMP_SHOT(true),
 
-  UNJAM,
+  UNJAM(false),
 
-  WAITING_CLIMB(false, true),
-  CLIMBING,
-  CLIMBED;
+  CLIMB_RAISED(false, true),
+  CLIMB_LOWERED(false, false);
 
   public final boolean hasNote;
   public final boolean climberRaised;
