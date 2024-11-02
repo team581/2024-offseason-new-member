@@ -96,7 +96,7 @@ class CompConfig {
               true,
               new CurrentLimitsConfigs()
                   .withSupplyCurrentLimit(40)
-                  .withStatorCurrentLimit(40)
+                  .withStatorCurrentLimit(80)
                   .withSupplyCurrentLimitEnable(true)
                   .withStatorCurrentLimitEnable(true),
               new TorqueCurrentConfigs()
