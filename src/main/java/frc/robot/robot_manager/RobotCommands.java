@@ -70,12 +70,12 @@ public class RobotCommands {
     return Commands.runOnce(robot::speakerShotRequest, requirements).withName("SpeakerShotCommand");
   }
 
-  public Command climbSequenceCommand() {
+  public Command nextClimbCommand() {
     return Commands.runOnce(robot::nextClimbRequest, requirements)
         .withName("ClimbSequenceCommand");
   }
 
-  public Command reverseClimbSequenceCommand() {
+  public Command reverseClimbCommand() {
     return Commands.runOnce(robot::reverseClimbRequest, requirements)
         .withName("ClimbSequenceCommand");
   }
