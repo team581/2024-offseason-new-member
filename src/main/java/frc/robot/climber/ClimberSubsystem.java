@@ -8,22 +8,20 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.config.RobotConfig;
 import frc.robot.config.RobotConfig.ClimberConfig;
-import frc.robot.util.HomingState;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 
-public class ClimberSubsystem extends StateMachine<HomingState> {
+public class ClimberSubsystem extends StateMachine<ClimberState> {
   ClimberConfig CONFIG = RobotConfig.get().climber();
   private final CANSparkMax motor;
   private final RelativeEncoder encoder;
   private final SparkPIDController pid;
 
   private LinearFilter currentFilter = LinearFilter.movingAverage(CONFIG.currentTaps());
-  private boolean raised = false;
   private double tolerance = 1.5; // cm
 
   public ClimberSubsystem(CANSparkMax motor) {
-    super(SubsystemPriority.CLIMBER, HomingState.NOT_HOMED);
+    super(SubsystemPriority.CLIMBER, ClimberState.NOT_HOMED);
 
     this.encoder = motor.getEncoder();
     this.pid = motor.getPIDController();
@@ -37,7 +35,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
   }
 
   @Override
-  protected void afterTransition(HomingState newState) {
+  protected void afterTransition(ClimberState newState) {
 
     double rawCurrent = motor.getOutputCurrent();
     double filteredCurrent = currentFilter.calculate(rawCurrent);
@@ -45,28 +43,18 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
     switch (newState) {
       case NOT_HOMED -> {}
 
-      case MID_MATCH_HOMING -> {
+      case HOMING -> {
         motor.setVoltage(CONFIG.homingVoltage());
         if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
           encoder.setPosition(CONFIG.minHeight());
-          setState(HomingState.HOMED);
+          setState(ClimberState.LOWERED);
         }
       }
-
-      case PRE_MATCH_HOMING -> {
-        motor.setVoltage(CONFIG.homingVoltage());
-        if (filteredCurrent >= CONFIG.homingCurrentThreshold()) {
-          encoder.setPosition(CONFIG.minHeight());
-          setState(HomingState.HOMED);
-        }
+      case RAISED -> {
+        pid.setReference(CONFIG.maxHeight() / CONFIG.axleRadius(), ControlType.kPosition);
       }
-
-      case HOMED -> {
-        if (raised) {
-          pid.setReference(CONFIG.maxHeight() / CONFIG.axleRadius(), ControlType.kPosition);
-        } else {
-          pid.setReference(CONFIG.minHeight() / CONFIG.axleRadius(), ControlType.kPosition);
-        }
+      case LOWERED -> {
+        pid.setReference(CONFIG.minHeight() / CONFIG.axleRadius(), ControlType.kPosition);
       }
     }
     DogLog.log("Climber/FilteredCurrent", filteredCurrent);
@@ -77,20 +65,29 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
     super.robotPeriodic();
     DogLog.log("Climber/RotationRadians", encoder.getPosition());
     DogLog.log("Climber/Height", getHeight());
-    DogLog.log("Climber/Raised", getRaised());
+    DogLog.log("Climber/State", getState());
     DogLog.log("Climber/AtGoal", atGoal());
   }
 
   public boolean atGoal() {
-    if (raised == true) {
+    if (getState() == ClimberState.HOMING ||
+        getState() == ClimberState.NOT_HOMED) {
+          return false;
+    }
+
+    if (getState() == ClimberState.RAISED) {
       return Math.abs(getHeight() - CONFIG.maxHeight()) <= tolerance;
     } else {
       return Math.abs(getHeight() - CONFIG.minHeight()) <= tolerance;
     }
   }
 
-  public void setState(HomingState state) {
+  public void setState(ClimberState state) {
     setStateFromRequest(state);
+  }
+
+  public boolean getHomed() {
+    return !(getState() == ClimberState.HOMING || getState() == ClimberState.NOT_HOMED);
   }
 
   public double getHeight() {
@@ -98,15 +95,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
   }
 
   @Override
-  protected HomingState getNextState(HomingState state) {
+  protected ClimberState getNextState(ClimberState state) {
     return state;
-  }
-
-  public void setRaised(boolean bool) {
-    raised = bool;
-  }
-
-  public boolean getRaised() {
-    return raised;
   }
 }

@@ -2,6 +2,7 @@ package frc.robot.robot_manager;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.climber.ClimberState;
 import frc.robot.climber.ClimberSubsystem;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.intake.IntakeState;
@@ -13,7 +14,6 @@ import frc.robot.shooter.ShooterState;
 import frc.robot.shooter.ShooterSubsystem;
 import frc.robot.snaps.SnapManager;
 import frc.robot.swerve.SwerveSubsystem;
-import frc.robot.util.HomingState;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 import frc.robot.vision.DistanceAngle;
@@ -293,7 +293,9 @@ public class RobotManager extends StateMachine<RobotState> {
         queuer.setState(QueuerState.IDLE);
       }
     }
-    climber.setRaised(newState.climberRaised);
+    if (climber.getHomed()) {
+      climber.setState(newState.climberRaised ? ClimberState.RAISED : ClimberState.LOWERED);
+    }
   }
 
   public void waitAmpRequest() {
@@ -408,7 +410,7 @@ public class RobotManager extends StateMachine<RobotState> {
   }
 
   public void homeClimberRequest() {
-    climber.setState(HomingState.MID_MATCH_HOMING);
+    climber.setState(ClimberState.HOMING);
   }
 
   public void preloadNoteRequest() {
