@@ -135,13 +135,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case CLIMBING -> climber.atGoal() ? RobotState.CLIMBED : currentState;
 
       case PREPARE_SUBWOOFER_SHOT ->
-          shooter.atGoal(ShooterState.SUBWOOFER_SHOT)
-                  && swerveSlowEnough
-                  && angularVelocitySlowEnough
-                  && robotHeadingAtGoal
-                  && limelightWorking
-              ? RobotState.SUBWOOFER_SHOT
-              : currentState;
+          shooter.atGoal(ShooterState.SUBWOOFER_SHOT) ? RobotState.SUBWOOFER_SHOT : currentState;
 
       case PREPARE_SPEAKER_SHOT ->
           (shooter.atGoal(ShooterState.SPEAKER_SHOT)
@@ -160,7 +154,8 @@ public class RobotManager extends StateMachine<RobotState> {
               ? RobotState.FLOOR_SHOT
               : currentState;
 
-      case PREPARE_SHOOTER_OUTTAKE -> shooter.atGoal(ShooterState.SHOOTER_OUTTAKE) ? RobotState.FLOOR_SHOT : currentState;
+      case PREPARE_SHOOTER_OUTTAKE ->
+          shooter.atGoal(ShooterState.SHOOTER_OUTTAKE) ? RobotState.FLOOR_SHOT : currentState;
 
       case INTAKING -> queuer.hasNote() ? RobotState.IDLE_W_GP : currentState;
     };

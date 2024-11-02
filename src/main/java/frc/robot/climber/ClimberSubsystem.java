@@ -70,9 +70,8 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
   }
 
   public boolean atGoal() {
-    if (getState() == ClimberState.HOMING ||
-        getState() == ClimberState.NOT_HOMED) {
-          return false;
+    if (getState() == ClimberState.HOMING || getState() == ClimberState.NOT_HOMED) {
+      return false;
     }
 
     if (getState() == ClimberState.RAISED) {

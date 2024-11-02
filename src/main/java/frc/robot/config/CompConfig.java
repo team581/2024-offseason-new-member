@@ -90,7 +90,7 @@ class CompConfig {
           new ClimberConfig(1, 1.0, 0.5, 0.0, -0.5, 10.0, 4),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
-              new PhoenixPIDController(-4.0, 0, 0), //20 0 2
+              new PhoenixPIDController(-4.0, 0, 0), // 20 0 2
               true,
               true,
               true,
