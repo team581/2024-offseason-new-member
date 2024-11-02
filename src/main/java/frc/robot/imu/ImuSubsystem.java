@@ -25,16 +25,6 @@ public class ImuSubsystem extends LifecycleSubsystem {
     super(SubsystemPriority.IMU);
 
     this.imu = swerve.drivetrainPigeon;
-
-    Pigeon2Configuration config =
-        new Pigeon2Configuration()
-            .withMountPose(
-                new MountPoseConfigs()
-                    .withMountPosePitch(0)
-                    .withMountPoseRoll(0)
-                    .withMountPoseYaw(0));
-
-    imu.getConfigurator().apply(config);
   }
 
   @Override

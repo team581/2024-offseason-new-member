@@ -2,6 +2,7 @@ package frc.robot.generated;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -67,7 +68,12 @@ public class TunerConstants {
                   .withStatorCurrentLimitEnable(true));
   private static final CANcoderConfiguration cancoderInitialConfigs = new CANcoderConfiguration();
   // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
-  private static final Pigeon2Configuration pigeonConfigs = null;
+  private static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
+            .withMountPose(
+                new MountPoseConfigs()
+                    .withMountPosePitch(0)
+                    .withMountPoseRoll(0)
+                    .withMountPoseYaw(180));
 
   // Theoretical free speed (m/s) at 12v applied output;
   // This needs to be tuned to your individual robot
