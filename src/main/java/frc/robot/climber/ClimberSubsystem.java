@@ -82,11 +82,10 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
   }
 
   public void setState(ClimberState state) {
+    if (getState() == ClimberState.NOT_HOMED || getState() == ClimberState.HOMING) {
+      return;
+    }
     setStateFromRequest(state);
-  }
-
-  public boolean getHomed() {
-    return !(getState() == ClimberState.HOMING || getState() == ClimberState.NOT_HOMED);
   }
 
   public double getHeight() {

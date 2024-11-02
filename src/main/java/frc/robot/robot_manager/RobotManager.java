@@ -155,7 +155,7 @@ public class RobotManager extends StateMachine<RobotState> {
               : currentState;
 
       case PREPARE_SHOOTER_OUTTAKE ->
-          shooter.atGoal(ShooterState.SHOOTER_OUTTAKE) ? RobotState.FLOOR_SHOT : currentState;
+          shooter.atGoal(ShooterState.SHOOTER_OUTTAKE) ? RobotState.SHOOTER_OUTTAKE : currentState;
 
       case INTAKING -> queuer.hasNote() ? RobotState.IDLE_W_GP : currentState;
     };
@@ -291,9 +291,7 @@ public class RobotManager extends StateMachine<RobotState> {
         queuer.setState(QueuerState.IDLE);
       }
     }
-    if (climber.getHomed()) {
-      climber.setState(newState.climberRaised ? ClimberState.RAISED : ClimberState.LOWERED);
-    }
+    climber.setState(newState.climberRaised ? ClimberState.RAISED : ClimberState.LOWERED);
   }
 
   public void waitAmpRequest() {
