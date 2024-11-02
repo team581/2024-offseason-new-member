@@ -11,16 +11,13 @@ import java.util.function.Consumer;
 public record RobotConfig(
     String robotName,
     IntakeConfig intake,
-    QueuerConfig queuer,
     ShooterConfig shooter,
     ClimberConfig climber,
     SwerveConfig swerve,
     VisionConfig vision,
     PerfToggles perfToggles) {
 
-  public record IntakeConfig(int motorID, TalonFXConfiguration motorConfig) {}
-
-  public record QueuerConfig(int motorID, int sensorID, TalonFXConfiguration motorConfig) {}
+  public record IntakeConfig(int motorID, int sensorID, TalonFXConfiguration motorConfig) {}
 
   public record ShooterConfig(
       int bottomMotorID,

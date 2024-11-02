@@ -8,8 +8,6 @@ import frc.robot.imu.ImuSubsystem;
 import frc.robot.intake.IntakeState;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.localization.LocalizationSubsystem;
-import frc.robot.queuer.QueuerState;
-import frc.robot.queuer.QueuerSubsystem;
 import frc.robot.shooter.ShooterState;
 import frc.robot.shooter.ShooterSubsystem;
 import frc.robot.snaps.SnapManager;
@@ -23,7 +21,6 @@ import frc.robot.vision.VisionSubsystem;
 public class RobotManager extends StateMachine<RobotState> {
   public final IntakeSubsystem intake;
   public final ShooterSubsystem shooter;
-  public final QueuerSubsystem queuer;
   public final ClimberSubsystem climber;
   public final LocalizationSubsystem localization;
   public final VisionSubsystem vision;
@@ -34,7 +31,6 @@ public class RobotManager extends StateMachine<RobotState> {
   // INIT
   public RobotManager(
       IntakeSubsystem intake,
-      QueuerSubsystem queuer,
       ShooterSubsystem shooter,
       ClimberSubsystem climber,
       LocalizationSubsystem localization,
@@ -45,7 +41,6 @@ public class RobotManager extends StateMachine<RobotState> {
     super(SubsystemPriority.ROBOT_MANAGER, RobotState.IDLE_NO_GP);
     this.intake = intake;
     this.shooter = shooter;
-    this.queuer = queuer;
     this.climber = climber;
     this.localization = localization;
     this.vision = vision;
@@ -132,7 +127,7 @@ public class RobotManager extends StateMachine<RobotState> {
               WAITING_SHOOTER_OUTTAKE ->
           currentState;
       case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, SHOOTER_OUTTAKE, AMP_SHOT ->
-          queuer.hasNote() ? currentState : RobotState.IDLE_NO_GP;
+          intake.hasNote() ? currentState : RobotState.IDLE_NO_GP;
 
       case PREPARE_SUBWOOFER_SHOT ->
           shooter.atGoal(ShooterState.SUBWOOFER_SHOT) ? RobotState.SUBWOOFER_SHOT : currentState;
@@ -159,7 +154,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case PREPARE_SHOOTER_OUTTAKE ->
           shooter.atGoal(ShooterState.SHOOTER_OUTTAKE) ? RobotState.SHOOTER_OUTTAKE : currentState;
 
-      case INTAKING -> queuer.hasNote() ? RobotState.IDLE_W_GP : currentState;
+      case INTAKING -> intake.hasNote() ? RobotState.IDLE_W_GP : currentState;
     };
   }
 
@@ -172,48 +167,39 @@ public class RobotManager extends StateMachine<RobotState> {
       case IDLE_NO_GP -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
       }
 
       case IDLE_W_GP -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
       }
       case INTAKING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.INTAKE);
-        queuer.setState(QueuerState.INTAKING);
       }
       case OUTTAKING -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
-        queuer.setState(QueuerState.TO_INTAKE);
       }
       case PREPARE_AMP -> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
       }
       case SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
-        intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.TO_SHOOTER);
+        intake.setState(IntakeState.TO_SHOOTER);
       }
       case PREPARE_SHOOTER_OUTTAKE, WAITING_SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
       }
       case PREPARE_SUBWOOFER_SHOT, WAITING_SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
       }
       case PREPARE_SPEAKER_SHOT, WAITING_SPEAKER_SHOT -> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
 
         snaps.setAngle(speakerDistanceAngle.targetAngle());
         snaps.setEnabled(true);
@@ -222,7 +208,6 @@ public class RobotManager extends StateMachine<RobotState> {
       case PREPARE_FLOOR_SHOT, WAITING_FLOOR_SHOT -> {
         shooter.setState(ShooterState.FLOOR_SHOT);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
 
         snaps.setAngle(floorDistanceAngle.targetAngle());
         snaps.setEnabled(true);
@@ -230,8 +215,7 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case FLOOR_SHOT -> {
         shooter.setState(ShooterState.FLOOR_SHOT);
-        intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.TO_SHOOTER);
+        intake.setState(IntakeState.TO_SHOOTER);
 
         snaps.setAngle(floorDistanceAngle.targetAngle());
         snaps.setEnabled(true);
@@ -239,8 +223,7 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case SPEAKER_SHOT -> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
-        intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.TO_SHOOTER);
+        intake.setState(IntakeState.TO_SHOOTER);
 
         snaps.setAngle(speakerDistanceAngle.targetAngle());
         snaps.setEnabled(true);
@@ -248,13 +231,11 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
-        intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.TO_SHOOTER);
+        intake.setState(IntakeState.TO_SHOOTER);
       }
       case WAITING_AMP -> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
 
         snaps.setAngle(SnapManager.getAmpAngle());
         snaps.setEnabled(true);
@@ -262,8 +243,7 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case AMP_SHOT -> {
         shooter.setState(ShooterState.AMP);
-        intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.TO_SHOOTER);
+        intake.setState(IntakeState.TO_SHOOTER);
 
         snaps.setAngle(SnapManager.getAmpAngle());
         snaps.setEnabled(true);
@@ -271,13 +251,11 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case UNJAM -> {
         shooter.setState(ShooterState.IDLE);
-        intake.setState(IntakeState.OUTTAKE);
-        queuer.setState(QueuerState.TO_SHOOTER);
+        intake.setState(IntakeState.TO_SHOOTER);
       }
       case CLIMB_LOWERED, CLIMB_RAISED -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
-        queuer.setState(QueuerState.IDLE);
       }
     }
     climber.setState(newState.climberRaised ? ClimberState.RAISED : ClimberState.LOWERED);

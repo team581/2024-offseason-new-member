@@ -21,6 +21,5 @@ public class Hardware {
   public final TalonFX bottomShooter = new TalonFX(CONFIG.shooter().bottomMotorID());
   public final TalonFX topShooter = new TalonFX(CONFIG.shooter().topMotorID());
   public final TalonFX intakeMotor = new TalonFX(CONFIG.intake().motorID());
-  public final TalonFX queuerMotor = new TalonFX(CONFIG.queuer().motorID());
-  public final DigitalInput sensor = new DigitalInput(CONFIG.queuer().sensorID());
+  public final DigitalInput sensor = new DigitalInput(CONFIG.intake().sensorID());
 }

@@ -16,7 +16,6 @@ import frc.robot.generated.BuildConstants;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.localization.LocalizationSubsystem;
-import frc.robot.queuer.QueuerSubsystem;
 import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
 import frc.robot.robot_manager.RobotState;
@@ -37,8 +36,7 @@ public class Robot extends TimedRobot {
 
   private final ClimberSubsystem climber = new ClimberSubsystem(hd.climberMotor);
   private final ShooterSubsystem shooter = new ShooterSubsystem(hd.bottomShooter, hd.topShooter);
-  private final IntakeSubsystem intake = new IntakeSubsystem(hd.intakeMotor);
-  private final QueuerSubsystem queuer = new QueuerSubsystem(hd.queuerMotor, hd.sensor);
+  private final IntakeSubsystem intake = new IntakeSubsystem(hd.intakeMotor, hd.sensor);
   private final SwerveSubsystem swerve = new SwerveSubsystem(hd.driverController);
   private final ImuSubsystem imu = new ImuSubsystem(swerve);
   private final FmsSubsystem fms = new FmsSubsystem();
@@ -46,7 +44,7 @@ public class Robot extends TimedRobot {
   private final LocalizationSubsystem localization = new LocalizationSubsystem(swerve, imu, vision);
   private final SnapManager snaps = new SnapManager(swerve, hd.driverController);
   private final RobotManager robotManager =
-      new RobotManager(intake, queuer, shooter, climber, localization, vision, swerve, snaps, imu);
+      new RobotManager(intake, shooter, climber, localization, vision, swerve, snaps, imu);
   private final RobotCommands actions = new RobotCommands(robotManager);
   private final Autos autos = new Autos(swerve, localization, actions, robotManager);
 

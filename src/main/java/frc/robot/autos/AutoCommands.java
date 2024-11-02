@@ -51,7 +51,7 @@ public class AutoCommands {
       return true;
     }
 
-    return robotManager.queuer.hasNote() || robotManager.getState().hasNote;
+    return robotManager.intake.hasNote() || robotManager.getState().hasNote;
   }
 
   // public Command doManyAutoSteps(List<AutoNoteStep> steps) {

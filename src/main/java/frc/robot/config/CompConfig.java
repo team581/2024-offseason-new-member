@@ -14,7 +14,6 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.config.RobotConfig.ClimberConfig;
 import frc.robot.config.RobotConfig.IntakeConfig;
 import frc.robot.config.RobotConfig.PerfToggles;
-import frc.robot.config.RobotConfig.QueuerConfig;
 import frc.robot.config.RobotConfig.ShooterConfig;
 import frc.robot.config.RobotConfig.SwerveConfig;
 import frc.robot.config.RobotConfig.VisionConfig;
@@ -40,25 +39,13 @@ class CompConfig {
           "competition",
           new IntakeConfig(
               4,
+              0,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
                           .withSupplyCurrentLimit(50)
                           .withSupplyCurrentLimitEnable(true))
-                  .withClosedLoopRamps(CLOSED_LOOP_RAMP)
-                  .withOpenLoopRamps(OPEN_LOOP_RAMP)),
-          new QueuerConfig(
-              5,
-              0,
-              new TalonFXConfiguration()
-                  .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
-                  .withCurrentLimits(
-                      new CurrentLimitsConfigs()
-                          .withSupplyCurrentLimit(20)
-                          .withSupplyCurrentLimitEnable(true))
-                  .withMotorOutput(
-                      new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
           new ShooterConfig(
