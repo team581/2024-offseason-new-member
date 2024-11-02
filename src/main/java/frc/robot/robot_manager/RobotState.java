@@ -6,7 +6,9 @@ public enum RobotState {
   IDLE_W_GP(true),
 
   OUTTAKING(true),
+
   WAITING_SHOOTER_OUTTAKE(true),
+  PREPARE_SHOOTER_OUTTAKE(true),
   SHOOTER_OUTTAKE(true),
 
   WAITING_SUBWOOFER_SHOT(true),

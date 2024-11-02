@@ -159,6 +159,9 @@ public class RobotManager extends StateMachine<RobotState> {
                   && angularVelocitySlowEnough
               ? RobotState.FLOOR_SHOT
               : currentState;
+
+      case PREPARE_SHOOTER_OUTTAKE -> shooter.atGoal(ShooterState.SHOOTER_OUTTAKE) ? RobotState.FLOOR_SHOT : currentState;
+
       case INTAKING -> queuer.hasNote() ? RobotState.IDLE_W_GP : currentState;
     };
   }
@@ -195,7 +198,7 @@ public class RobotManager extends StateMachine<RobotState> {
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
       }
-      case WAITING_SHOOTER_OUTTAKE -> {
+      case PREPARE_SHOOTER_OUTTAKE, WAITING_SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
@@ -345,6 +348,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case WAITING_SUBWOOFER_SHOT -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
       case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
       case WAITING_SPEAKER_SHOT -> setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
+      case WAITING_SHOOTER_OUTTAKE -> setStateFromRequest(RobotState.PREPARE_SHOOTER_OUTTAKE);
       case WAITING_AMP -> ampRequest();
 
       default -> {
@@ -370,7 +374,7 @@ public class RobotManager extends StateMachine<RobotState> {
   }
 
   public void outtakeShooterRequest() {
-    setStateFromRequest(RobotState.SHOOTER_OUTTAKE);
+    setStateFromRequest(RobotState.PREPARE_SHOOTER_OUTTAKE);
   }
 
   public void waitOuttakeShooterRequest() {
