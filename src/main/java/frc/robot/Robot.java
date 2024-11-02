@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    autonomousCommand = Commands.none();
+    autonomousCommand = autos.getAutoCommand();
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
@@ -126,10 +126,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    autonomousCommand = autos.getAutoCommand();
-
     if (autonomousCommand != null) {
-      autonomousCommand.schedule();
+      autonomousCommand.cancel();;
     }
   }
 
