@@ -1,0 +1,182 @@
+{
+  "SwerveOptions": {
+    "HorizontalTrackSizeInches": 22.5,
+    "HasVerifiedSteer": true,
+    "HasVerifiedDrive": true,
+    "IsLeftSideInverted": false,
+    "SwerveModuleType": 3,
+    "VerticalTrackSizeInches": 22.5,
+    "IsValidConfiguration": true,
+    "IsRightSideInverted": true,
+    "IsValidGyroCANbus": true,
+    "WheelRadiusInches": 1.9,
+    "Gyro": {
+      "Model": "Pigeon 2",
+      "Id": 19,
+      "CANbus": "rio",
+      "Name": "Pigeon 2 (Device ID 19)",
+      "CANbusFriendly": ""
+    },
+    "SwerveModuleConfiguration": {
+      "DriveRatio": 8.142857142857142,
+      "CustomName": "L1",
+      "Flipped": 3,
+      "CouplingRatio": 3.5714285714285716,
+      "_CouplingRatio": 3.5714285714285716,
+      "_CustomName": "L1",
+      "SteerRatio": 12.8
+    }
+  },
+  "LastState": 11,
+  "Version": "1.0.0.0",
+  "Modules": [
+    {
+      "IsSteerInverted": false,
+      "SteerEncoderSelectionState": 1,
+      "ValidatedEncoderId": 15,
+      "ModuleName": "Front Left",
+      "IsConfigurationCompleted": true,
+      "DriveMotor": {
+        "Model": "Talon FX",
+        "Id": 7,
+        "CANbus": "rio",
+        "Name": "FLDrive",
+        "CANbusFriendly": ""
+      },
+      "IsModuleValidationComplete": true,
+      "EncoderOffset": -0.314208984375,
+      "DriveMotorSelectionState": 1,
+      "ValidatedSteerId": 11,
+      "IsEncoderOffsetConfigured": true,
+      "ModuleId": 0,
+      "IsDeviceSelectionCompleted": true,
+      "SteerMotor": {
+        "Model": "Talon FX",
+        "Id": 11,
+        "CANbus": "rio",
+        "Name": "FLSteer",
+        "CANbusFriendly": ""
+      },
+      "Encoder": {
+        "Model": "CANCoder",
+        "Id": 15,
+        "CANbus": "rio",
+        "Name": "FLCancoder",
+        "CANbusFriendly": ""
+      },
+      "SteerMotorSelectionState": 1,
+      "ValidatedDriveId": 7
+    },
+    {
+      "IsSteerInverted": false,
+      "SteerEncoderSelectionState": 1,
+      "ValidatedEncoderId": 16,
+      "ModuleName": "Front Right",
+      "IsConfigurationCompleted": true,
+      "DriveMotor": {
+        "Model": "Talon FX",
+        "Id": 8,
+        "CANbus": "rio",
+        "Name": "FRDrive",
+        "CANbusFriendly": ""
+      },
+      "IsModuleValidationComplete": true,
+      "EncoderOffset": 0.4072265625,
+      "DriveMotorSelectionState": 1,
+      "ValidatedSteerId": 12,
+      "IsEncoderOffsetConfigured": true,
+      "ModuleId": 1,
+      "IsDeviceSelectionCompleted": true,
+      "SteerMotor": {
+        "Model": "Talon FX",
+        "Id": 12,
+        "CANbus": "rio",
+        "Name": "FRSteer",
+        "CANbusFriendly": ""
+      },
+      "Encoder": {
+        "Model": "CANCoder",
+        "Id": 16,
+        "CANbus": "rio",
+        "Name": "FRCancoder",
+        "CANbusFriendly": ""
+      },
+      "SteerMotorSelectionState": 1,
+      "ValidatedDriveId": 8
+    },
+    {
+      "IsSteerInverted": false,
+      "SteerEncoderSelectionState": 1,
+      "ValidatedEncoderId": 17,
+      "ModuleName": "Back Left",
+      "IsConfigurationCompleted": true,
+      "DriveMotor": {
+        "Model": "Talon FX",
+        "Id": 9,
+        "CANbus": "rio",
+        "Name": "BLDrive",
+        "CANbusFriendly": ""
+      },
+      "IsModuleValidationComplete": true,
+      "EncoderOffset": 0.281982421875,
+      "DriveMotorSelectionState": 1,
+      "ValidatedSteerId": 13,
+      "IsEncoderOffsetConfigured": true,
+      "ModuleId": 2,
+      "IsDeviceSelectionCompleted": true,
+      "SteerMotor": {
+        "Model": "Talon FX",
+        "Id": 13,
+        "CANbus": "rio",
+        "Name": "BLSteer",
+        "CANbusFriendly": ""
+      },
+      "Encoder": {
+        "Model": "CANCoder",
+        "Id": 17,
+        "CANbus": "rio",
+        "Name": "BLCancoder",
+        "CANbusFriendly": ""
+      },
+      "SteerMotorSelectionState": 1,
+      "ValidatedDriveId": 9
+    },
+    {
+      "IsSteerInverted": false,
+      "SteerEncoderSelectionState": 1,
+      "ValidatedEncoderId": 18,
+      "ModuleName": "Back Right",
+      "IsConfigurationCompleted": true,
+      "DriveMotor": {
+        "Model": "Talon FX",
+        "Id": 10,
+        "CANbus": "rio",
+        "Name": "BRDrive",
+        "CANbusFriendly": ""
+      },
+      "IsModuleValidationComplete": true,
+      "EncoderOffset": -0.281494140625,
+      "DriveMotorSelectionState": 1,
+      "ValidatedSteerId": 14,
+      "IsEncoderOffsetConfigured": true,
+      "ModuleId": 3,
+      "IsDeviceSelectionCompleted": true,
+      "SteerMotor": {
+        "Model": "Talon FX",
+        "Id": 14,
+        "CANbus": "rio",
+        "Name": "BRSteer",
+        "CANbusFriendly": ""
+      },
+      "Encoder": {
+        "Model": "CANCoder",
+        "Id": 18,
+        "CANbus": "rio",
+        "Name": "BRCancoder",
+        "CANbusFriendly": ""
+      },
+      "SteerMotorSelectionState": 1,
+      "ValidatedDriveId": 10
+    }
+  ]
+}
