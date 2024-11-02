@@ -290,20 +290,8 @@ public class RobotManager extends StateMachine<RobotState> {
     setStateFromRequest(RobotState.WAITING_AMP);
   }
 
-  public void ampRequest() {
-    setStateFromRequest(RobotState.AMP_SHOT);
-  }
-
-  public void subwooferShotRequest() {
-    setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
-  }
-
   public void waitSubwooferShotRequest() {
     setStateFromRequest(RobotState.WAITING_SUBWOOFER_SHOT);
-  }
-
-  public void floorShotRequest() {
-    setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
   }
 
   public void waitFloorShotRequest() {
@@ -311,19 +299,11 @@ public class RobotManager extends StateMachine<RobotState> {
   }
 
   public void speakerShotRequest() {
-    setStateFromRequest(RobotState.SPEAKER_SHOT);
+    setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
   }
 
   public void waitSpeakerShotRequest() {
     setStateFromRequest(RobotState.WAITING_SPEAKER_SHOT);
-  }
-
-  public void waitSpeakerAutoShotRequest() {
-    if (getState().hasNote) {
-      setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
-    } else {
-      intakeRequest();
-    }
   }
 
   public void confirmShotRequest() {
@@ -334,7 +314,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
       case WAITING_SPEAKER_SHOT -> setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
       case WAITING_SHOOTER_OUTTAKE -> setStateFromRequest(RobotState.PREPARE_SHOOTER_OUTTAKE);
-      case WAITING_AMP -> ampRequest();
+      case WAITING_AMP -> setStateFromRequest();
 
       default -> {
           setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
@@ -358,23 +338,15 @@ public class RobotManager extends StateMachine<RobotState> {
     setStateFromRequest(RobotState.PREPARE_SHOOTER_OUTTAKE);
   }
 
-  public void waitOuttakeShooterRequest() {
-    setStateFromRequest(RobotState.WAITING_SHOOTER_OUTTAKE);
-  }
-
-  public void idleNoGPRequest() {
-    setStateFromRequest(RobotState.IDLE_NO_GP);
-  }
-
   public void idleRequest() {
-    if (queuer.hasNote()) {
+    if (getState().hasNote) {
       setStateFromRequest(RobotState.IDLE_W_GP);
     } else {
       setStateFromRequest(RobotState.IDLE_NO_GP);
     }
   }
 
-  public void doClimbSequenceRequest() {
+  public void nextClimbRequest() {
     switch (getState()) {
       default -> setStateFromRequest(RobotState.WAITING_CLIMB);
 
@@ -384,7 +356,7 @@ public class RobotManager extends StateMachine<RobotState> {
     }
   }
 
-  public void reverseClimbSequenceRequest() {
+  public void reverseClimbRequest() {
     switch (getState()) {
       default -> setStateFromRequest(RobotState.CLIMBED);
 

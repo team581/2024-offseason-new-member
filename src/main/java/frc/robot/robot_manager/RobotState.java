@@ -24,6 +24,7 @@ public enum RobotState {
   SPEAKER_SHOT(true),
 
   WAITING_AMP(true),
+  PREPARE_AMP(true),
   AMP_SHOT(true),
 
   UNJAM,

@@ -63,19 +63,9 @@ public class RobotCommands {
         .withName("WaitingSpeakerCommand");
   }
 
-  public Command waitSpeakerAutoCommand() {
-    return Commands.runOnce(robot::waitSpeakerAutoShotRequest, requirements)
-        .andThen(robot.waitForStates(idleStates))
-        .withName("WaitingAutoSpeakerCommand");
-  }
-
   public Command waitFloorCommand() {
     return Commands.runOnce(robot::waitFloorShotRequest, requirements)
         .withName("WaitingFloorCommand");
-  }
-
-  public Command waitAmpCommand() {
-    return Commands.runOnce(robot::waitAmpRequest, requirements).withName("WaitingAmpCommand");
   }
 
   public Command confirmShotCommand() {
@@ -84,21 +74,16 @@ public class RobotCommands {
         .withName("ConfirmShotCommand");
   }
 
-  public Command ampCommand() {
-    return Commands.runOnce(robot::ampRequest, requirements).withName("AmpCommand");
+  public Command waitAmpCommand() {
+    return Commands.runOnce(robot::waitAmpRequest, requirements).withName("AmpCommand");
   }
 
   public Command speakerShotCommand() {
     return Commands.runOnce(robot::speakerShotRequest, requirements).withName("SpeakerShotCommand");
   }
 
-  public Command subwooferShotCommand() {
-    return Commands.runOnce(robot::subwooferShotRequest, requirements)
-        .withName("SubwooferShotCommand");
-  }
-
   public Command climbSequenceCommand() {
-    return Commands.runOnce(robot::doClimbSequenceRequest, requirements)
+    return Commands.runOnce(robot::nextClimbRequest, requirements)
         .andThen(
             robot.waitForStates(
                 Set.of(
@@ -111,7 +96,7 @@ public class RobotCommands {
   }
 
   public Command reverseClimbSequenceCommand() {
-    return Commands.runOnce(robot::reverseClimbSequenceRequest, requirements)
+    return Commands.runOnce(robot::reverseClimbRequest, requirements)
         .andThen(
             robot.waitForStates(
                 Set.of(
