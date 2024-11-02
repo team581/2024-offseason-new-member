@@ -42,7 +42,9 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
     double filteredCurrent = currentFilter.calculate(rawCurrent);
 
     switch (newState) {
-      case NOT_HOMED -> {}
+      case NOT_HOMED -> {
+        motor.disable();
+      }
 
       case HOMING -> {
         motor.setVoltage(CONFIG.homingVoltage());
