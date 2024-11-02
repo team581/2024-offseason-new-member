@@ -3,11 +3,9 @@ package frc.robot.swerve;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-
-import dev.doglog.DogLog;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -220,12 +218,12 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     slowEnoughToShoot = calculateMovingSlowEnoughForSpeakerShot(robotRelativeSpeeds);
     slowEnoughToFeed = calculateMovingSlowEnoughForFloorShot(robotRelativeSpeeds);
 
-   var moduleStates = drivetrain.getState().ModuleStates;
+    var moduleStates = drivetrain.getState().ModuleStates;
 
     // Sometimes we check for module states before they seem to be populated
     // This avoids a crash because of that
     if (moduleStates == null) {
-      moduleStates  = new SwerveModuleState[] {};
+      moduleStates = new SwerveModuleState[] {};
     }
 
     DogLog.log("Swerve/ModuleStates", moduleStates);

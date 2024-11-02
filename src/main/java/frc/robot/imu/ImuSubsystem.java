@@ -1,8 +1,6 @@
 package frc.robot.imu;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.MountPoseConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
