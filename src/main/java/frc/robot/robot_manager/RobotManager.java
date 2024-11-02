@@ -314,7 +314,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case WAITING_AMP -> setStateFromRequest(RobotState.PREPARE_AMP);
 
       default -> {
-          setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
+        setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
       }
     }
   }

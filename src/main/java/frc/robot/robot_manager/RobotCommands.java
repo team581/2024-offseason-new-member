@@ -16,8 +16,7 @@ public class RobotCommands {
   }
 
   public Command idleCommand() {
-    return Commands.runOnce(robot::idleRequest, requirements)
-        .withName("IdleCommand");
+    return Commands.runOnce(robot::idleRequest, requirements).withName("IdleCommand");
   }
 
   public Command intakeCommand() {
@@ -27,8 +26,7 @@ public class RobotCommands {
   }
 
   public Command outtakeCommand() {
-    return Commands.runOnce(robot::outtakeRequest, requirements)
-        .withName("OuttakeCommand");
+    return Commands.runOnce(robot::outtakeRequest, requirements).withName("OuttakeCommand");
   }
 
   public Command outtakeShooterCommand() {
@@ -38,8 +36,7 @@ public class RobotCommands {
   }
 
   public Command unjamCommand() {
-    return Commands.runOnce(robot::unjamRequest, requirements)
-        .withName("UnjamCommand");
+    return Commands.runOnce(robot::unjamRequest, requirements).withName("UnjamCommand");
   }
 
   public Command waitSubwooferCommand() {
@@ -58,8 +55,7 @@ public class RobotCommands {
   }
 
   public Command confirmShotCommand() {
-    return Commands.runOnce(robot::confirmShotRequest, requirements)
-        .withName("ConfirmShotCommand");
+    return Commands.runOnce(robot::confirmShotRequest, requirements).withName("ConfirmShotCommand");
   }
 
   public Command waitAmpCommand() {
@@ -71,8 +67,7 @@ public class RobotCommands {
   }
 
   public Command nextClimbCommand() {
-    return Commands.runOnce(robot::nextClimbRequest, requirements)
-        .withName("ClimbSequenceCommand");
+    return Commands.runOnce(robot::nextClimbRequest, requirements).withName("ClimbSequenceCommand");
   }
 
   public Command reverseClimbCommand() {

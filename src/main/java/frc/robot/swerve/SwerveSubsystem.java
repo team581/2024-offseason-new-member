@@ -1,13 +1,10 @@
 package frc.robot.swerve;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.signals.InvertedValue;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +21,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.util.ControllerHelpers;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
-
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Optional;
@@ -134,7 +130,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     modulePositions = calculateModulePositions();
     this.controller = controller;
 
-    for (int i = 0; i<4; i++) {
+    for (int i = 0; i < 4; i++) {
       var module = drivetrain.getModule(i);
       var driveMotorConfigurator = module.getDriveMotor().getConfigurator();
 
