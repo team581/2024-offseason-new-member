@@ -202,10 +202,6 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
-        snaps.setAngle(speakerDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
       }
       case PREPARE_SPEAKER_SHOT, WAITING_SPEAKER_SHOT -> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
@@ -247,10 +243,6 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
-
-        snaps.setAngle(speakerDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
       }
       case WAITING_AMP -> {
         shooter.setState(ShooterState.AMP);
@@ -345,11 +337,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case WAITING_AMP -> ampRequest();
 
       default -> {
-        if (limelightWorking) {
           setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
-        } else {
-          setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
-        }
       }
     }
   }
