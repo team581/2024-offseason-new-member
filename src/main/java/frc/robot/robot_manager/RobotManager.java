@@ -183,7 +183,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case INTAKING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.INTAKE);
-        queuer.setState(QueuerState.IDLE);
+        queuer.setState(QueuerState.INTAKING);
       }
       case OUTTAKING -> {
         shooter.setState(ShooterState.IDLE);
