@@ -30,6 +30,7 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
     pid.setD(0);
 
     encoder.setPositionConversionFactor(2 * Math.PI);
+    motor.burnFlash();
 
     this.motor = motor;
   }
