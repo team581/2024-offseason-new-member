@@ -35,7 +35,10 @@ public class QueuerSubsystem extends StateMachine<QueuerState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
+
     DogLog.log("Queuer/HasNote", hasNote());
+    DogLog.log("Queuer/State", getState());
+    DogLog.log("Queuer/State/Volts", getState().volts);
   }
 
   public boolean hasNote() {

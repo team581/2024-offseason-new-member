@@ -27,12 +27,11 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
 
     this.encoder = motor.getEncoder();
     this.pid = motor.getPIDController();
+    pid.setP(0);
+    pid.setI(0);
+    pid.setD(0);
 
     encoder.setPositionConversionFactor(2 * Math.PI);
-    // TODO: tune pid and make more config for motor
-    pid.setP(1.0);
-    pid.setI(1.0);
-    pid.setD(1.0);
 
     this.motor = motor;
   }
@@ -66,7 +65,7 @@ public class ClimberSubsystem extends StateMachine<HomingState> {
         if (raised) {
           pid.setReference(CONFIG.maxHeight() / CONFIG.axleRadius(), ControlType.kPosition);
         } else {
-          pid.setReference(CONFIG.minHeight(), ControlType.kPosition);
+          pid.setReference(CONFIG.minHeight() / CONFIG.axleRadius(), ControlType.kPosition);
         }
       }
     }

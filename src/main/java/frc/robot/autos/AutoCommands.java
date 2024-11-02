@@ -45,8 +45,7 @@ public class AutoCommands {
   public Command speakerShotWithTimeout() {
     return actions
         .speakerShotCommand()
-        .withTimeout(2)
-        .andThen(actions.speakerShotCommand().withTimeout(1))
+        .withTimeout(3)
         .withName("SpeakerShotWithTimeout");
   }
 
@@ -106,11 +105,4 @@ public class AutoCommands {
   //                     new NoteMapElement(now + 10, AutoNoteStaged.noteIdToTranslation(8)))));
   //       });
   // }
-
-  public Command waitingDropRequestCommand() {
-    return Commands.runOnce(
-        () -> {
-          robotManager.waitOuttakeShooterRequest();
-        });
-  }
 }

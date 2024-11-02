@@ -1,5 +1,6 @@
 package frc.robot.robot_manager;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.climber.ClimberSubsystem;
 import frc.robot.imu.ImuSubsystem;
@@ -104,6 +105,14 @@ public class RobotManager extends StateMachine<RobotState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
+
+    DogLog.log("RobotManager/State", getState());
+    DogLog.log("RobotManager/State/ClimberRaised", getState().climberRaised);
+    DogLog.log("RobotManager/State/hasNote", getState().hasNote);
+    DogLog.log("RobotManager/LimelightWorking", limelightWorking);
+    DogLog.log("RobotManager/SwerveSlowEnough", swerveSlowEnough);
+    DogLog.log("RobotManager/RobotHeadingAtGoal", robotHeadingAtGoal);
+    DogLog.log("RobotManager/AngularVelocitySlowEnough", angularVelocitySlowEnough);
   }
 
   // Automatic state transitions
@@ -135,11 +144,11 @@ public class RobotManager extends StateMachine<RobotState> {
               : currentState;
 
       case PREPARE_SPEAKER_SHOT ->
-          shooter.atGoal(ShooterState.SPEAKER_SHOT)
+          (shooter.atGoal(ShooterState.SPEAKER_SHOT)
                   && swerveSlowEnough
                   && angularVelocitySlowEnough
                   && robotHeadingAtGoal
-                  && limelightWorking
+                  && limelightWorking)
               ? RobotState.SPEAKER_SHOT
               : currentState;
 
@@ -164,38 +173,32 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
 
       case IDLE_W_GP -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case INTAKING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.INTAKE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case OUTTAKING -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
         queuer.setState(QueuerState.TO_INTAKE);
-
       }
       case SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.TO_SHOOTER);
-
       }
       case WAITING_SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case PREPARE_SUBWOOFER_SHOT, WAITING_SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
@@ -273,19 +276,16 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
         queuer.setState(QueuerState.TO_SHOOTER);
-
       }
       case WAITING_CLIMB -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case CLIMBING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
         queuer.setState(QueuerState.IDLE);
-
       }
       case CLIMBED -> {
         shooter.setState(ShooterState.STOPPED);

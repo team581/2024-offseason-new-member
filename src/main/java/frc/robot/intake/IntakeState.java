@@ -1,15 +1,13 @@
 package frc.robot.intake;
 
 public enum IntakeState {
-  IDLE(0.0, false),
-  INTAKE(3.0, false),
-  OUTTAKE(-3.0, false);
+  IDLE(0.0),
+  INTAKE(4.0),
+  OUTTAKE(-2.0);
 
   public final double volts;
-  public final boolean inverted;
 
-  IntakeState(double volts, boolean funnelInvert) {
+  IntakeState(double volts) {
     this.volts = volts;
-    this.inverted = funnelInvert;
   }
 }

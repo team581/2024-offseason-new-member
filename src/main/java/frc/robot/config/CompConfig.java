@@ -12,7 +12,6 @@ import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.util.Units;
 import frc.robot.config.RobotConfig.ClimberConfig;
-import frc.robot.config.RobotConfig.IMUConfig;
 import frc.robot.config.RobotConfig.IntakeConfig;
 import frc.robot.config.RobotConfig.PerfToggles;
 import frc.robot.config.RobotConfig.QueuerConfig;
@@ -22,7 +21,6 @@ import frc.robot.config.RobotConfig.VisionConfig;
 import frc.robot.vision.interpolation.InterpolatedVisionDataset;
 
 class CompConfig {
-  private static final String CANIVORE_NAME = "581CANivore";
   private static final String RIO_CAN_NAME = "rio";
 
   private static final ClosedLoopRampsConfigs CLOSED_LOOP_RAMP =
@@ -40,9 +38,7 @@ class CompConfig {
   public static final RobotConfig competitionBot =
       new RobotConfig(
           "competition",
-          CANIVORE_NAME,
           new IntakeConfig(
-              3,
               4,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
@@ -54,7 +50,7 @@ class CompConfig {
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
           new QueuerConfig(
               5,
-              6,
+              0,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
@@ -66,8 +62,8 @@ class CompConfig {
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP)),
           new ShooterConfig(
-              1,
               2,
+              3,
               100,
               new TalonFXConfiguration(),
               new TalonFXConfiguration()
@@ -80,7 +76,7 @@ class CompConfig {
                       new TorqueCurrentConfigs()
                           .withPeakForwardTorqueCurrent(200)
                           .withPeakReverseTorqueCurrent(0))
-                  .withSlot0(new Slot0Configs().withKP(15).withKV(0).withKS(14.8))
+                  .withSlot0(new Slot0Configs().withKP(0.0).withKV(0).withKS(0.0))
                   .withMotorOutput(
                       new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
@@ -91,11 +87,10 @@ class CompConfig {
               bottomFlywheelDistanceToRPM -> {
                 bottomFlywheelDistanceToRPM.put(0.0, 0.0);
               }),
-          new ClimberConfig(0, 1.0, 10.0, 0.0, 0.0, 0.0, 7),
-          new IMUConfig(15),
+          new ClimberConfig(1, 1.0, 0.5, 0.0, -0.5, 10.0, 4),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
-              new PhoenixPIDController(20, 0, 2),
+              new PhoenixPIDController(-4.0, 0, 0), //20 0 2
               true,
               true,
               true,
