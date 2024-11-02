@@ -137,6 +137,8 @@ public class RobotManager extends StateMachine<RobotState> {
       case PREPARE_SUBWOOFER_SHOT ->
           shooter.atGoal(ShooterState.SUBWOOFER_SHOT) ? RobotState.SUBWOOFER_SHOT : currentState;
 
+      case PREPARE_AMP -> shooter.atGoal(ShooterState.AMP) ? RobotState.AMP_SHOT : currentState;
+
       case PREPARE_SPEAKER_SHOT ->
           (shooter.atGoal(ShooterState.SPEAKER_SHOT)
                   && swerveSlowEnough
@@ -187,6 +189,11 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
         queuer.setState(QueuerState.TO_INTAKE);
+      }
+      case PREPARE_AMP -> {
+        shooter.setState(ShooterState.AMP);
+        intake.setState(IntakeState.IDLE);
+        queuer.setState(QueuerState.IDLE);
       }
       case SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
@@ -314,7 +321,7 @@ public class RobotManager extends StateMachine<RobotState> {
       case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
       case WAITING_SPEAKER_SHOT -> setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
       case WAITING_SHOOTER_OUTTAKE -> setStateFromRequest(RobotState.PREPARE_SHOOTER_OUTTAKE);
-      case WAITING_AMP -> setStateFromRequest();
+      case WAITING_AMP -> setStateFromRequest(RobotState.PREPARE_AMP);
 
       default -> {
           setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
