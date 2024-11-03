@@ -94,19 +94,6 @@ public class RobotManager extends StateMachine<RobotState> {
     shooter.setSpeakerDistance(speakerDistance);
   }
 
-  @Override
-  public void robotPeriodic() {
-    super.robotPeriodic();
-
-    DogLog.log("RobotManager/State", getState());
-    DogLog.log("RobotManager/State/ClimberRaised", getState().climberRaised);
-    DogLog.log("RobotManager/State/hasNote", getState().hasNote);
-    DogLog.log("RobotManager/LimelightWorking", limelightWorking);
-    DogLog.log("RobotManager/SwerveSlowEnough", swerveSlowEnough);
-    DogLog.log("RobotManager/RobotHeadingAtGoal", robotHeadingAtGoal);
-    DogLog.log("RobotManager/AngularVelocitySlowEnough", angularVelocitySlowEnough);
-  }
-
   // Automatic state transitions
   @Override
   protected RobotState getNextState(RobotState currentState) {
@@ -252,6 +239,28 @@ public class RobotManager extends StateMachine<RobotState> {
     climber.setState(newState.climberRaised ? ClimberState.RAISED : ClimberState.LOWERED);
   }
 
+  @Override
+  public void robotPeriodic() {
+    super.robotPeriodic();
+
+     switch (getState()) {
+      case PREPARE_SPEAKER_SHOT, SPEAKER_SHOT, WAITING_SPEAKER_SHOT -> {
+        swerve.setSnapToAngle(speakerDistanceAngle.targetAngle());
+      }
+      case PREPARE_FLOOR_SHOT, FLOOR_SHOT, WAITING_FLOOR_SHOT -> {
+        swerve.setSnapToAngle(floorDistanceAngle.targetAngle());
+      }
+      default -> {}
+    }
+
+    DogLog.log("RobotManager/State", getState());
+    DogLog.log("RobotManager/State/ClimberRaised", getState().climberRaised);
+    DogLog.log("RobotManager/State/hasNote", getState().hasNote);
+    DogLog.log("RobotManager/LimelightWorking", limelightWorking);
+    DogLog.log("RobotManager/SwerveSlowEnough", swerveSlowEnough);
+    DogLog.log("RobotManager/RobotHeadingAtGoal", robotHeadingAtGoal);
+    DogLog.log("RobotManager/AngularVelocitySlowEnough", angularVelocitySlowEnough);
+  }
   public void waitAmpRequest() {
     setStateFromRequest(RobotState.WAITING_AMP);
   }
