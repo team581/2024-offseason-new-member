@@ -3,6 +3,8 @@ package frc.robot.robot_manager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.swerve.SnapUtil;
+
 import java.util.List;
 
 public class RobotCommands {
@@ -80,6 +82,26 @@ public class RobotCommands {
   }
 
   public Command preloadNoteCommand() {
-    return Commands.runOnce(robot::preloadNoteRequest, requirements).withName("preloadNoteCommand");
+    return Commands.runOnce(robot::preloadNoteRequest, requirements).withName("PreloadNoteCommand");
+  }
+
+  public Command snapToStageRightCommand() {
+    return Commands.runOnce(robot::snapToStageRight, requirements).withName("SnapToStageRightCommand");
+  }
+
+  public Command snapToStageLeftCommand() {
+    return Commands.runOnce(robot::snapToStageLeft, requirements).withName("SnapToStageLeftCommand");
+  }
+
+  public Command snapToStageBackCommand() {
+    return Commands.runOnce(robot::snapToStageBack, requirements).withName("SnapToStageBackCommand");
+  }
+
+  public Command snapToAmpCommand() {
+    return Commands.runOnce(robot::snapToAmp, requirements).withName("SnapToAmpCommand");
+  }
+
+  public Command snapToSourceCommand() {
+    return Commands.runOnce(robot::snapToSource, requirements).withName("SnapToSourceCommand");
   }
 }

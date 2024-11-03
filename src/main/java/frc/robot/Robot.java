@@ -20,7 +20,7 @@ import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
 import frc.robot.robot_manager.RobotState;
 import frc.robot.shooter.ShooterSubsystem;
-import frc.robot.snaps.SnapManager;
+import frc.robot.swerve.SnapUtil;
 import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.util.Stopwatch;
 import frc.robot.util.scheduling.LifecycleSubsystemManager;
@@ -42,9 +42,8 @@ public class Robot extends TimedRobot {
   private final FmsSubsystem fms = new FmsSubsystem();
   private final VisionSubsystem vision = new VisionSubsystem(imu);
   private final LocalizationSubsystem localization = new LocalizationSubsystem(swerve, imu, vision);
-  private final SnapManager snaps = new SnapManager(swerve, hd.driverController);
   private final RobotManager robotManager =
-      new RobotManager(intake, shooter, climber, localization, vision, swerve, snaps, imu);
+      new RobotManager(intake, shooter, climber, localization, vision, swerve, imu);
   private final RobotCommands actions = new RobotCommands(robotManager);
   private final Autos autos = new Autos(swerve, localization, actions, robotManager);
 
@@ -151,11 +150,11 @@ public class Robot extends TimedRobot {
     // Driver controller
     hd.driverController.back().onTrue(localization.getZeroCommand());
 
-    hd.driverController.y().onTrue(snaps.getCommand(() -> SnapManager.getSourceAngle()));
-    hd.driverController.x().onTrue(snaps.getCommand(() -> SnapManager.getStageLeftAngle()));
-    hd.driverController.b().onTrue(snaps.getCommand(() -> SnapManager.getStageRightAngle()));
-    hd.driverController.a().onTrue(snaps.getCommand(() -> SnapManager.getAmpAngle()));
-    hd.driverController.povUp().onTrue(snaps.getCommand(() -> SnapManager.getStageBackChain()));
+    hd.driverController.y().onTrue(actions.snapToSourceCommand());
+    hd.driverController.x().onTrue(actions.snapToStageLeftCommand());
+    hd.driverController.b().onTrue(actions.snapToStageRightCommand());
+    hd.driverController.a().onTrue(actions.snapToStageBackCommand());
+    hd.driverController.povUp().onTrue(actions.snapToAmpCommand());
 
     hd.driverController
         .leftTrigger()

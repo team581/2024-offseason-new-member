@@ -10,7 +10,7 @@ import frc.robot.intake.IntakeSubsystem;
 import frc.robot.localization.LocalizationSubsystem;
 import frc.robot.shooter.ShooterState;
 import frc.robot.shooter.ShooterSubsystem;
-import frc.robot.snaps.SnapManager;
+import frc.robot.swerve.SnapUtil;
 import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
@@ -25,7 +25,6 @@ public class RobotManager extends StateMachine<RobotState> {
   public final LocalizationSubsystem localization;
   public final VisionSubsystem vision;
   public final SwerveSubsystem swerve;
-  public final SnapManager snaps;
   public final ImuSubsystem imu;
 
   // INIT
@@ -36,7 +35,6 @@ public class RobotManager extends StateMachine<RobotState> {
       LocalizationSubsystem localization,
       VisionSubsystem vision,
       SwerveSubsystem swerve,
-      SnapManager snaps,
       ImuSubsystem imu) {
     super(SubsystemPriority.ROBOT_MANAGER, RobotState.IDLE_NO_GP);
     this.intake = intake;
@@ -45,7 +43,6 @@ public class RobotManager extends StateMachine<RobotState> {
     this.localization = localization;
     this.vision = vision;
     this.swerve = swerve;
-    this.snaps = snaps;
     this.imu = imu;
   }
 
@@ -201,33 +198,29 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
         intake.setState(IntakeState.IDLE);
 
-        snaps.setAngle(speakerDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.enableSnaps();
+        swerve.setSnapToAngle(speakerDistanceAngle.targetAngle());
       }
       case PREPARE_FLOOR_SHOT, WAITING_FLOOR_SHOT -> {
         shooter.setState(ShooterState.FLOOR_SHOT);
         intake.setState(IntakeState.IDLE);
 
-        snaps.setAngle(floorDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.enableSnaps();
+        swerve.setSnapToAngle(floorDistanceAngle.targetAngle());
       }
       case FLOOR_SHOT -> {
         shooter.setState(ShooterState.FLOOR_SHOT);
         intake.setState(IntakeState.TO_SHOOTER);
 
-        snaps.setAngle(floorDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.enableSnaps();
+        swerve.setSnapToAngle(floorDistanceAngle.targetAngle());
       }
       case SPEAKER_SHOT -> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
         intake.setState(IntakeState.TO_SHOOTER);
 
-        snaps.setAngle(speakerDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.enableSnaps();
+        swerve.setSnapToAngle(speakerDistanceAngle.targetAngle());
       }
       case SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
@@ -237,17 +230,15 @@ public class RobotManager extends StateMachine<RobotState> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.IDLE);
 
-        snaps.setAngle(SnapManager.getAmpAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.enableSnaps();
+        swerve.setSnapToAngle(SnapUtil.getAmpAngle());
       }
       case AMP_SHOT -> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.TO_SHOOTER);
 
-        snaps.setAngle(SnapManager.getAmpAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.enableSnaps();
+        swerve.setSnapToAngle(SnapUtil.getAmpAngle());
       }
       case UNJAM -> {
         shooter.setState(ShooterState.IDLE);
@@ -343,5 +334,25 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void preloadNoteRequest() {
     setStateFromRequest(RobotState.IDLE_W_GP);
+  }
+
+  public void snapToSource() {
+    swerve.setSnapToAngle(SnapUtil.getSourceAngle());
+  }
+
+  public void snapToStageLeft() {
+    swerve.setSnapToAngle(SnapUtil.getStageLeftAngle());
+  }
+
+  public void snapToStageRight() {
+    swerve.setSnapToAngle(SnapUtil.getStageRightAngle());
+  }
+
+  public void snapToStageBack() {
+    swerve.setSnapToAngle(SnapUtil.getStageBackChainAngle());
+  }
+
+  public void snapToAmp() {
+    swerve.setSnapToAngle(SnapUtil.getAmpAngle());
   }
 }
