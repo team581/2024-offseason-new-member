@@ -243,7 +243,7 @@ public class RobotManager extends StateMachine<RobotState> {
   public void robotPeriodic() {
     super.robotPeriodic();
 
-     switch (getState()) {
+    switch (getState()) {
       case PREPARE_SPEAKER_SHOT, SPEAKER_SHOT, WAITING_SPEAKER_SHOT -> {
         swerve.setSnapToAngle(speakerDistanceAngle.targetAngle());
       }
@@ -261,6 +261,7 @@ public class RobotManager extends StateMachine<RobotState> {
     DogLog.log("RobotManager/RobotHeadingAtGoal", robotHeadingAtGoal);
     DogLog.log("RobotManager/AngularVelocitySlowEnough", angularVelocitySlowEnough);
   }
+
   public void waitAmpRequest() {
     setStateFromRequest(RobotState.WAITING_AMP);
   }
