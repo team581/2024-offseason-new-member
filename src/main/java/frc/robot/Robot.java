@@ -2,6 +2,7 @@ package frc.robot;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,7 +37,7 @@ public class Robot extends TimedRobot {
   private final ClimberSubsystem climber = new ClimberSubsystem(hd.climberMotor);
   private final ShooterSubsystem shooter = new ShooterSubsystem(hd.bottomShooter, hd.topShooter);
   private final IntakeSubsystem intake = new IntakeSubsystem(hd.intakeMotor, hd.sensor);
-  private final SwerveSubsystem swerve = new SwerveSubsystem(hd.driverController);
+  private final SwerveSubsystem swerve = new SwerveSubsystem();
   private final ImuSubsystem imu = new ImuSubsystem(swerve);
   private final FmsSubsystem fms = new FmsSubsystem();
   private final VisionSubsystem vision = new VisionSubsystem(imu);
@@ -144,16 +145,19 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   private void configureBindings() {
-    swerve.setDefaultCommand(swerve.driveTeleopCommand());
+    swerve.setDefaultCommand(
+        swerve.run(
+            () -> {
+              if (DriverStation.isTeleop()) {
+                swerve.driveTeleop(
+                    hd.driverController.getLeftX(),
+                    hd.driverController.getLeftY(),
+                    hd.driverController.getRightX());
+              }
+            }));
 
     // Driver controller
     hd.driverController.back().onTrue(localization.getZeroCommand());
-
-    hd.driverController.y().onTrue(actions.snapToSourceCommand());
-    hd.driverController.x().onTrue(actions.snapToStageLeftCommand());
-    hd.driverController.b().onTrue(actions.snapToStageRightCommand());
-    hd.driverController.a().onTrue(actions.snapToStageBackCommand());
-    hd.driverController.povUp().onTrue(actions.snapToAmpCommand());
 
     hd.driverController
         .leftTrigger()
