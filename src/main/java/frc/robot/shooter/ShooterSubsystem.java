@@ -59,8 +59,8 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
         bottomMotor.disable();
       }
       default -> {
-        topMotor.setControl(velocityRequest.withVelocity(goalRPMTop));
-        bottomMotor.setControl(velocityRequest.withVelocity(goalRPMBottom));
+        topMotor.setControl(velocityRequest.withVelocity(goalRPMTop/60).withSlot(0));
+        bottomMotor.setControl(velocityRequest.withVelocity(goalRPMBottom/60).withSlot(0));
       }
     }
   }
