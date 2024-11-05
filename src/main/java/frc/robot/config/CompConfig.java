@@ -51,7 +51,7 @@ class CompConfig {
           new ShooterConfig(
               2,
               3,
-              100,
+              70,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
@@ -62,10 +62,12 @@ class CompConfig {
                       new TorqueCurrentConfigs()
                           .withPeakForwardTorqueCurrent(200)
                           .withPeakReverseTorqueCurrent(0))
-                  .withSlot0(new Slot0Configs().withKP(0.0).withKV(0).withKS(0.0))
+                  .withSlot0(new Slot0Configs().withKP(11).withKV(0.15).withKS(1.0))
+                  .withMotorOutput(
+                      new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP),
-              new TalonFXConfiguration()
+                  new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
@@ -75,9 +77,9 @@ class CompConfig {
                       new TorqueCurrentConfigs()
                           .withPeakForwardTorqueCurrent(200)
                           .withPeakReverseTorqueCurrent(0))
-                  .withSlot0(new Slot0Configs().withKP(0.0).withKV(0).withKS(0.0))
+                  .withSlot0(new Slot0Configs().withKP(11).withKV(0.15).withKS(1.0))
                   .withMotorOutput(
-                      new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive))
+                      new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP),
               topFlywheelDistanceToRPM -> {

@@ -2,9 +2,9 @@ package frc.robot.shooter;
 
 public enum ShooterState {
   STOPPED(0.0),
-  IDLE(100.0),
+  IDLE(200.0),
   SUBWOOFER_SHOT(3000.0),
-  FLOOR_SHOT(4800.0),
+  FLOOR_SHOT(4000.0),
   SHOOTER_OUTTAKE(500.0),
   AMP(500.0, 300.0),
   SPEAKER_SHOT;

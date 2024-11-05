@@ -16,8 +16,6 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
   private final double tolerance = CONFIG.tolerance();
   private final VelocityTorqueCurrentFOC velocityRequest =
       new VelocityTorqueCurrentFOC(0).withSlot(0).withLimitReverseMotion(true);
-  private double goalRPMBottom = 0.0;
-  private double goalRPMTop = 0.0;
   private final InterpolatingDoubleTreeMap distanceToRPMTop = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap distanceToRPMBottom = new InterpolatingDoubleTreeMap();
   private double speakerDistance = 0.0;
@@ -41,26 +39,19 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
   }
 
   @Override
-  protected void collectInputs() {
-    if (getState() == ShooterState.SPEAKER_SHOT) {
-      goalRPMTop = distanceToRPMTop.get(speakerDistance);
-      goalRPMBottom = distanceToRPMBottom.get(speakerDistance);
-    } else {
-      goalRPMBottom = getState().bottomRPM;
-      goalRPMTop = getState().topRPM;
-    }
-  }
-
-  @Override
   protected void afterTransition(ShooterState newState) {
     switch (newState) {
       case STOPPED -> {
         topMotor.disable();
         bottomMotor.disable();
       }
+      case SPEAKER_SHOT -> {
+        topMotor.setControl(velocityRequest.withVelocity(distanceToRPMTop.get(speakerDistance)).withSlot(0));
+        bottomMotor.setControl(velocityRequest.withVelocity(distanceToRPMBottom.get(speakerDistance)).withSlot(0));
+      }
       default -> {
-        topMotor.setControl(velocityRequest.withVelocity(goalRPMTop/60).withSlot(0));
-        bottomMotor.setControl(velocityRequest.withVelocity(goalRPMBottom/60).withSlot(0));
+        topMotor.setControl(velocityRequest.withVelocity(getState().topRPM/60.0).withSlot(0));
+        bottomMotor.setControl(velocityRequest.withVelocity(getState().bottomRPM/60.0).withSlot(0));
       }
     }
   }
@@ -69,9 +60,9 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
   public void robotPeriodic() {
     super.robotPeriodic();
     DogLog.log("ShooterSubsystem/TopMotor/RPM", getTopMotorRPM());
-    DogLog.log("ShooterSubsystem/TopMotor/GoalRPM", goalRPMTop);
+    DogLog.log("ShooterSubsystem/TopMotor/GoalRPM", getState().topRPM);
     DogLog.log("ShooterSubsystem/BottomMotor/RPM", getBottomMotorRPM());
-    DogLog.log("ShooterSubsystem/BottomMotor/GoalRPM", goalRPMBottom);
+    DogLog.log("ShooterSubsystem/BottomMotor/GoalRPM", getState().bottomRPM);
     DogLog.log("ShooterSubsystem/State", getState());
     DogLog.log("ShooterSubsystem/AtGoal", atGoal(getState()));
   }
@@ -85,8 +76,8 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
       return true;
     }
 
-    if (Math.abs(goalRPMBottom - getBottomMotorRPM()) <= tolerance
-        && Math.abs(goalRPMTop - getTopMotorRPM()) <= tolerance) {
+    if (Math.abs(getState().bottomRPM - getBottomMotorRPM()) <= tolerance
+        && Math.abs(getState().topRPM - getTopMotorRPM()) <= tolerance) {
       return true;
     }
 
