@@ -52,7 +52,19 @@ class CompConfig {
               2,
               3,
               100,
-              new TalonFXConfiguration(),
+              new TalonFXConfiguration()
+                  .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
+                  .withCurrentLimits(
+                      new CurrentLimitsConfigs()
+                          .withSupplyCurrentLimit(80)
+                          .withSupplyCurrentLimitEnable(true))
+                  .withTorqueCurrent(
+                      new TorqueCurrentConfigs()
+                          .withPeakForwardTorqueCurrent(200)
+                          .withPeakReverseTorqueCurrent(0))
+                  .withSlot0(new Slot0Configs().withKP(0.0).withKV(0).withKS(0.0))
+                  .withClosedLoopRamps(CLOSED_LOOP_RAMP)
+                  .withOpenLoopRamps(OPEN_LOOP_RAMP),
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
