@@ -67,12 +67,12 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
-    DogLog.log("Climber/RotationRadians", encoder.getPosition());
-    DogLog.log("Climber/Height", getHeight());
-    DogLog.log("Climber/State", getState());
-    DogLog.log("Climber/AtGoal", atGoal());
-    DogLog.log("Climber/StatorCurrent", motor.getOutputCurrent());
-    DogLog.log("Climber/OutputVoltage",     motor.getAppliedOutput());
+    DogLog.log("ClimberSubsystem/RotationRadians", encoder.getPosition());
+    DogLog.log("ClimberSubsystem/Height", getHeight());
+    DogLog.log("ClimberSubsystem/State", getState());
+    DogLog.log("ClimberSubsystem/AtGoal", atGoal());
+    DogLog.log("ClimberSubsystem/StatorCurrent", motor.getOutputCurrent());
+    DogLog.log("ClimberSubsystem/OutputVoltage",     motor.getAppliedOutput());
   }
 
   public boolean atGoal() {

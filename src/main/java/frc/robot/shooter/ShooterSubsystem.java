@@ -68,12 +68,12 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
-    DogLog.log("Shooter/TopMotor/RPM", getTopMotorRPM());
-    DogLog.log("Shooter/TopMotor/GoalRPM", goalRPMTop);
-    DogLog.log("Shooter/BottomMotor/RPM", getBottomMotorRPM());
-    DogLog.log("Shooter/BottomMotor/GoalRPM", goalRPMBottom);
-    DogLog.log("Shooter/State", getState());
-    DogLog.log("Shooter/AtGoal", atGoal(getState()));
+    DogLog.log("ShooterSubsystem/TopMotor/RPM", getTopMotorRPM());
+    DogLog.log("ShooterSubsystem/TopMotor/GoalRPM", goalRPMTop);
+    DogLog.log("ShooterSubsystem/BottomMotor/RPM", getBottomMotorRPM());
+    DogLog.log("ShooterSubsystem/BottomMotor/GoalRPM", goalRPMBottom);
+    DogLog.log("ShooterSubsystem/State", getState());
+    DogLog.log("ShooterSubsystem/AtGoal", atGoal(getState()));
   }
 
   public boolean atGoal(ShooterState state) {
