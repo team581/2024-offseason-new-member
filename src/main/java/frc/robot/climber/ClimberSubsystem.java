@@ -30,6 +30,7 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
     pid.setD(0);
 
     encoder.setPositionConversionFactor(2 * Math.PI);
+    motor.setSmartCurrentLimit(20);
     motor.burnFlash();
 
     this.motor = motor;
@@ -70,6 +71,8 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
     DogLog.log("Climber/Height", getHeight());
     DogLog.log("Climber/State", getState());
     DogLog.log("Climber/AtGoal", atGoal());
+    DogLog.log("Climber/StatorCurrent", motor.getOutputCurrent());
+    DogLog.log("Climber/OutputVoltage",     motor.getAppliedOutput());
   }
 
   public boolean atGoal() {
