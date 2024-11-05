@@ -10,7 +10,8 @@ import frc.robot.intake.IntakeSubsystem;
 import frc.robot.localization.LocalizationSubsystem;
 import frc.robot.shooter.ShooterState;
 import frc.robot.shooter.ShooterSubsystem;
-import frc.robot.snaps.SnapManager;
+import frc.robot.swerve.SnapUtil;
+import frc.robot.swerve.SwerveState;
 import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
@@ -25,7 +26,6 @@ public class RobotManager extends StateMachine<RobotState> {
   public final LocalizationSubsystem localization;
   public final VisionSubsystem vision;
   public final SwerveSubsystem swerve;
-  public final SnapManager snaps;
   public final ImuSubsystem imu;
 
   // INIT
@@ -36,7 +36,6 @@ public class RobotManager extends StateMachine<RobotState> {
       LocalizationSubsystem localization,
       VisionSubsystem vision,
       SwerveSubsystem swerve,
-      SnapManager snaps,
       ImuSubsystem imu) {
     super(SubsystemPriority.ROBOT_MANAGER, RobotState.IDLE_NO_GP);
     this.intake = intake;
@@ -45,13 +44,12 @@ public class RobotManager extends StateMachine<RobotState> {
     this.localization = localization;
     this.vision = vision;
     this.swerve = swerve;
-    this.snaps = snaps;
     this.imu = imu;
   }
 
   // --------------------
-  DistanceAngle speakerDistanceAngle;
-  DistanceAngle floorDistanceAngle;
+  DistanceAngle speakerDistanceAngle = new DistanceAngle(0, 0, false);
+  DistanceAngle floorDistanceAngle = new DistanceAngle(0, 0, false);
   boolean angularVelocitySlowEnough;
   boolean robotHeadingAtGoal;
   boolean limelightWorking;
@@ -66,19 +64,14 @@ public class RobotManager extends StateMachine<RobotState> {
     switch (getState()) {
       case PREPARE_FLOOR_SHOT, WAITING_FLOOR_SHOT, FLOOR_SHOT -> {
         robotHeadingAtGoal = imu.atAngleForFloorSpot(speakerDistanceAngle.targetAngle());
-        swerveSlowEnough = swerve.movingSlowEnoughForFloorShot();
+        swerveSlowEnough = swerve.isSlowEnoughToFeed();
         angularVelocitySlowEnough = Math.abs(imu.getRobotAngularVelocity()) < 360.0;
       }
-      case PREPARE_SUBWOOFER_SHOT,
-          WAITING_SUBWOOFER_SHOT,
-          SUBWOOFER_SHOT,
-          PREPARE_SPEAKER_SHOT,
-          WAITING_SPEAKER_SHOT,
-          SPEAKER_SHOT -> {
+      case PREPARE_SPEAKER_SHOT, WAITING_SPEAKER_SHOT, SPEAKER_SHOT -> {
         robotHeadingAtGoal =
             imu.atAngleForSpeaker(speakerDistanceAngle.targetAngle(), speakerDistance);
         angularVelocitySlowEnough = imu.belowVelocityForVision(speakerDistance);
-        swerveSlowEnough = swerve.movingSlowEnoughForSpeakerShot();
+        swerveSlowEnough = swerve.isSlowEnoughToShoot();
       }
 
       default -> {
@@ -95,19 +88,6 @@ public class RobotManager extends StateMachine<RobotState> {
     }
 
     shooter.setSpeakerDistance(speakerDistance);
-  }
-
-  @Override
-  public void robotPeriodic() {
-    super.robotPeriodic();
-
-    DogLog.log("RobotManager/State", getState());
-    DogLog.log("RobotManager/State/ClimberRaised", getState().climberRaised);
-    DogLog.log("RobotManager/State/hasNote", getState().hasNote);
-    DogLog.log("RobotManager/LimelightWorking", limelightWorking);
-    DogLog.log("RobotManager/SwerveSlowEnough", swerveSlowEnough);
-    DogLog.log("RobotManager/RobotHeadingAtGoal", robotHeadingAtGoal);
-    DogLog.log("RobotManager/AngularVelocitySlowEnough", angularVelocitySlowEnough);
   }
 
   // Automatic state transitions
@@ -167,98 +147,134 @@ public class RobotManager extends StateMachine<RobotState> {
       case IDLE_NO_GP -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0);
       }
 
       case IDLE_W_GP -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.IDLE);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0);
       }
       case INTAKING -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.INTAKE);
+        if (DriverStation.isAutonomous()) {
+          swerve.setState(SwerveState.INTAKE_ASSIST_AUTO);
+        } else {
+          swerve.setState(SwerveState.INTAKE_ASSIST_TELEOP);
+        }
       }
       case OUTTAKING -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.OUTTAKE);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0);
       }
       case PREPARE_AMP -> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.IDLE);
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(SnapUtil.getAmpAngle());
       }
       case SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.TO_SHOOTER);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0);
       }
       case PREPARE_SHOOTER_OUTTAKE, WAITING_SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.IDLE);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0);
       }
       case PREPARE_SUBWOOFER_SHOT, WAITING_SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.IDLE);
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(SnapUtil.getSubwooferAngle());
       }
       case PREPARE_SPEAKER_SHOT, WAITING_SPEAKER_SHOT -> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
         intake.setState(IntakeState.IDLE);
-
-        snaps.setAngle(speakerDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(speakerDistanceAngle.targetAngle());
       }
       case PREPARE_FLOOR_SHOT, WAITING_FLOOR_SHOT -> {
         shooter.setState(ShooterState.FLOOR_SHOT);
         intake.setState(IntakeState.IDLE);
-
-        snaps.setAngle(floorDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(floorDistanceAngle.targetAngle());
       }
       case FLOOR_SHOT -> {
         shooter.setState(ShooterState.FLOOR_SHOT);
         intake.setState(IntakeState.TO_SHOOTER);
-
-        snaps.setAngle(floorDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(floorDistanceAngle.targetAngle());
       }
       case SPEAKER_SHOT -> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
         intake.setState(IntakeState.TO_SHOOTER);
-
-        snaps.setAngle(speakerDistanceAngle.targetAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(speakerDistanceAngle.targetAngle());
       }
       case SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.TO_SHOOTER);
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(SnapUtil.getSubwooferAngle());
       }
       case WAITING_AMP -> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.IDLE);
-
-        snaps.setAngle(SnapManager.getAmpAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(SnapUtil.getAmpAngle());
       }
       case AMP_SHOT -> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.TO_SHOOTER);
-
-        snaps.setAngle(SnapManager.getAmpAngle());
-        snaps.setEnabled(true);
-        snaps.cancelCurrentCommand();
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(SnapUtil.getAmpAngle());
       }
       case UNJAM -> {
         shooter.setState(ShooterState.IDLE);
         intake.setState(IntakeState.TO_SHOOTER);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0);
       }
       case CLIMB_LOWERED, CLIMB_RAISED -> {
         shooter.setState(ShooterState.STOPPED);
         intake.setState(IntakeState.IDLE);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0);
       }
     }
     climber.setState(newState.climberRaised ? ClimberState.RAISED : ClimberState.LOWERED);
+  }
+
+  @Override
+  public void robotPeriodic() {
+    super.robotPeriodic();
+
+    switch (getState()) {
+      case PREPARE_SPEAKER_SHOT, SPEAKER_SHOT, WAITING_SPEAKER_SHOT -> {
+        swerve.setSnapToAngle(speakerDistanceAngle.targetAngle());
+      }
+      case PREPARE_FLOOR_SHOT, FLOOR_SHOT, WAITING_FLOOR_SHOT -> {
+        swerve.setSnapToAngle(floorDistanceAngle.targetAngle());
+      }
+      default -> {}
+    }
+
+    DogLog.log("RobotManager/State", getState());
+    DogLog.log("RobotManager/State/ClimberRaised", getState().climberRaised);
+    DogLog.log("RobotManager/State/hasNote", getState().hasNote);
+    DogLog.log("RobotManager/LimelightWorking", limelightWorking);
+    DogLog.log("RobotManager/SwerveSlowEnough", swerveSlowEnough);
+    DogLog.log("RobotManager/RobotHeadingAtGoal", robotHeadingAtGoal);
+    DogLog.log("RobotManager/AngularVelocitySlowEnough", angularVelocitySlowEnough);
   }
 
   public void waitAmpRequest() {

@@ -80,6 +80,6 @@ public class RobotCommands {
   }
 
   public Command preloadNoteCommand() {
-    return Commands.runOnce(robot::preloadNoteRequest, requirements).withName("preloadNoteCommand");
+    return Commands.runOnce(robot::preloadNoteRequest, requirements).withName("PreloadNoteCommand");
   }
 }

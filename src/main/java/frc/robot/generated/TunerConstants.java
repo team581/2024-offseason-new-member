@@ -68,12 +68,13 @@ public class TunerConstants {
                   .withStatorCurrentLimitEnable(true));
   private static final CANcoderConfiguration cancoderInitialConfigs = new CANcoderConfiguration();
   // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
-  private static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
-            .withMountPose(
-                new MountPoseConfigs()
-                    .withMountPosePitch(0)
-                    .withMountPoseRoll(0)
-                    .withMountPoseYaw(180));
+  private static final Pigeon2Configuration pigeonConfigs =
+      new Pigeon2Configuration()
+          .withMountPose(
+              new MountPoseConfigs()
+                  .withMountPosePitch(0)
+                  .withMountPoseRoll(0)
+                  .withMountPoseYaw(180));
 
   // Theoretical free speed (m/s) at 12v applied output;
   // This needs to be tuned to your individual robot

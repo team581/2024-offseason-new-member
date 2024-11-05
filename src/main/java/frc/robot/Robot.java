@@ -2,6 +2,7 @@ package frc.robot;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +21,6 @@ import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
 import frc.robot.robot_manager.RobotState;
 import frc.robot.shooter.ShooterSubsystem;
-import frc.robot.snaps.SnapManager;
 import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.util.Stopwatch;
 import frc.robot.util.scheduling.LifecycleSubsystemManager;
@@ -37,14 +37,13 @@ public class Robot extends TimedRobot {
   private final ClimberSubsystem climber = new ClimberSubsystem(hd.climberMotor);
   private final ShooterSubsystem shooter = new ShooterSubsystem(hd.bottomShooter, hd.topShooter);
   private final IntakeSubsystem intake = new IntakeSubsystem(hd.intakeMotor, hd.sensor);
-  private final SwerveSubsystem swerve = new SwerveSubsystem(hd.driverController);
+  private final SwerveSubsystem swerve = new SwerveSubsystem();
   private final ImuSubsystem imu = new ImuSubsystem(swerve);
   private final FmsSubsystem fms = new FmsSubsystem();
   private final VisionSubsystem vision = new VisionSubsystem(imu);
   private final LocalizationSubsystem localization = new LocalizationSubsystem(swerve, imu, vision);
-  private final SnapManager snaps = new SnapManager(swerve, hd.driverController);
   private final RobotManager robotManager =
-      new RobotManager(intake, shooter, climber, localization, vision, swerve, snaps, imu);
+      new RobotManager(intake, shooter, climber, localization, vision, swerve, imu);
   private final RobotCommands actions = new RobotCommands(robotManager);
   private final Autos autos = new Autos(swerve, localization, actions, robotManager);
 
@@ -146,16 +145,19 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   private void configureBindings() {
-    swerve.setDefaultCommand(swerve.driveTeleopCommand());
+    swerve.setDefaultCommand(
+        swerve.run(
+            () -> {
+              if (DriverStation.isTeleop()) {
+                swerve.driveTeleop(
+                    hd.driverController.getLeftX(),
+                    hd.driverController.getLeftY(),
+                    hd.driverController.getRightX());
+              }
+            }));
 
     // Driver controller
     hd.driverController.back().onTrue(localization.getZeroCommand());
-
-    hd.driverController.y().onTrue(snaps.getCommand(() -> SnapManager.getSourceAngle()));
-    hd.driverController.x().onTrue(snaps.getCommand(() -> SnapManager.getStageLeftAngle()));
-    hd.driverController.b().onTrue(snaps.getCommand(() -> SnapManager.getStageRightAngle()));
-    hd.driverController.a().onTrue(snaps.getCommand(() -> SnapManager.getAmpAngle()));
-    hd.driverController.povUp().onTrue(snaps.getCommand(() -> SnapManager.getStageBackChain()));
 
     hd.driverController
         .leftTrigger()

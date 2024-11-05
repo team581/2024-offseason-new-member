@@ -15,6 +15,7 @@ import com.pathplanner.lib.util.PPLibTelemetry;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,7 +30,6 @@ import frc.robot.util.scheduling.SubsystemPriority;
 import java.util.Optional;
 
 public class Autos extends LifecycleSubsystem {
-
   private static Command wrapAutoEvent(String commandName, Command command) {
     return Commands.sequence(
             Commands.print("[COMMANDS] Starting auto event " + commandName),
@@ -69,7 +69,7 @@ public class Autos extends LifecycleSubsystem {
         localization::resetPose,
         swerve::getRobotRelativeSpeeds,
         (robotRelativeSpeeds) -> {
-          swerve.setRobotRelativeSpeeds(robotRelativeSpeeds, true);
+          swerve.setRobotRelativeAutoSpeeds(robotRelativeSpeeds);
         },
         new HolonomicPathFollowerConfig(
             new PIDConstants(4.0, 0.0, 0.0),
@@ -92,8 +92,7 @@ public class Autos extends LifecycleSubsystem {
 
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
-          // DogLog.log(
-          //     "Autos/Trajectory/ActivePath", activePath.toArray(new Pose2d[activePath.size()]));
+          DogLog.log("Autos/Trajectory/ActivePath", activePath.toArray(Pose2d[]::new));
         });
     PathPlannerLogging.setLogTargetPoseCallback(
         (targetPose) -> {
@@ -122,14 +121,12 @@ public class Autos extends LifecycleSubsystem {
   }
 
   private Optional<Rotation2d> getRotationTargetOverride() {
-    // Some condition that should decide if we want to override rotation
-    if (swerve.snapToAngleEnabled()) {
-      // Return an optional containing the rotation override (this should be a field relative
-      // rotation)
-      return Optional.of(Rotation2d.fromDegrees(swerve.snapAngle()));
-    } else {
-      return Optional.empty();
-    }
+    return switch (swerve.getState()) {
+      case TELEOP_SNAPS, AUTO_SNAPS ->
+          Optional.of(Rotation2d.fromDegrees(swerve.getGoalSnapAngle()));
+
+      default -> Optional.empty();
+    };
   }
 
   @Override

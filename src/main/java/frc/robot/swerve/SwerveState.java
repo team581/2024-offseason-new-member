@@ -4,5 +4,7 @@ public enum SwerveState {
   TELEOP,
   TELEOP_SNAPS,
   AUTO,
-  AUTO_SNAPS;
+  AUTO_SNAPS,
+  INTAKE_ASSIST_TELEOP,
+  INTAKE_ASSIST_AUTO;
 }
