@@ -73,9 +73,9 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
       // At goal
       motor.disable();
     } else if (height < goalHeight) {
-      motor.set(-0.3);
+      motor.set(-1);
     } else {
-      motor.set(0.3);
+      motor.set(1);
     }
   }
 
