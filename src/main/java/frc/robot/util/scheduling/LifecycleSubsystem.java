@@ -25,7 +25,11 @@ public class LifecycleSubsystem extends SubsystemBase {
     LifecycleSubsystemManager.getInstance().registerSubsystem(this);
 
     String name = this.getClass().getSimpleName();
-    subsystemName = name.substring(name.lastIndexOf('.') + 1);
+    name = name.substring(name.lastIndexOf('.') + 1);
+    if (name.endsWith("Subsystem")) {
+      name = name.substring(0, name.length() - "Subsystem".length());
+    }
+    subsystemName = name;
     loggerName = "Scheduler/LifecycleSubsystem/" + subsystemName + ".periodic()";
   }
 
