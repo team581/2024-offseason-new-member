@@ -31,7 +31,7 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
 
   @Override
   protected void collectInputs() {
-    encoderPosition = encoder.getPosition();
+    encoderPosition = -1.0 * encoder.getPosition();
     height = encoderPosition * ENCODER_CONVERSION_FACTOR;
   }
 
@@ -52,9 +52,9 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
       // At goal
       motor.disable();
     } else if (height < goalHeight) {
-      motor.set(0.3);
-    } else {
       motor.set(-0.3);
+    } else {
+      motor.set(0.3);
     }
   }
 
