@@ -23,6 +23,7 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
     super(SubsystemPriority.CLIMBER, ClimberState.LOWERED);
 
     this.encoder = motor.getEncoder();
+    encoder.setPositionConversionFactor(1);
 
     motor.setSmartCurrentLimit(100);
     motor.burnFlash();
