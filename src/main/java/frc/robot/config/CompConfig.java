@@ -64,10 +64,11 @@ class CompConfig {
                           .withPeakReverseTorqueCurrent(0))
                   .withSlot0(new Slot0Configs().withKP(11).withKV(0.15).withKS(1.0))
                   .withMotorOutput(
-                      new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive))
+                      new MotorOutputConfigs()
+                          .withInverted(InvertedValue.CounterClockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP),
-                  new TalonFXConfiguration()
+              new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
@@ -79,7 +80,8 @@ class CompConfig {
                           .withPeakReverseTorqueCurrent(0))
                   .withSlot0(new Slot0Configs().withKP(11).withKV(0.15).withKS(1.0))
                   .withMotorOutput(
-                      new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive))
+                      new MotorOutputConfigs()
+                          .withInverted(InvertedValue.CounterClockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP),
               topFlywheelDistanceToRPM -> {
@@ -88,7 +90,7 @@ class CompConfig {
               bottomFlywheelDistanceToRPM -> {
                 bottomFlywheelDistanceToRPM.put(0.0, 0.0);
               }),
-          new ClimberConfig(20, 1.5, 10.0, 0.0),
+          new ClimberConfig(20, 1.5, 10.0, 0.0, 0.5),
           new SwerveConfig(
               // new PhoenixPIDController(50, 0, 5),
               new PhoenixPIDController(-4.0, 0, 0), // 20 0 2

@@ -1,10 +1,9 @@
 package frc.robot.climber;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import frc.robot.config.RobotConfig;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
@@ -12,18 +11,15 @@ import frc.robot.util.state_machines.StateMachine;
 public class ClimberSubsystem extends StateMachine<ClimberState> {
   private final CANSparkMax motor;
   private final RelativeEncoder encoder;
-  private final SparkPIDController pid;
-
-  private static final double ENCODER_CONVERSION_FACTOR = (1.0/64.0) * RobotConfig.get().climber().axleDiameter() * (Math.PI);
+  private double height = 0;
+  private double encoderPosition = 0;
+  private static final double ENCODER_CONVERSION_FACTOR =
+      (1.0 / 64.0) * RobotConfig.get().climber().axleDiameter() * (Math.PI);
 
   public ClimberSubsystem(CANSparkMax motor) {
     super(SubsystemPriority.CLIMBER, ClimberState.LOWERED);
 
     this.encoder = motor.getEncoder();
-    this.pid = motor.getPIDController();
-    pid.setP(100.0);
-    pid.setI(0);
-    pid.setD(0);
 
     motor.setSmartCurrentLimit(100);
     motor.burnFlash();
@@ -34,32 +30,36 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
   }
 
   @Override
-  protected void afterTransition(ClimberState newState) {
-    switch (newState) {
-      case RAISED -> {
-        pid.setReference(RobotConfig.get().climber().maxHeight() / ENCODER_CONVERSION_FACTOR, ControlType.kPosition);
-      }
-      case LOWERED -> {
-        pid.setReference(RobotConfig.get().climber().minHeight() / ENCODER_CONVERSION_FACTOR, ControlType.kPosition);
-      }
-    }
+  protected void collectInputs() {
+    encoderPosition = encoder.getPosition();
+    height = encoderPosition * ENCODER_CONVERSION_FACTOR;
   }
 
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
-    DogLog.log("ClimberSubsystem/Height", getHeight());
-    DogLog.log("ClimberSubsystem/State", getState());
-    DogLog.log("ClimberSubsystem/StatorCurrent", motor.getOutputCurrent());
-    DogLog.log("ClimberSubsystem/OutputVoltage",     motor.getAppliedOutput());
+    DogLog.log("Climber/Height", height);
+    DogLog.log("Climber/StatorCurrent", motor.getOutputCurrent());
+    DogLog.log("Climber/OutputVoltage", motor.getAppliedOutput());
+
+    var goalHeight =
+        switch (getState()) {
+          case RAISED -> RobotConfig.get().climber().maxHeight();
+          case LOWERED -> RobotConfig.get().climber().minHeight();
+        };
+
+    if (MathUtil.isNear(goalHeight, height, RobotConfig.get().climber().toleranceInches())) {
+      // At goal
+      motor.disable();
+    } else if (height < goalHeight) {
+      motor.set(0.3);
+    } else {
+      motor.set(-0.3);
+    }
   }
 
   public void setState(ClimberState state) {
     setStateFromRequest(state);
-  }
-
-  public double getHeight() {
-    return encoder.getPosition() * ENCODER_CONVERSION_FACTOR;
   }
 
   @Override

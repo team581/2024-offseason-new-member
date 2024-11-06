@@ -32,7 +32,8 @@ public record RobotConfig(
       int motorID,
       double axleDiameter,
       double maxHeight,
-      double minHeight) {}
+      double minHeight,
+      double toleranceInches) {}
 
   public record VisionConfig(
       int translationHistoryArraySize,
