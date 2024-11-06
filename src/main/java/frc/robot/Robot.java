@@ -199,5 +199,12 @@ public class Robot extends TimedRobot {
     hd.operatorController.povUp().onTrue(actions.nextClimbCommand());
     hd.operatorController.povDown().onTrue(actions.reverseClimbCommand());
     hd.operatorController.povLeft().onTrue(actions.unjamCommand()).onFalse(actions.idleCommand());
+
+    // Press start + back button together for manual down mode
+    hd.operatorController
+        .start()
+        .and(hd.operatorController.back())
+        .onTrue(Commands.runOnce(() -> climber.setManualDownMode(true)))
+        .onFalse(Commands.runOnce(() -> climber.setManualDownMode(false)));
   }
 }

@@ -9,12 +9,15 @@ import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 
 public class ClimberSubsystem extends StateMachine<ClimberState> {
-  private final CANSparkMax motor;
-  private final RelativeEncoder encoder;
-  private double height = 0;
-  private double encoderPosition = 0;
   private static final double ENCODER_CONVERSION_FACTOR =
       (1.0 / 64.0) * RobotConfig.get().climber().axleDiameter() * (Math.PI);
+
+  private final CANSparkMax motor;
+  private final RelativeEncoder encoder;
+
+  private double height = 0;
+  private double encoderPosition = 0;
+  private boolean manualDownMode = false;
 
   public ClimberSubsystem(CANSparkMax motor) {
     super(SubsystemPriority.CLIMBER, ClimberState.LOWERED);
@@ -35,12 +38,24 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
     height = encoderPosition * ENCODER_CONVERSION_FACTOR;
   }
 
+  public void setManualDownMode(boolean manualDownMode) {
+    this.manualDownMode = manualDownMode;
+  }
+
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
     DogLog.log("Climber/Height", height);
+    DogLog.log("Climber/EncoderPosition", encoderPosition);
     DogLog.log("Climber/StatorCurrent", motor.getOutputCurrent());
     DogLog.log("Climber/OutputVoltage", motor.getAppliedOutput());
+    DogLog.log("Climber/ManualDownMode", manualDownMode);
+
+    if (manualDownMode) {
+      // Run down at a low voltage in manual down mode
+      motor.set(-0.2);
+      return;
+    }
 
     var goalHeight =
         switch (getState()) {
