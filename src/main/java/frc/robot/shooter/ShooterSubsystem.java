@@ -46,12 +46,15 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
         bottomMotor.disable();
       }
       case SPEAKER_SHOT -> {
-        topMotor.setControl(velocityRequest.withVelocity(distanceToRPMTop.get(speakerDistance)).withSlot(0));
-        bottomMotor.setControl(velocityRequest.withVelocity(distanceToRPMBottom.get(speakerDistance)).withSlot(0));
+        topMotor.setControl(
+            velocityRequest.withVelocity(distanceToRPMTop.get(speakerDistance)).withSlot(0));
+        bottomMotor.setControl(
+            velocityRequest.withVelocity(distanceToRPMBottom.get(speakerDistance)).withSlot(0));
       }
       default -> {
-        topMotor.setControl(velocityRequest.withVelocity(getState().topRPM/60.0).withSlot(0));
-        bottomMotor.setControl(velocityRequest.withVelocity(getState().bottomRPM/60.0).withSlot(0));
+        topMotor.setControl(velocityRequest.withVelocity(getState().topRPM / 60.0).withSlot(0));
+        bottomMotor.setControl(
+            velocityRequest.withVelocity(getState().bottomRPM / 60.0).withSlot(0));
       }
     }
   }
