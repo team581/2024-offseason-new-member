@@ -193,9 +193,13 @@ public class Robot extends TimedRobot {
         .rightTrigger()
         .onTrue(actions.waitSpeakerCommand())
         .onFalse(actions.idleCommand());
-    hd.operatorController.a().onTrue(actions.waitSubwooferCommand()).onFalse(actions.idleCommand());
-    hd.operatorController.x().onTrue(actions.waitAmpCommand()).onFalse(actions.idleCommand());
-    hd.operatorController.b().onTrue(actions.idleCommand());
+    hd.operatorController.y().onTrue(actions.waitSubwooferCommand()).onFalse(actions.idleCommand());
+    hd.operatorController
+        .rightBumper()
+        .onTrue(actions.waitAmpCommand())
+        .onFalse(actions.idleCommand());
+    hd.operatorController.a().onTrue(actions.idleCommand());
+    hd.operatorController.x().onTrue(actions.outtakeCommand()).onFalse(actions.idleCommand());
 
     hd.operatorController.povUp().onTrue(actions.nextClimbCommand());
     hd.operatorController.povDown().onTrue(actions.reverseClimbCommand());
