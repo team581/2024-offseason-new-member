@@ -41,6 +41,11 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
 
   public void setManualDownMode(boolean manualDownMode) {
     this.manualDownMode = manualDownMode;
+
+    // Once exiting manual down mode, set the encoder to 0
+    if (!manualDownMode) {
+      encoder.setPosition(0);
+    }
   }
 
   @Override
@@ -54,7 +59,7 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
 
     if (manualDownMode) {
       // Run down at a low voltage in manual down mode
-      motor.set(-0.2);
+      motor.set(0.2);
       return;
     }
 
