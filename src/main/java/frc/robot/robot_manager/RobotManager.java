@@ -349,10 +349,6 @@ public class RobotManager extends StateMachine<RobotState> {
     }
   }
 
-  public void homeClimberRequest() {
-    climber.setState(ClimberState.HOMING);
-  }
-
   public void preloadNoteRequest() {
     setStateFromRequest(RobotState.IDLE_W_GP);
   }

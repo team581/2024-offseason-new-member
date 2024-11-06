@@ -86,7 +86,6 @@ public class Autos extends LifecycleSubsystem {
     registerCommand("forceSpeakerShot", actions.speakerShotCommand());
     registerCommand("subwooferShot", autoCommands.subwooferShotWithTimeout());
     registerCommand("intakeFloor", actions.intakeCommand());
-    registerCommand("homeClimber", actions.homeClimberCommand());
     registerCommand("idle", actions.idleCommand());
     registerCommand("zeroGyro", autoCommands.doNothingCommand());
 

@@ -75,10 +75,6 @@ public class RobotCommands {
         .withName("ClimbSequenceCommand");
   }
 
-  public Command homeClimberCommand() {
-    return Commands.runOnce(robot::homeClimberRequest, requirements).withName("HomeClimberCommand");
-  }
-
   public Command preloadNoteCommand() {
     return Commands.runOnce(robot::preloadNoteRequest, requirements).withName("PreloadNoteCommand");
   }

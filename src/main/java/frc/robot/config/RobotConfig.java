@@ -30,12 +30,9 @@ public record RobotConfig(
 
   public record ClimberConfig(
       int motorID,
-      double axleRadius,
+      double axleDiameter,
       double maxHeight,
-      double minHeight,
-      double homingVoltage,
-      double homingCurrentThreshold,
-      int currentTaps) {}
+      double minHeight) {}
 
   public record VisionConfig(
       int translationHistoryArraySize,
