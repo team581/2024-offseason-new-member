@@ -137,7 +137,7 @@ public class LocalizationSubsystem extends LifecycleSubsystem {
   }
 
   public Command getZeroCommand() {
-    return Commands.runOnce(() -> resetGyro(FmsSubsystem.isRedAlliance() ? 180 : 0));
+    return Commands.runOnce(() -> resetGyro(FmsSubsystem.isRedAlliance() ? 0 : 180));
   }
 
   public Pose2d getLookaheadRobot(boolean doLookahead) {
