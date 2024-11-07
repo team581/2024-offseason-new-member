@@ -6,7 +6,7 @@ public enum ShooterState {
   SUBWOOFER_SHOT(3000.0),
   FLOOR_SHOT(4000.0),
   SHOOTER_OUTTAKE(500.0),
-  AMP(500.0, 300.0),
+  AMP(1600),
   SPEAKER_SHOT;
 
   public final double bottomRPM;
