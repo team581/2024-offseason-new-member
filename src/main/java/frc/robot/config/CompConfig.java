@@ -88,22 +88,14 @@ class CompConfig {
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP),
               topFlywheelSpeakerDistanceToRPM -> {
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5), 2000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 20), 2000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 40), 2000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 60), 2000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 80), 2000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 100), 2500.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 120), 2500.0);
+                topFlywheelSpeakerDistanceToRPM.put(1.8, 2000.0);
+                topFlywheelSpeakerDistanceToRPM.put(2.4, 2075.0);
+                topFlywheelSpeakerDistanceToRPM.put(2.8, 2075.0);
               },
               bottomFlywheelSpeakerDistanceToRPM -> {
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5), 2000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 20), 2000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 40), 2000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 60), 2000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 80), 2000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 100), 2500.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 120), 2500.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(1.8, 2000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(2.4, 2075.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(2.8, 2075.0);
               },
               topFlywheelFeedingDistanceToRPM -> {
                 topFlywheelFeedingDistanceToRPM.put(2.6, 1250.0);

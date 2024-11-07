@@ -64,6 +64,7 @@ public class RobotManager extends StateMachine<RobotState> {
     double speakerDistance = speakerDistanceAngle.distance();
 
     DogLog.log("Debug/FeedDistance", feedDistance);
+    DogLog.log("Debug/SpeakerDistance", speakerDistance);
 
     switch (getState()) {
       case PREPARE_FLOOR_SHOT, WAITING_FLOOR_SHOT, FLOOR_SHOT -> {
