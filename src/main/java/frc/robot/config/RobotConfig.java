@@ -25,8 +25,10 @@ public record RobotConfig(
       double tolerance,
       TalonFXConfiguration bottomMotorConfig,
       TalonFXConfiguration topMotorConfig,
-      Consumer<InterpolatingDoubleTreeMap> topFlywheelMap,
-      Consumer<InterpolatingDoubleTreeMap> bottomFlywheelMap) {}
+      Consumer<InterpolatingDoubleTreeMap> topFlywheelSpeakerDistanceToRpm,
+      Consumer<InterpolatingDoubleTreeMap> bottomFlywheelSpeakerDistanceToRpm,
+      Consumer<InterpolatingDoubleTreeMap> topFlywheelFeedingDistanceToRpm,
+      Consumer<InterpolatingDoubleTreeMap> bottomFlywheelFeedingDistanceToRpm) {}
 
   public record ClimberConfig(
       int motorID,

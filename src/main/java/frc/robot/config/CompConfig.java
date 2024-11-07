@@ -84,11 +84,29 @@ class CompConfig {
                           .withInverted(InvertedValue.CounterClockwise_Positive))
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP),
-              topFlywheelDistanceToRPM -> {
-                topFlywheelDistanceToRPM.put(0.0, 0.0);
+              topFlywheelSpeakerDistanceToRPM -> {
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5), 3000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 20), 3000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 40), 3000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 60), 3000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 80), 3000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 100), 3500.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 120), 3500.0);
               },
-              bottomFlywheelDistanceToRPM -> {
-                bottomFlywheelDistanceToRPM.put(0.0, 0.0);
+              bottomFlywheelSpeakerDistanceToRPM -> {
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5), 3000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 20), 3000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 40), 3000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 60), 3000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 80), 3000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 100), 3500.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 120), 3500.0);
+              },
+              topFlywheelFeedingDistanceToRPM -> {
+                topFlywheelFeedingDistanceToRPM.put(1.0, 3000.0);
+              },
+              bottomFlywheelFeedingDistanceToRPM -> {
+                bottomFlywheelFeedingDistanceToRPM.put(1.0, 3000.0);
               }),
           new ClimberConfig(20, 1.5, 11.0, 0.0, 0.25),
           new SwerveConfig(
