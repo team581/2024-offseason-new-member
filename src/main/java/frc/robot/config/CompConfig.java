@@ -62,7 +62,7 @@ class CompConfig {
                       new TorqueCurrentConfigs()
                           .withPeakForwardTorqueCurrent(200)
                           .withPeakReverseTorqueCurrent(0))
-                  .withSlot0(new Slot0Configs().withKP(11).withKV(0.15).withKS(1.0))
+                  .withSlot0(new Slot0Configs().withKV(0.15).withKP(3.5).withKI(0).withKD(0))
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withInverted(InvertedValue.CounterClockwise_Positive))
@@ -78,7 +78,7 @@ class CompConfig {
                       new TorqueCurrentConfigs()
                           .withPeakForwardTorqueCurrent(200)
                           .withPeakReverseTorqueCurrent(0))
-                  .withSlot0(new Slot0Configs().withKP(11).withKV(0.15).withKS(1.0))
+                  .withSlot0(new Slot0Configs().withKV(0.15).withKP(2).withKI(0).withKD(0))
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withInverted(InvertedValue.CounterClockwise_Positive))
