@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -297,6 +298,13 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
                 .withDriveRequestType(DriveRequestType.Velocity));
       }
     }
+  }
+
+  @Override
+  public void robotPeriodic() {
+    super.robotPeriodic();
+
+    DogLog.log("Swerve/GoalSnapAngle", goalSnapAngle);
   }
 
   public void setState(SwerveState newState) {
