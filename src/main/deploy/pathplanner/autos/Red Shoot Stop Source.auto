@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.784355401992798,
-      "y": 6.671651363372803
+      "x": 15.769556999206545,
+      "y": 4.429592609405518
     },
-    "rotation": -119.91365322001137
+    "rotation": 59.28716178243702
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot_stop_blue_amp.1"
+            "pathName": "Red Shoot Stop Source"
           }
         }
       ]

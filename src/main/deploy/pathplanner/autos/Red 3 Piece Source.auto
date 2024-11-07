@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.4423719644546509,
-      "y": 3.736919641494751
+      "x": 16.09590721130371,
+      "y": 3.5370419025421143
     },
-    "rotation": -179.99984796050427
+    "rotation": -7.085346353597932e-23
   },
   "command": {
     "type": "sequential",
@@ -14,31 +14,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3_piece_blue_midline_source.1"
+            "pathName": "Red 3 Piece Source.1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3_piece_blue_midline_source.2"
+            "pathName": "Red 3 Piece Source.2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3_piece_blue_midline_source.3"
+            "pathName": "Red 3 Piece Source.3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3_piece_blue_midline_source.4"
+            "pathName": "Red 3 Piece Source.4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3_piece_blue_midline_source.5"
+            "pathName": "Red 3 Piece Source.5"
           }
         }
       ]
