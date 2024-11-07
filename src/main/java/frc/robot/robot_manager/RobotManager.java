@@ -59,11 +59,15 @@ public class RobotManager extends StateMachine<RobotState> {
   protected void collectInputs() {
     speakerDistanceAngle = vision.getDistanceAngleSpeaker();
     floorDistanceAngle = vision.getDistanceAngleFloorShot();
+
+    double feedDistance = floorDistanceAngle.distance();
     double speakerDistance = speakerDistanceAngle.distance();
+
+    DogLog.log("Debug/FeedDistance", feedDistance);
 
     switch (getState()) {
       case PREPARE_FLOOR_SHOT, WAITING_FLOOR_SHOT, FLOOR_SHOT -> {
-        robotHeadingAtGoal = imu.atAngleForFloorSpot(speakerDistanceAngle.targetAngle());
+        robotHeadingAtGoal = imu.atAngleForFeed(floorDistanceAngle.targetAngle());
         swerveSlowEnough = swerve.isSlowEnoughToFeed();
         angularVelocitySlowEnough = Math.abs(imu.getRobotAngularVelocity()) < 360.0;
       }
@@ -88,6 +92,7 @@ public class RobotManager extends StateMachine<RobotState> {
     }
 
     shooter.setSpeakerDistance(speakerDistance);
+    shooter.setFeedDistance(feedDistance);
   }
 
   // Automatic state transitions
@@ -235,7 +240,7 @@ public class RobotManager extends StateMachine<RobotState> {
         swerve.setSnapToAngle(SnapUtil.getAmpAngle());
       }
       case UNJAM -> {
-        shooter.setState(ShooterState.IDLE);
+        shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.TO_SHOOTER);
         swerve.setSnapsEnabled(false);
         swerve.setSnapToAngle(0);

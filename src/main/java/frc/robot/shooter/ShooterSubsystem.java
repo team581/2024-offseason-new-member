@@ -62,9 +62,26 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
       }
       case FLOOR_SHOT -> {
         topMotor.setControl(
-            velocityRequest.withVelocity(speakerToRpmTop.get(feedDistance) / 60.0).withSlot(0));
+            velocityRequest.withVelocity(feedingToRpmTop.get(feedDistance) / 60.0).withSlot(0));
         bottomMotor.setControl(
-            velocityRequest.withVelocity(speakerToRpmBottom.get(feedDistance) / 60.0).withSlot(0));
+            velocityRequest.withVelocity(feedingToRpmBottom.get(feedDistance) / 60.0).withSlot(0));
+
+        DogLog.log("Debug/TopMotorUsedRpm", feedingToRpmTop.get(feedDistance));
+        DogLog.log("Debug/BottomMotorUsedRpm", feedingToRpmBottom.get(feedDistance));
+        var topMotorAtGoal =
+            MathUtil.isNear(
+                feedingToRpmTop.get(feedDistance),
+                topMotorRpm,
+                RobotConfig.get().shooter().tolerance());
+
+        DogLog.log("Debug/TopMotorAtGoal", topMotorAtGoal);
+        var bottomMotorAtGoal =
+            MathUtil.isNear(
+                feedingToRpmBottom.get(feedDistance),
+                bottomMotorRpm,
+                RobotConfig.get().shooter().tolerance());
+
+        DogLog.log("Debug/BottomMotorAtGoal", bottomMotorAtGoal);
       }
       default -> {
         topMotor.setControl(velocityRequest.withVelocity(getState().topRPM / 60.0).withSlot(0));
@@ -77,18 +94,19 @@ public class ShooterSubsystem extends StateMachine<ShooterState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
-    DogLog.log("ShooterSubsystem/TopMotor/RPM", topMotorRpm);
-    DogLog.log("ShooterSubsystem/TopMotor/GoalRPM", getState().topRPM);
-    DogLog.log("ShooterSubsystem/BottomMotor/RPM", bottomMotorRpm);
-    DogLog.log("ShooterSubsystem/BottomMotor/GoalRPM", getState().bottomRPM);
-    DogLog.log("ShooterSubsystem/State", getState());
-    DogLog.log("ShooterSubsystem/AtGoal", atGoal(getState()));
+    DogLog.log("Shooter/TopMotor/RPM", topMotorRpm);
+    DogLog.log("Shooter/TopMotor/StateRpm", getState().topRPM);
+    DogLog.log("Shooter/BottomMotor/RPM", bottomMotorRpm);
+    DogLog.log("Shooter/BottomMotor/StateRpm", getState().bottomRPM);
+    DogLog.log("Shooter/AtGoal", atGoal(getState()));
+    DogLog.log("Shooter/Tolerance", RobotConfig.get().shooter().tolerance());
   }
 
   public boolean atGoal(ShooterState state) {
     if (state != getState()) {
       return false;
     }
+
     return switch (state) {
       case STOPPED -> true;
       case SPEAKER_SHOT -> {

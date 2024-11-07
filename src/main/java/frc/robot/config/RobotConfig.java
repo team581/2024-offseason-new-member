@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.vision.interpolation.InterpolatedVisionDataset;
 import java.util.function.Consumer;
@@ -17,7 +18,8 @@ public record RobotConfig(
     VisionConfig vision,
     PerfToggles perfToggles) {
 
-  public record IntakeConfig(int motorID, int sensorID, TalonFXConfiguration motorConfig) {}
+  public record IntakeConfig(
+      int motorID, int sensorID, Debouncer debouncer, TalonFXConfiguration motorConfig) {}
 
   public record ShooterConfig(
       int bottomMotorID,

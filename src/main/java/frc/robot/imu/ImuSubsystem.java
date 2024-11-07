@@ -76,7 +76,9 @@ public class ImuSubsystem extends LifecycleSubsystem {
   }
 
   private boolean atAngle(double angle, double tolerance) {
-    return Math.abs(getRobotHeading() - angle) < tolerance;
+    double normalizedGoal = MathUtil.inputModulus(angle, -180, 180);
+
+    return MathUtil.isNear(normalizedGoal, getRobotHeading(), tolerance);
   }
 
   public boolean belowVelocityForVision(double distance) {
@@ -87,8 +89,8 @@ public class ImuSubsystem extends LifecycleSubsystem {
     return atAngle(angle, 2.5);
   }
 
-  public boolean atAngleForFloorSpot(double angle) {
-    return atAngle(angle, 10);
+  public boolean atAngleForFeed(double angle) {
+    return atAngle(angle, 3);
   }
 
   public double getYAcceleration() {

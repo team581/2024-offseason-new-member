@@ -10,6 +10,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.util.Units;
 import frc.robot.config.RobotConfig.ClimberConfig;
 import frc.robot.config.RobotConfig.IntakeConfig;
@@ -40,6 +42,7 @@ class CompConfig {
           new IntakeConfig(
               4,
               0,
+              new Debouncer(0.75, DebounceType.kFalling),
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
@@ -51,7 +54,7 @@ class CompConfig {
           new ShooterConfig(
               2,
               3,
-              70,
+              150,
               new TalonFXConfiguration()
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
@@ -85,28 +88,30 @@ class CompConfig {
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP),
               topFlywheelSpeakerDistanceToRPM -> {
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5), 3000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 20), 3000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 40), 3000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 60), 3000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 80), 3000.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 100), 3500.0);
-                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 120), 3500.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5), 2000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 20), 2000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 40), 2000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 60), 2000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 80), 2000.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 100), 2500.0);
+                topFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 120), 2500.0);
               },
               bottomFlywheelSpeakerDistanceToRPM -> {
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5), 3000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 20), 3000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 40), 3000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 60), 3000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 80), 3000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 100), 3500.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 120), 3500.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5), 2000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 20), 2000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 40), 2000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 60), 2000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 80), 2000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 100), 2500.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(Units.inchesToMeters(52.5 + 120), 2500.0);
               },
               topFlywheelFeedingDistanceToRPM -> {
-                topFlywheelFeedingDistanceToRPM.put(1.0, 3000.0);
+                topFlywheelFeedingDistanceToRPM.put(2.6, 1250.0);
+                topFlywheelFeedingDistanceToRPM.put(9.8, 2650.0);
               },
               bottomFlywheelFeedingDistanceToRPM -> {
-                bottomFlywheelFeedingDistanceToRPM.put(1.0, 3000.0);
+                bottomFlywheelFeedingDistanceToRPM.put(2.6, 1250.0);
+                bottomFlywheelFeedingDistanceToRPM.put(9.8, 2650.0);
               }),
           new ClimberConfig(20, 1.5, 11.0, 0.0, 0.25),
           new SwerveConfig(

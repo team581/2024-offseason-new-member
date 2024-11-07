@@ -158,38 +158,16 @@ public class VisionSubsystem extends LifecycleSubsystem {
 
   public DistanceAngle getDistanceAngleFloorShot() {
     Pose2d goalPoseSubwoofer;
-    Pose2d goalPoseAmpArea;
-    Pose2d fallbackPose;
+
     if (FmsSubsystem.isRedAlliance()) {
       goalPoseSubwoofer = RED_FLOOR_SPOT_SUBWOOFER;
-      goalPoseAmpArea = RED_FLOOR_SPOT_AMP_AREA;
-      fallbackPose = RED_FLOOR_SHOT_ROBOT_FALLBACK_POSE;
     } else {
       goalPoseSubwoofer = BLUE_FLOOR_SPOT_SUBWOOFER;
-      goalPoseAmpArea = BLUE_FLOOR_SPOT_AMP_AREA;
-      fallbackPose = BLUE_FLOOR_SHOT_ROBOT_FALLBACK_POSE;
     }
 
-    fallbackPose = new Pose2d(fallbackPose.getTranslation(), robotPose.getRotation());
-    var usedRobotPose = getState() == VisionState.OFFLINE ? fallbackPose : robotPose;
+    DogLog.log("Debug/FeedGoalPose", goalPoseSubwoofer);
 
-    var subwooferSpotDistance = distanceAngleToTarget(goalPoseSubwoofer, usedRobotPose);
-    var usedGoalPose = goalPoseSubwoofer;
-    var result = subwooferSpotDistance;
-
-    if (subwooferSpotDistance.distance() > FLOOR_SPOT_MAX_DISTANCE_FOR_SUBWOOFER) {
-      result = distanceAngleToTarget(goalPoseAmpArea, usedRobotPose);
-      usedGoalPose = goalPoseAmpArea;
-      result = new DistanceAngle(581.0, result.targetAngle(), false);
-    }
-
-    if (RobotConfig.IS_DEVELOPMENT) {
-      DogLog.log("Vision/FloorShot/SubwooferPose", goalPoseSubwoofer);
-      DogLog.log("Vision/FloorShot/AmpAreaPose", goalPoseAmpArea);
-    }
-    DogLog.log("Vision/FloorShot/UsedTargetPose", usedGoalPose);
-
-    return result;
+    return distanceAngleToTarget(goalPoseSubwoofer, robotPose);
   }
 
   public double getStandardDeviation(double distance) {
