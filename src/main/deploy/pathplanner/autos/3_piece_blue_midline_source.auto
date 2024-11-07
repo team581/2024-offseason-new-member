@@ -14,7 +14,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3_piece_blue_midline_source"
+            "pathName": "3_piece_blue_midline_source.1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3_piece_blue_midline_source.2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3_piece_blue_midline_source.3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3_piece_blue_midline_source.4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3_piece_blue_midline_source.5"
           }
         }
       ]

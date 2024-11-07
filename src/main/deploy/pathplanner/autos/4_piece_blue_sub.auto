@@ -14,7 +14,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4_piece_blue_sub"
+            "pathName": "4_piece_blue_sub.1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4_piece_blue_sub.2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4_piece_blue_sub.3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4_piece_blue_sub.4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4_piece_blue_sub.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4_piece_blue_sub.6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4_piece_blue_sub.7"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4_piece_blue_sub.8"
           }
         }
       ]
