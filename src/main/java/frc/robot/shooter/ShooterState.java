@@ -12,9 +12,8 @@ public enum ShooterState {
   public final double bottomRPM;
   public final double topRPM;
 
-  ShooterState(double RPM) {
-    this.bottomRPM = RPM;
-    this.topRPM = RPM;
+  ShooterState(double rpm) {
+    this(rpm, rpm);
   }
 
   ShooterState(double topRPM, double bottomRPM) {
@@ -23,7 +22,6 @@ public enum ShooterState {
   }
 
   ShooterState() {
-    this.bottomRPM = 0.0;
-    this.topRPM = 0.0;
+    this(0);
   }
 }
