@@ -73,15 +73,13 @@ public class RobotManager extends StateMachine<RobotState> {
         angularVelocitySlowEnough = Math.abs(imu.getRobotAngularVelocity()) < 360.0;
       }
       case PREPARE_SPEAKER_SHOT, WAITING_SPEAKER_SHOT, SPEAKER_SHOT -> {
-        robotHeadingAtGoal =
-            imu.atAngleForSpeaker(speakerDistanceAngle.targetAngle(), speakerDistance);
-        angularVelocitySlowEnough = imu.belowVelocityForVision(speakerDistance);
+        robotHeadingAtGoal = imu.atAngleForSpeaker(speakerDistanceAngle.targetAngle());
+        angularVelocitySlowEnough = imu.belowVelocityForVision();
         swerveSlowEnough = swerve.isSlowEnoughToShoot();
       }
 
       default -> {
-        robotHeadingAtGoal =
-            imu.atAngleForSpeaker(speakerDistanceAngle.targetAngle(), speakerDistance);
+        robotHeadingAtGoal = imu.atAngleForSpeaker(speakerDistanceAngle.targetAngle());
       }
     }
 
@@ -94,6 +92,12 @@ public class RobotManager extends StateMachine<RobotState> {
 
     shooter.setSpeakerDistance(speakerDistance);
     shooter.setFeedDistance(feedDistance);
+
+    DogLog.log("RobotManager/SpeakerShot/ShooterAtGoal", shooter.atGoal(ShooterState.SPEAKER_SHOT));
+    DogLog.log("RobotManager/SpeakerShot/SwerveSlowEnough", swerveSlowEnough);
+    DogLog.log("RobotManager/SpeakerShot/AngularVelocitySlowEnough", angularVelocitySlowEnough);
+    DogLog.log("RobotManager/SpeakerShot/RobotHeading", robotHeadingAtGoal);
+    DogLog.log("RobotManager/SpeakerShot/LimelightWorking", limelightWorking);
   }
 
   // Automatic state transitions
@@ -180,7 +184,7 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case PREPARE_AMP -> {
         shooter.setState(ShooterState.AMP);
-        intake.setState(IntakeState.IDLE);
+        intake.setState(IntakeState.EXPECT_NOTE);
         swerve.setSnapsEnabled(true);
         swerve.setSnapToAngle(SnapUtil.getAmpAngle());
       }
@@ -192,23 +196,25 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case PREPARE_SHOOTER_OUTTAKE, WAITING_SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
-        intake.setState(IntakeState.IDLE);
+        intake.setState(IntakeState.EXPECT_NOTE);
         swerve.setSnapsEnabled(false);
         swerve.setSnapToAngle(0);
       }
       case PREPARE_SUBWOOFER_SHOT, WAITING_SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
-        intake.setState(IntakeState.IDLE);
+        intake.setState(IntakeState.EXPECT_NOTE);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0);
       }
       case PREPARE_SPEAKER_SHOT, WAITING_SPEAKER_SHOT -> {
         shooter.setState(ShooterState.SPEAKER_SHOT);
-        intake.setState(IntakeState.IDLE);
+        intake.setState(IntakeState.EXPECT_NOTE);
         swerve.setSnapsEnabled(true);
         swerve.setSnapToAngle(speakerDistanceAngle.targetAngle());
       }
       case PREPARE_FLOOR_SHOT, WAITING_FLOOR_SHOT -> {
         shooter.setState(ShooterState.FLOOR_SHOT);
-        intake.setState(IntakeState.IDLE);
+        intake.setState(IntakeState.EXPECT_NOTE);
         swerve.setSnapsEnabled(true);
         swerve.setSnapToAngle(floorDistanceAngle.targetAngle());
       }
@@ -227,10 +233,12 @@ public class RobotManager extends StateMachine<RobotState> {
       case SUBWOOFER_SHOT -> {
         shooter.setState(ShooterState.SUBWOOFER_SHOT);
         intake.setState(IntakeState.TO_SHOOTER);
+        swerve.setSnapsEnabled(false);
+        swerve.setSnapToAngle(0.0);
       }
       case WAITING_AMP -> {
         shooter.setState(ShooterState.AMP);
-        intake.setState(IntakeState.IDLE);
+        intake.setState(IntakeState.EXPECT_NOTE);
         swerve.setSnapsEnabled(true);
         swerve.setSnapToAngle(SnapUtil.getAmpAngle());
       }

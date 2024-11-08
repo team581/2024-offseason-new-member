@@ -81,16 +81,16 @@ public class ImuSubsystem extends LifecycleSubsystem {
     return MathUtil.isNear(normalizedGoal, getRobotHeading(), tolerance);
   }
 
-  public boolean belowVelocityForVision(double distance) {
+  public boolean belowVelocityForVision() {
     return getRobotAngularVelocity() < 10;
   }
 
-  public boolean atAngleForSpeaker(double angle, double distance) {
-    return atAngle(angle, 2.5);
+  public boolean atAngleForSpeaker(double angle) {
+    return atAngle(angle, 5);
   }
 
   public boolean atAngleForFeed(double angle) {
-    return atAngle(angle, 3);
+    return atAngle(angle, 7.5);
   }
 
   public double getYAcceleration() {

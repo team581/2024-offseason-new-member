@@ -8,12 +8,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.config.RobotConfig;
 import frc.robot.fms.FmsSubsystem;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.util.scheduling.LifecycleSubsystem;
 import frc.robot.util.scheduling.SubsystemPriority;
-import frc.robot.vision.interpolation.InterpolatedVision;
 import java.util.Optional;
 
 public class VisionSubsystem extends LifecycleSubsystem {
@@ -68,18 +66,8 @@ public class VisionSubsystem extends LifecycleSubsystem {
     return Optional.of(new VisionResult(estimatePose.pose, estimatePose.timestampSeconds));
   }
 
-  /**
-   * @return an interpolated vision pose, ready to be added to the estimator
-   */
   public Optional<VisionResult> getVisionResult() {
     var maybeRawData = getRawVisionResult();
-
-    if (RobotConfig.get().perfToggles().interpolatedVision() && maybeRawData.isPresent()) {
-      var rawData = maybeRawData.get();
-      Pose2d interpolatedPose = InterpolatedVision.interpolatePose(rawData.pose());
-      DogLog.log("Localization/InterpolatedPose", interpolatedPose);
-      return Optional.of(new VisionResult(interpolatedPose, rawData.timestamp()));
-    }
 
     // No raw data to operate on
     return maybeRawData;

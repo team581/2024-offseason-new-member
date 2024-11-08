@@ -15,11 +15,9 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.util.Units;
 import frc.robot.config.RobotConfig.ClimberConfig;
 import frc.robot.config.RobotConfig.IntakeConfig;
-import frc.robot.config.RobotConfig.PerfToggles;
 import frc.robot.config.RobotConfig.ShooterConfig;
 import frc.robot.config.RobotConfig.SwerveConfig;
 import frc.robot.config.RobotConfig.VisionConfig;
-import frc.robot.vision.interpolation.InterpolatedVisionDataset;
 
 class CompConfig {
   private static final String RIO_CAN_NAME = "rio";
@@ -88,14 +86,14 @@ class CompConfig {
                   .withClosedLoopRamps(CLOSED_LOOP_RAMP)
                   .withOpenLoopRamps(OPEN_LOOP_RAMP),
               topFlywheelSpeakerDistanceToRPM -> {
-                topFlywheelSpeakerDistanceToRPM.put(1.8, 2000.0);
-                topFlywheelSpeakerDistanceToRPM.put(2.4, 2075.0);
-                topFlywheelSpeakerDistanceToRPM.put(2.8, 2075.0);
+                topFlywheelSpeakerDistanceToRPM.put(1.3, 4000.0);
+                topFlywheelSpeakerDistanceToRPM.put(1.8, 2300.0);
+                topFlywheelSpeakerDistanceToRPM.put(2.3, 2100.0);
               },
               bottomFlywheelSpeakerDistanceToRPM -> {
-                bottomFlywheelSpeakerDistanceToRPM.put(1.8, 2000.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(2.4, 2075.0);
-                bottomFlywheelSpeakerDistanceToRPM.put(2.8, 2075.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(1.3, 4000.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(1.8, 2300.0);
+                bottomFlywheelSpeakerDistanceToRPM.put(2.3, 2100.0);
               },
               topFlywheelFeedingDistanceToRPM -> {
                 topFlywheelFeedingDistanceToRPM.put(2.6, 1250.0);
@@ -133,9 +131,7 @@ class CompConfig {
                 tyToNoteDistance.put(9.39, Units.inchesToMeters(17.75 + 7 + 47.1));
                 tyToNoteDistance.put(11.85, Units.inchesToMeters(17.75 + 7 + 60.1));
                 tyToNoteDistance.put(15.25, Units.inchesToMeters(17.75 + 7 + 88.9));
-              },
-              InterpolatedVisionDataset.CHEZY_CHAMPS),
-          new PerfToggles(true, false, false));
+              }));
 
   private CompConfig() {}
 }

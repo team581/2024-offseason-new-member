@@ -38,6 +38,9 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
       case IDLE -> {
         motor.disable();
       }
+      case EXPECT_NOTE -> {
+        motor.disable();
+      }
       default -> {
         motor.setVoltage(getState().volts);
       }
@@ -48,11 +51,19 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
   public void robotPeriodic() {
     super.robotPeriodic();
 
-    DogLog.log("IntakeSubsystem/MotorVoltage", motor.getMotorVoltage().getValueAsDouble());
-    DogLog.log("IntakeSubsystem/State", getState());
-    DogLog.log("IntakeSubsystem/DebouncedHasNote", debouncedHasNote);
-    DogLog.log("IntakeSubsystem/RawHasNote", rawHasNote);
-    DogLog.log("IntakeSubsystem/State/Volts", getState().volts);
+    DogLog.log("Intake/MotorVoltage", motor.getMotorVoltage().getValueAsDouble());
+    DogLog.log("Intake/State", getState());
+    DogLog.log("Intake/DebouncedHasNote", debouncedHasNote);
+    DogLog.log("Intake/RawHasNote", rawHasNote);
+    DogLog.log("Intake/State/Volts", getState().volts);
+
+    if (getState() == IntakeState.EXPECT_NOTE) {
+      if (debouncedHasNote) {
+        motor.disable();
+      } else {
+        motor.set(IntakeState.EXPECT_NOTE.volts);
+      }
+    }
   }
 
   public void setState(IntakeState state) {
