@@ -2,10 +2,10 @@ package frc.robot.autos;
 
 public enum AutoSelection {
   DO_NOTHING("", ""),
-  FOUR_PIECE_SUBWOOFER("4_piece_red_sub", "4_piece_blue_sub"),
-  SHOOT_STOP_AMP("shoot_stop_red_amp", "shoot_stop_blue_amp"),
-  SHOOT_STOP_SOURCE("shoot_stop_red_source", "shoot_stop_blue_source"),
-  THREE_PIECE_MID_SOURCE("3_piece_red_midline_source", "3_piece_blue_midline_source");
+  FOUR_PIECE_SUBWOOFER("Red 4 Piece", "Blue 4 Piece"),
+  SHOOT_STOP_AMP("Red Shoot Stop Amp", "Blue Shoot Stop Amp"),
+  SHOOT_STOP_SOURCE("Red Shoot Stop Source", "Blue Shoot Stop Source"),
+  THREE_PIECE_MID_SOURCE("Red 3 Piece Source", "Blue 3 Piece Source");
 
   public final String redAutoName;
   public final String blueAutoName;
