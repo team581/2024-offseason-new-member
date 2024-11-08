@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 16.09590721130371,
+      "x": 0.4440927886962882,
       "y": 3.5370419025421143
     },
-    "rotation": -4.218944453057512e-21
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red 3 Piece Source.1"
+            "pathName": "Blue 3 Piece Source.1"
           }
         },
         {
@@ -32,13 +32,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red 3 Piece Source.2"
+            "pathName": "Blue 3 Piece Source.2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red 3 Piece Source.3"
+            "pathName": "Blue 3 Piece Source.3"
           }
         },
         {
@@ -50,13 +50,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red 3 Piece Source.4"
+            "pathName": "Blue 3 Piece Source.4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red 3 Piece Source.5"
+            "pathName": "Blue 3 Piece Source.5"
           }
         },
         {
@@ -68,6 +68,6 @@
       ]
     }
   },
-  "folder": "Red",
+  "folder": "Blue",
   "choreoAuto": true
 }

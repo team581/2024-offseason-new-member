@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 15.769556999206545,
-      "y": 4.429592609405518
+      "x": 0.7693548583984366,
+      "y": 6.679277420043945
     },
-    "rotation": 59.28716178243702
+    "rotation": -119.13422168249333
   },
   "command": {
     "type": "sequential",
@@ -26,12 +26,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Shoot Stop Source"
+            "pathName": "Blue Shoot Stop Amp"
           }
         }
       ]
     }
   },
-  "folder": "Red",
+  "folder": "Blue",
   "choreoAuto": true
 }
