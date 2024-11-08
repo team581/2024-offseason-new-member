@@ -198,6 +198,10 @@ public class Robot extends TimedRobot {
         .rightBumper()
         .onTrue(actions.waitAmpCommand())
         .onFalse(actions.idleCommand());
+    hd.operatorController
+        .leftBumper()
+        .onTrue(actions.outtakeShooterCommand())
+        .onFalse(actions.idleCommand());
     hd.operatorController.a().onTrue(actions.idleCommand());
     hd.operatorController.x().onTrue(actions.outtakeCommand()).onFalse(actions.idleCommand());
 
