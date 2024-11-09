@@ -5,7 +5,7 @@
       "x": 15.18,
       "y": 5.62
     },
-    "rotation": 3.787878810395655e-27
+    "rotation": 2.262050582913079e-27
   },
   "command": {
     "type": "sequential",
@@ -69,6 +69,12 @@
           "type": "path",
           "data": {
             "pathName": "Red 4 Piece.6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Red 4 Piece.7"
           }
         },
         {
