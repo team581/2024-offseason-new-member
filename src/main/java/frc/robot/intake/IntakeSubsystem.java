@@ -42,6 +42,13 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
       case EXPECT_NOTE -> {
         motor.disable();
       }
+      case INTAKE -> {
+        if (hasNote()) {
+          motor.disable();
+        } else {
+          motor.setVoltage(getState().volts);
+        }
+      }
       default -> {
         motor.setVoltage(getState().volts);
       }
