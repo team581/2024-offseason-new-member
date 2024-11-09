@@ -36,9 +36,6 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
   @Override
   protected void afterTransition(IntakeState newState) {
     switch (newState) {
-      case IDLE -> {
-        motor.disable();
-      }
       case EXPECT_NOTE -> {
         motor.disable();
       }
