@@ -98,12 +98,12 @@ class CompConfig {
                 bottomFlywheelSpeakerDistanceToRPM.put(2.3, 2100.0);
               },
               topFlywheelFeedingDistanceToRPM -> {
-                topFlywheelFeedingDistanceToRPM.put(2.6, 1250.0);
-                topFlywheelFeedingDistanceToRPM.put(9.8, 2650.0);
+                topFlywheelFeedingDistanceToRPM.put(2.6, 1300.0);
+                topFlywheelFeedingDistanceToRPM.put(9.8, 2750.0);
               },
               bottomFlywheelFeedingDistanceToRPM -> {
-                bottomFlywheelFeedingDistanceToRPM.put(2.6, 1250.0);
-                bottomFlywheelFeedingDistanceToRPM.put(9.8, 2650.0);
+                bottomFlywheelFeedingDistanceToRPM.put(2.6, 1300.0);
+                bottomFlywheelFeedingDistanceToRPM.put(9.8, 2750.0);
               }),
           new ClimberConfig(20, 1.5, 11.0, 0.5, 0.25),
           new SwerveConfig(
