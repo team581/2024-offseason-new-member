@@ -30,7 +30,7 @@ public class RobotCommands {
   }
 
   public Command outtakeShooterCommand() {
-    return Commands.runOnce(robot::outtakeShooterRequest, requirements)
+    return Commands.runOnce(robot::waitOuttakeShooterRequest, requirements)
         .andThen(robot.waitForState(RobotState.IDLE_NO_GP))
         .withName("OuttakeShooterCommand");
   }
