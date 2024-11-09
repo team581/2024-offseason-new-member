@@ -93,6 +93,8 @@ public class Robot extends TimedRobot {
     Stopwatch.getInstance().start("Scheduler/CommandSchedulerPeriodic");
     CommandScheduler.getInstance().run();
     Stopwatch.getInstance().stop("Scheduler/CommandSchedulerPeriodic");
+    DogLog.log("Controller/leftBumper", hd.driverController.leftBumper().toString());
+    DogLog.log("Controller/leftTrigger", hd.driverController.leftTrigger().toString());
   }
 
   @Override
