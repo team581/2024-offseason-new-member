@@ -15,8 +15,8 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
   private final CANSparkMax motor;
   private final RelativeEncoder encoder;
 
-  private double height = 0;
-  private double encoderPosition = 0;
+  private double height = 0.0;
+  private double encoderPosition = 0.0;
   private boolean manualDownMode = false;
 
   public ClimberSubsystem(CANSparkMax motor) {
@@ -24,6 +24,7 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
 
     this.encoder = motor.getEncoder();
     encoder.setPositionConversionFactor(1);
+    encoder.setPosition(height);
 
     motor.setSmartCurrentLimit(50);
     motor.burnFlash();
