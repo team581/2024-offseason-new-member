@@ -7,7 +7,6 @@ public enum RobotState {
 
   OUTTAKING(true),
 
-  WAITING_SHOOTER_OUTTAKE(true),
   PREPARE_SHOOTER_OUTTAKE(true),
   SHOOTER_OUTTAKE(true),
 

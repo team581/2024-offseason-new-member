@@ -113,8 +113,7 @@ public class RobotManager extends StateMachine<RobotState> {
               CLIMB_LOWERED,
               CLIMB_RAISED,
               UNJAM,
-              OUTTAKING,
-              WAITING_SHOOTER_OUTTAKE ->
+              OUTTAKING ->
           currentState;
       case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, SHOOTER_OUTTAKE, AMP_SHOT, MANUAL_SPEAKER_SHOT ->
           intake.hasNote() ? currentState : RobotState.IDLE_NO_GP;
@@ -197,7 +196,7 @@ public class RobotManager extends StateMachine<RobotState> {
         swerve.setSnapsEnabled(false);
         swerve.setSnapToAngle(0);
       }
-      case PREPARE_SHOOTER_OUTTAKE, WAITING_SHOOTER_OUTTAKE -> {
+      case PREPARE_SHOOTER_OUTTAKE -> {
         shooter.setState(ShooterState.SHOOTER_OUTTAKE);
         intake.setState(IntakeState.EXPECT_NOTE);
         swerve.setSnapsEnabled(false);
@@ -334,7 +333,6 @@ public class RobotManager extends StateMachine<RobotState> {
       case WAITING_SUBWOOFER_SHOT -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
       case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
       case WAITING_SPEAKER_SHOT -> setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
-      case WAITING_SHOOTER_OUTTAKE -> setStateFromRequest(RobotState.PREPARE_SHOOTER_OUTTAKE);
       case WAITING_AMP -> setStateFromRequest(RobotState.PREPARE_AMP);
 
       default -> {
@@ -355,8 +353,8 @@ public class RobotManager extends StateMachine<RobotState> {
     setStateFromRequest(RobotState.OUTTAKING);
   }
 
-  public void waitOuttakeShooterRequest() {
-    setStateFromRequest(RobotState.WAITING_SHOOTER_OUTTAKE);
+  public void outtakeShooterRequest() {
+    setStateFromRequest(RobotState.PREPARE_SHOOTER_OUTTAKE);
   }
 
   public void idleRequest() {
