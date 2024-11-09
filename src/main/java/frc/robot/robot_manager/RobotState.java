@@ -23,6 +23,9 @@ public enum RobotState {
   PREPARE_SPEAKER_SHOT(true),
   SPEAKER_SHOT(true),
 
+  PREPARE_MANUAL_SPEAKER_SHOT(true),
+  MANUAL_SPEAKER_SHOT(true),
+
   WAITING_AMP(true),
   PREPARE_AMP(true),
   AMP_SHOT(true),

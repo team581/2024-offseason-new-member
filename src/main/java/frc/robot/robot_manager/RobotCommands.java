@@ -70,6 +70,12 @@ public class RobotCommands {
         .withName("SpeakerShotCommand");
   }
 
+  public Command driverManualSpeakerShotCommand() {
+    return Commands.runOnce(robot::driverManualSpeakerShotRequest, requirements)
+        .andThen(robot.waitForState(RobotState.IDLE_NO_GP))
+        .withName("DriverManualSpeakerShotCommand");
+  }
+
   public Command nextClimbCommand() {
     return Commands.runOnce(robot::nextClimbRequest, requirements).withName("ClimbSequenceCommand");
   }

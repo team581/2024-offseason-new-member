@@ -182,6 +182,10 @@ public class Robot extends TimedRobot {
         .rightBumper()
         .onTrue(actions.outtakeCommand())
         .onFalse(actions.idleCommand());
+    hd.driverController
+        .y()
+        .onTrue(actions.driverManualSpeakerShotCommand())
+        .onFalse(actions.idleCommand());
 
     // operator controller
 

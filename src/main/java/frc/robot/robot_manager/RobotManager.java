@@ -116,11 +116,14 @@ public class RobotManager extends StateMachine<RobotState> {
               OUTTAKING,
               WAITING_SHOOTER_OUTTAKE ->
           currentState;
-      case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, SHOOTER_OUTTAKE, AMP_SHOT ->
+      case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, SHOOTER_OUTTAKE, AMP_SHOT, MANUAL_SPEAKER_SHOT ->
           intake.hasNote() ? currentState : RobotState.IDLE_NO_GP;
 
       case PREPARE_SUBWOOFER_SHOT ->
           shooter.atGoal(ShooterState.SUBWOOFER_SHOT) ? RobotState.SUBWOOFER_SHOT : currentState;
+
+      case PREPARE_MANUAL_SPEAKER_SHOT ->
+          shooter.atGoal(ShooterState.MANUAL_SHOT) ? RobotState.MANUAL_SPEAKER_SHOT : currentState;
 
       case PREPARE_AMP -> shooter.atGoal(ShooterState.AMP) ? RobotState.AMP_SHOT : currentState;
 
@@ -301,6 +304,10 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void speakerShotRequest() {
     setStateFromRequest(RobotState.PREPARE_SPEAKER_SHOT);
+  }
+
+  public void driverManualSpeakerShotRequest() {
+    setStateFromRequest(RobotState.PREPARE_MANUAL_SPEAKER_SHOT);
   }
 
   public void waitSpeakerShotRequest() {
