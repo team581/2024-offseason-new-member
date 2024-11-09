@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.util.Units;
@@ -42,6 +43,7 @@ class CompConfig {
               0,
               new Debouncer(0.75, DebounceType.kFalling),
               new TalonFXConfiguration()
+                  .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
