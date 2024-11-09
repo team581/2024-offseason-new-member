@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Red Move Back Amp"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "speakerShot"
@@ -26,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Shoot Stop Amp"
+            "pathName": "Red Back Off Amp"
           }
         }
       ]

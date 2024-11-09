@@ -5,7 +5,7 @@
       "x": 0.7704430007934562,
       "y": 4.429592609405518
     },
-    "rotation": 120.71283821756296
+    "rotation": 120.71283821756295
   },
   "command": {
     "type": "sequential",
@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Blue Move Back Source"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "speakerShot"
@@ -26,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Shoot Stop Source.1"
+            "pathName": "Blue Back Off Source"
           }
         }
       ]
