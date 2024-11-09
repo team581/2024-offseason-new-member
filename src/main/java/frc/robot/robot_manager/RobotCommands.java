@@ -55,7 +55,9 @@ public class RobotCommands {
   }
 
   public Command confirmShotCommand() {
-    return Commands.runOnce(robot::confirmShotRequest, requirements).andThen(robot.waitForState(RobotState.IDLE_NO_GP)).withName("ConfirmShotCommand");
+    return Commands.runOnce(robot::confirmShotRequest, requirements)
+        .andThen(robot.waitForState(RobotState.IDLE_NO_GP))
+        .withName("ConfirmShotCommand");
   }
 
   public Command waitAmpCommand() {
@@ -63,7 +65,9 @@ public class RobotCommands {
   }
 
   public Command speakerShotCommand() {
-    return Commands.runOnce(robot::speakerShotRequest, requirements).andThen(robot.waitForState(RobotState.IDLE_NO_GP)).withName("SpeakerShotCommand");
+    return Commands.runOnce(robot::speakerShotRequest, requirements)
+        .andThen(robot.waitForState(RobotState.IDLE_NO_GP))
+        .withName("SpeakerShotCommand");
   }
 
   public Command nextClimbCommand() {
