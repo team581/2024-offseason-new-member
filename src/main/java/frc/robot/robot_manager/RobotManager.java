@@ -310,6 +310,7 @@ public class RobotManager extends StateMachine<RobotState> {
   public void confirmShotRequest() {
     switch (getState()) {
       case CLIMB_LOWERED, CLIMB_RAISED -> {}
+      case INTAKING, OUTTAKING, UNJAM -> {}
 
       case WAITING_SUBWOOFER_SHOT -> setStateFromRequest(RobotState.PREPARE_SUBWOOFER_SHOT);
       case WAITING_FLOOR_SHOT -> setStateFromRequest(RobotState.PREPARE_FLOOR_SHOT);
@@ -335,8 +336,8 @@ public class RobotManager extends StateMachine<RobotState> {
     setStateFromRequest(RobotState.OUTTAKING);
   }
 
-  public void outtakeShooterRequest() {
-    setStateFromRequest(RobotState.PREPARE_SHOOTER_OUTTAKE);
+  public void waitOuttakeShooterRequest() {
+    setStateFromRequest(RobotState.WAITING_SHOOTER_OUTTAKE);
   }
 
   public void idleRequest() {
