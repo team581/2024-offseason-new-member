@@ -58,7 +58,7 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
     DogLog.log("Intake/State/Volts", getState().volts);
 
     if (getState() == IntakeState.EXPECT_NOTE) {
-      if (debouncedHasNote) {
+      if (rawHasNote) {
         motor.disable();
       } else {
         motor.set(IntakeState.EXPECT_NOTE.volts);
