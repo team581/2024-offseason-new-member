@@ -1,6 +1,8 @@
 package frc.robot.intake;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.config.RobotConfig;
@@ -24,6 +26,8 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
     this.sensor = sensor;
 
     this.motor = motor;
+
+    motor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override
