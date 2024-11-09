@@ -239,6 +239,18 @@ public class RobotManager extends StateMachine<RobotState> {
         swerve.setSnapsEnabled(false);
         swerve.setSnapToAngle(0.0);
       }
+      case PREPARE_MANUAL_SPEAKER_SHOT -> {
+        shooter.setState(ShooterState.MANUAL_SHOT);
+        intake.setState(IntakeState.EXPECT_NOTE);
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(SnapUtil.getSubwooferAngle());
+      }
+      case MANUAL_SPEAKER_SHOT -> {
+        shooter.setState(ShooterState.MANUAL_SHOT);
+        intake.setState(IntakeState.TO_SHOOTER);
+        swerve.setSnapsEnabled(true);
+        swerve.setSnapToAngle(SnapUtil.getSubwooferAngle());
+      }
       case WAITING_AMP -> {
         shooter.setState(ShooterState.AMP);
         intake.setState(IntakeState.EXPECT_NOTE);
