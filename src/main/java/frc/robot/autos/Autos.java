@@ -87,7 +87,6 @@ public class Autos extends LifecycleSubsystem {
     registerCommand("subwooferShot", autoCommands.subwooferShotWithTimeout());
     registerCommand("intakeFloor", actions.intakeCommand());
     registerCommand("idle", actions.idleCommand());
-    registerCommand("zeroGyro", autoCommands.doNothingCommand());
 
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
