@@ -74,7 +74,7 @@ public class TunerConstants {
               new MountPoseConfigs()
                   .withMountPosePitch(0)
                   .withMountPoseRoll(0)
-                  .withMountPoseYaw(180));
+                  .withMountPoseYaw(-90));
 
   // Theoretical free speed (m/s) at 12v applied output;
   // This needs to be tuned to your individual robot
