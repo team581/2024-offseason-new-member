@@ -88,4 +88,10 @@ public class RobotCommands {
   public Command preloadNoteCommand() {
     return Commands.runOnce(robot::preloadNoteRequest, requirements).withName("PreloadNoteCommand");
   }
+
+  public Command forceShotCommand() {
+    return Commands.runOnce(robot::forceShotRequest, requirements)
+        .andThen(robot.waitForState(RobotState.IDLE_NO_GP))
+        .withName("ForceShotCommand");
+  }
 }
