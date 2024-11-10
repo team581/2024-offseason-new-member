@@ -5,7 +5,7 @@
       "x": 15.18,
       "y": 5.62
     },
-    "rotation": -7.941988737670602e-33
+    "rotation": 2.9354341358538267e-26
   },
   "command": {
     "type": "sequential",
@@ -42,15 +42,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "speakerShot"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Red 4 Piece.4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerShot"
           }
         },
         {
@@ -60,15 +60,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "speakerShot"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Red 4 Piece.6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "speakerShot"
           }
         },
         {
@@ -78,6 +78,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Red 4 Piece.8"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "speakerShot"
@@ -86,7 +92,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red 4 Piece.8"
+            "pathName": "Red 4 Piece.9"
           }
         }
       ]

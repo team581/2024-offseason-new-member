@@ -42,7 +42,6 @@ class CompConfig {
               4,
               0,
               new Debouncer(0.75, DebounceType.kFalling),
-              new Debouncer(0.025, DebounceType.kRising),
               new TalonFXConfiguration()
                   .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast))
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(1))

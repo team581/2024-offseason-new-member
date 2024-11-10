@@ -29,8 +29,7 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
   @Override
   protected void collectInputs() {
     rawHasNote = sensor.get();
-    debouncedHasNote = CONFIG.risingDebouncer().calculate(rawHasNote);
-    debouncedHasNote = CONFIG.fallingDebouncer().calculate(debouncedHasNote);
+    debouncedHasNote = CONFIG.debouncer().calculate(rawHasNote);
   }
 
   @Override
@@ -40,7 +39,7 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
         motor.disable();
       }
       case INTAKE -> {
-        if (hasNote()) {
+        if (rawHasNote) {
           motor.disable();
         } else {
           motor.setVoltage(getState().volts);
