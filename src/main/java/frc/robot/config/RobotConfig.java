@@ -17,7 +17,11 @@ public record RobotConfig(
     VisionConfig vision) {
 
   public record IntakeConfig(
-      int motorID, int sensorID, Debouncer risingDebouncer, Debouncer fallingDebouncer, TalonFXConfiguration motorConfig) {}
+      int motorID,
+      int sensorID,
+      Debouncer risingDebouncer,
+      Debouncer fallingDebouncer,
+      TalonFXConfiguration motorConfig) {}
 
   public record ShooterConfig(
       int bottomMotorID,
