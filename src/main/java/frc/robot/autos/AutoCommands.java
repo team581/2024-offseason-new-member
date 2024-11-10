@@ -50,7 +50,11 @@ public class AutoCommands {
   }
 
   public Command speakerShotWithTimeout() {
-    return actions.speakerShotCommand().withTimeout(3).withName("SpeakerShotWithTimeout");
+    return actions
+        .speakerShotCommand()
+        .withTimeout(2)
+        .andThen(actions.forceShotCommand().withTimeout(1))
+        .withName("SpeakerShotWithTimeout");
   }
 
   private boolean hasNote() {

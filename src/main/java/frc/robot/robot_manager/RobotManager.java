@@ -389,4 +389,8 @@ public class RobotManager extends StateMachine<RobotState> {
   public void preloadNoteRequest() {
     setStateFromRequest(RobotState.INTAKING);
   }
+
+  public void forceShotRequest() {
+    setStateFromRequest(RobotState.SPEAKER_SHOT);
+  }
 }
