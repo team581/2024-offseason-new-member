@@ -8,8 +8,10 @@ public enum IntakeState {
   OUTTAKE(-6.0);
 
   public final double volts;
+  public boolean shuffle;
 
   IntakeState(double volts) {
     this.volts = volts;
+    this.shuffle = false;
   }
 }
