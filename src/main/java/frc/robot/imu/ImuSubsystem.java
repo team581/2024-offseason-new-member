@@ -73,9 +73,10 @@ public class ImuSubsystem extends LifecycleSubsystem {
   }
 
   private boolean atAngle(double angle, double tolerance) {
-    double normalizedGoal = MathUtil.inputModulus(angle, -180, 180);
+    // Probably redundant to normalize the angle here but I don't want to check
+    var normalizedAngle = MathUtil.inputModulus(angle, -180, 180);
 
-    return MathUtil.isNear(normalizedGoal, getRobotHeading(), tolerance);
+    return MathUtil.isNear(normalizedAngle, getRobotHeading(), tolerance, -180, 180);
   }
 
   public boolean belowVelocityForVision() {
