@@ -82,6 +82,12 @@
           "data": {
             "name": "speakerShot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue 4 Piece.8"
+          }
         }
       ]
     }
