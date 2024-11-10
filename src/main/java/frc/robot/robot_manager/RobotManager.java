@@ -115,7 +115,12 @@ public class RobotManager extends StateMachine<RobotState> {
               UNJAM,
               OUTTAKING ->
           currentState;
-      case SUBWOOFER_SHOT, FLOOR_SHOT, SPEAKER_SHOT, SHOOTER_OUTTAKE, AMP_SHOT, MANUAL_SPEAKER_SHOT ->
+      case SUBWOOFER_SHOT,
+              FLOOR_SHOT,
+              SPEAKER_SHOT,
+              SHOOTER_OUTTAKE,
+              AMP_SHOT,
+              MANUAL_SPEAKER_SHOT ->
           intake.hasNote() ? currentState : RobotState.IDLE_NO_GP;
 
       case PREPARE_SUBWOOFER_SHOT ->

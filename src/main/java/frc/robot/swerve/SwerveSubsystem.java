@@ -119,7 +119,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     super(SubsystemPriority.SWERVE, SwerveState.TELEOP);
     driveToAngle.HeadingController = RobotConfig.get().swerve().snapController();
     driveToAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-    driveToAngle.HeadingController.setTolerance(0.02);
+    driveToAngle.HeadingController.setTolerance(Math.toRadians(1.5));
     modulePositions = calculateModulePositions();
 
     for (int i = 0; i < 4; i++) {

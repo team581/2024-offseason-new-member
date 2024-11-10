@@ -4,7 +4,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
@@ -14,8 +13,6 @@ import frc.robot.util.scheduling.SubsystemPriority;
 
 public class ImuSubsystem extends LifecycleSubsystem {
   private final Pigeon2 imu;
-  private final InterpolatingDoubleTreeMap distanceToAngleTolerance =
-      new InterpolatingDoubleTreeMap();
   private final TimeInterpolatableBuffer<Double> robotHeadingHistory =
       TimeInterpolatableBuffer.createDoubleBuffer(3);
 
