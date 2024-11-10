@@ -42,6 +42,13 @@ public class AutoCommands {
         .withName("SubwooferShotWithTimeout");
   }
 
+  public Command presetShotWithTimeout() {
+    return actions
+        .driverManualSpeakerShotCommand()
+        .withTimeout(3)
+        .withName("PresetShotWithTimeout");
+  }
+
   public Command speakerShotWithTimeout() {
     return actions.speakerShotCommand().withTimeout(3).withName("SpeakerShotWithTimeout");
   }

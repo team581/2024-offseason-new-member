@@ -387,6 +387,6 @@ public class RobotManager extends StateMachine<RobotState> {
   }
 
   public void preloadNoteRequest() {
-    setStateFromRequest(RobotState.IDLE_W_GP);
+    setStateFromRequest(RobotState.INTAKING);
   }
 }
