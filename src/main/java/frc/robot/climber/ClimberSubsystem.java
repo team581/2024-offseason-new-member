@@ -31,7 +31,7 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
 
     this.motor = motor;
 
-    encoder.setPosition(0);
+    encoder.setPosition(RobotConfig.get().climber().minHeight());
   }
 
   @Override
