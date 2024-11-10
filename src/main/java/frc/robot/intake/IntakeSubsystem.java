@@ -29,7 +29,8 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
   @Override
   protected void collectInputs() {
     rawHasNote = sensor.get();
-    debouncedHasNote = CONFIG.debouncer().calculate(rawHasNote);
+    debouncedHasNote = CONFIG.risingDebouncer().calculate(rawHasNote);
+    debouncedHasNote = CONFIG.fallingDebouncer().calculate(debouncedHasNote);
   }
 
   @Override
